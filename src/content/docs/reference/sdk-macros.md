@@ -99,7 +99,7 @@ impl ERC20 for TokenContract {
 Inherent impl (self-contained contract):
 
 ```rust
-#[contract(throws = Error, emits(CounterIncremented))]
+#[contract(throws = Error)]
 impl Counter {
     pub fn increment(&mut self, amount: u64) {
         self.value.strict_inc(amount as i128);
