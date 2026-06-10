@@ -342,20 +342,22 @@ fn test_transfer() {
     let test_contract = register_mock_contract(&env);
     let contract_hash = test_contract.as_hash().clone();
 
-    contract_exec(env, move || {
-        let addr = deploy_contract(&NONCE, &contract_hash);
-        let client = ERC20Client::new(&addr);
-        let owner = get_caller();
-        let receiver = ContractAddress::named("bob");
+    env.transact(|tx| {
+        tx.call(&ContractAddress::named("alice")).run(move || {
+            let addr = deploy_contract(&NONCE, &contract_hash);
+            let client = ERC20Client::new(&addr);
+            let owner = get_caller();
+            let receiver = ContractAddress::named("bob");
 
-        client.initialize(&owner);
-        client.mint(&owner, 1000);
-        client.transfer(&receiver, 100);
+            client.initialize(&owner);
+            client.mint(&owner, 1000);
+            client.transfer(&receiver, 100);
 
-        assert_eq!(client.get_balance_of(&owner), 900);
-        assert_eq!(client.get_balance_of(&receiver), 100);
+            assert_eq!(client.get_balance_of(&owner), 900);
+            assert_eq!(client.get_balance_of(&receiver), 100);
+        })
     })
-    .unwrap_or_else(|e| panic!("Test failed: {e:?}"));
+    .assert_success();
 }
 ```
 
