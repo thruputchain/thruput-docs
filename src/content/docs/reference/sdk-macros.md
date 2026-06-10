@@ -438,6 +438,12 @@ The deprecated spelling `#[contracttype]` is still accepted but should not be us
 
 Structs (named or unit) and enums.
 
+### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `export` | Bool | `false` | When `true` (`#[contract_type(export)]`), forces the type into the contract spec even when nothing references it. |
+
 ### What it generates
 
 | Item | Description |
@@ -473,6 +479,8 @@ Each `#[contract_type]` produces a `type_defs` entry in the [contract spec](/ref
 
 Enum variants must have explicit discriminants (`Active = 1`), and generic type parameters are not supported.
 
+A type that nothing references can be forced into the spec with `#[contract_type(export)]` — the counterpart of `#[event_spec(export)]` for events. Use it for types that off-chain tools need to decode but that don't appear in any interface signature.
+
 ---
 
 ## `#[derive(ContractTypeSpec)]`
@@ -482,6 +490,12 @@ Low-level derive that only adds the `ContractTypeSpec` impl, without any seriali
 ### Applies to
 
 Structs and enums.
+
+### Container attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `#[contract_type_spec(export)]` | Forces the type into the contract spec even when nothing references it. This is what `#[contract_type(export)]` expands to. |
 
 ### Example
 

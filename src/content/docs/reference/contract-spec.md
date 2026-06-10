@@ -213,7 +213,7 @@ pub enum Envelope {
 }
 ```
 
-Only types reachable from an interface — through method arguments and returns, thrown error types, declared events, or the fields of other reachable types — are included. A `#[contract_type]` that nothing references does not appear in the spec.
+Only types reachable from an interface — through method arguments and returns, thrown error types, declared events, or the fields of other reachable types — are included. A `#[contract_type]` that nothing references does not appear in the spec, unless it is marked `#[contract_type(export)]`, which forces the type into the spec of any contract that links it.
 
 ## Events
 
@@ -278,6 +278,7 @@ Unlike event signatures, selectors are rendered with a `0x` prefix. When a contr
 | `emits(E1, E2)` on `#[contract]` | `events` entries |
 | `#[contract_exception]` type named in `throws` | A `type_defs` entry plus the `throws` selector |
 | `#[contract_type]` struct or enum reachable from an interface | A `type_defs` entry |
+| `#[contract_type(export)]` | A `type_defs` entry, even when nothing references the type |
 | `#[derive(Event)]` + `#[event_spec(export)]` | An `events` entry, even with no `emits(...)` declaration |
 
 See [SDK Macros](/reference/sdk-macros/) for the full macro reference and [Add Events to a Contract](/tutorials/add-events-to-a-contract/) for an end-to-end walkthrough.
