@@ -21,6 +21,7 @@ Generates WASM entrypoints, a client struct for cross-contract calls, and a clie
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `throws` | Type path or list | None | Error type(s) the contract may throw. Accepts `throws = MyError` or `throws(ErrorA, ErrorB)`. |
+| `emits` | Type path list | None | Event type(s) the interface declares. Accepts `emits(EventA, EventB)`. Declared events are recorded in the [contract spec](/reference/contract-spec/#events). |
 | `client` | Identifier | `{Interface}Client` | Name of the generated client struct. On traits, defaults to trait name + `Client`. On inherent impls, defaults to self type + `Client`. |
 | `interface` | String | Trait name or self type name | Overrides the interface name used in entrypoint identifiers. |
 | `version` | String | `CARGO_PKG_VERSION` | Version used for entrypoint identifier computation. |
@@ -34,6 +35,12 @@ Generates WASM entrypoints, a client struct for cross-contract calls, and a clie
 - The last path segment becomes the variant name in the generated error enum. `throws(errors::MyError)` produces `ClientError::MyError(...)`.
 - Duplicate variant names (e.g. `foo::Error` and `bar::Error`) are rejected at compile time.
 - `Library`, `Fault`, and `Unknown` are reserved variant names.
+
+### `emits` rules
+
+- `emits` belongs on the trait definition or inherent impl, not on the trait impl. Like `throws`, events are part of the interface, and the compiler rejects `emits` on a trait impl.
+- Each listed type must derive [`Event`](#deriveevent).
+- Declaring an event records its name, signature, topics, and payload layout in the [contract spec](/reference/contract-spec/#events), which is what lets codegen, indexers, and explorers decode it. Emitting an undeclared event is not a runtime error, but the event won't appear in the spec unless its type is marked `#[event_spec(export)]`.
 
 ### Generated client
 
@@ -92,7 +99,7 @@ impl ERC20 for TokenContract {
 Inherent impl (self-contained contract):
 
 ```rust
-#[contract(throws = Error)]
+#[contract(throws = Error, emits(CounterIncremented))]
 impl Counter {
     pub fn increment(&mut self, amount: u64) {
         self.value.strict_inc(amount as i128);
@@ -178,12 +185,13 @@ impl Exn for MyExn {
 
 ### Selector computation
 
-The selector is derived from:
-1. The crate version (or `version` parameter)
-2. The crate name (`CARGO_PKG_NAME`)
-3. The type name
+The selector is the first 8 bytes of `sha256(MAJOR_VERSION :: CRATE_NAME :: TYPE_NAME)`, where:
 
-Changing any of these changes the selector, which makes error types from different contract versions distinguishable.
+1. `MAJOR_VERSION` is the leftmost non-zero component of the crate version (or the `version` parameter): `1.2.3` → `1`, `0.9.2` → `0.9`, `0.0.2` → `0.0.2`
+2. `CRATE_NAME` is the crate name (`CARGO_PKG_NAME`)
+3. `TYPE_NAME` is the type name
+
+SemVer-compatible releases keep the same selector; a breaking version bump changes it, which makes error types from incompatible contract versions distinguishable. Error types named in `throws` are recorded with their selectors in the [contract spec](/reference/contract-spec/#errors).
 
 ### Example
 
@@ -312,7 +320,13 @@ Structs with named fields.
 |-----------|-------------|
 | `#[topic]` | Marks a field as an indexed topic. Topics are searchable. Fields without `#[topic]` go into the serialized payload. |
 
-There is a maximum number of topics per event. Topic index 0 is always the event signature (computed automatically from crate name, version, and type name). User-defined `#[topic]` fields occupy the remaining slots.
+Events support at most 3 topics. Topic 0 is always the event signature (see below), so up to 2 fields can be marked `#[topic]`. Topic values that are already 32 bytes wide (`ContractAddress`, `[u8; 32]`) are used directly; other types are XDR-encoded and SHA-256 hashed, which makes them filterable but not recoverable from the event — data you need to read back belongs in the payload.
+
+### Container attributes
+
+| Attribute | Description |
+|-----------|-------------|
+| `#[event_spec(export)]` | Forces the event into the contract spec of any contract that links this type, even when no interface declares it via `emits(...)`. Useful for events emitted by library code. |
 
 ### What it generates
 
@@ -352,6 +366,12 @@ if sig == TransferEvent::SIGNATURE {
     let payload: TransferEventPayload = TransferEvent::decode_payload(event.payload())?;
 }
 ```
+
+### Signature and the spec
+
+The signature is the full 32-byte `sha256(MAJOR_VERSION :: CRATE_NAME :: TYPE_NAME)`, where `CRATE_NAME` is the crate defining the event type and `MAJOR_VERSION` is its major version (leftmost non-zero component: `1.2.3` → `1`, `0.9.2` → `0.9`). Every emitted instance carries the signature as topic 0, and clients filter [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) on it to find instances of the event.
+
+An event appears in the [contract spec](/reference/contract-spec/#events) — name, signature, topic layout, and payload layout — when it is declared via `emits(...)` on `#[contract]`, or when the type is marked `#[event_spec(export)]`.
 
 ---
 
@@ -442,6 +462,16 @@ pub enum Status {
     Closed { reason: u32 },
 }
 ```
+
+### In the spec
+
+Each `#[contract_type]` produces a `type_defs` entry in the [contract spec](/reference/contract-spec/#type-definitions) when it is reachable from a contract interface (used in a method signature, thrown error, declared event, or another reachable type):
+
+- Structs become `struct` definitions.
+- Enums whose variants carry no data become `enum` definitions.
+- Enums with data-carrying variants become `union` definitions.
+
+Enum variants must have explicit discriminants (`Active = 1`), and generic type parameters are not supported.
 
 ---
 
