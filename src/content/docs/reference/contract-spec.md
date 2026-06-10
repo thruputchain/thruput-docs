@@ -217,7 +217,7 @@ Only types reachable from an interface — through method arguments and returns,
 
 ## Events
 
-Each entry in `events` describes one event the contract declares:
+Each entry in `events` describes one event the contract declares. Inclusion works the same way as for named types: deriving `Event` alone does not put an event in the spec. An event appears only when an interface declares it via `emits(...)` on `#[contract]`, or when the type is marked `#[event_spec(export)]`.
 
 ```json
 {

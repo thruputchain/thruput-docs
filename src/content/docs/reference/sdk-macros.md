@@ -371,7 +371,7 @@ if sig == TransferEvent::SIGNATURE {
 
 The signature is the full 32-byte `sha256(MAJOR_VERSION :: CRATE_NAME :: TYPE_NAME)`, where `CRATE_NAME` is the crate defining the event type and `MAJOR_VERSION` is its major version (leftmost non-zero component: `1.2.3` → `1`, `0.9.2` → `0.9`). Every emitted instance carries the signature as topic 0, and clients filter [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) on it to find instances of the event.
 
-An event appears in the [contract spec](/reference/contract-spec/#events) — name, signature, topic layout, and payload layout — when it is declared via `emits(...)` on `#[contract]`, or when the type is marked `#[event_spec(export)]`.
+Deriving `Event` alone does not put an event in the contract spec. An event appears in the [contract spec](/reference/contract-spec/#events) — name, signature, topic layout, and payload layout — only when it is declared via `emits(...)` on `#[contract]`, or when the type is marked `#[event_spec(export)]` (the counterpart of `#[contract_type(export)]` for types).
 
 ---
 
