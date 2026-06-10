@@ -30,7 +30,7 @@ The JSON rendering has four top-level keys:
 | `type_defs` | The layout of every named user type (struct, enum, union) reachable from an interface. |
 | `events` | Every event the contract declares. |
 
-The complete spec for the counter contract from [Build a Counter](/tutorials/build-a-counter/):
+The complete spec for the counter contract from [Build a Counter](/tutorials/build-a-counter/), built as crate `counter` at version `0.1.0` (the `version` and `selector` values below depend on the crate's name and version):
 
 ```json
 {
@@ -93,7 +93,7 @@ Each interface entry corresponds to one `#[contract]` trait or inherent impl:
 
 Each method lists its `name`, `args` (each `{ "name", "ty" }`), and `return_type`.
 
-Entrypoint IDs are **not** stored in the spec. Clients derive them deterministically from the interface name, the major version, and the normalized method signature. See [Contracts](/how-it-works/contracts/) for the entrypoint encoding.
+Entrypoint IDs are **not** stored in the spec. Clients derive them deterministically from the interface name, the major version, and the normalized method signature. See [Contracts](/how-it-works/contracts/) for how entrypoint IDs are encoded into wasm export names.
 
 :::note[What "major version" means]
 Selectors, event signatures, and entrypoint IDs all hash the interface or crate's *major version*, defined as the leftmost non-zero version component (mirroring Cargo's SemVer-compatibility rule): `1.2.3` → `1`, `0.9.2` → `0.9`, `0.0.2` → `0.0.2`. SemVer-compatible releases therefore keep the same identifiers; a breaking version bump changes all of them.
@@ -112,7 +112,7 @@ Primitive kinds:
 | `u8` | `u8` (only valid inside `vec` or `array`) |
 | `u32`, `i32`, `u64`, `i64`, `u128`, `i128` | the corresponding integer |
 | `string` | `String` |
-| `bytes` | opaque byte string |
+| `bytes` | variable-length byte string |
 | `address` | `ContractAddress` |
 
 Composite kinds:
@@ -125,7 +125,7 @@ Composite kinds:
 { "kind": "named", "name": "Payload" }
 ```
 
-These correspond to `Option<u64>`, `Vec<ContractAddress>`, `[u8; 32]`, `(u32, bool)`, and a user-defined type named `Payload`. A `named` reference points at an entry in `type_defs` by name.
+These correspond to `Option<u64>`, `Vec<ContractAddress>`, `[u8; 32]`, `(u32, bool)`, and a user-defined type named `Payload`. A `named` reference points at an entry in `type_defs` by name. The nested-type key differs by kind — `inner` for `option` and `vec`, `element` for `array`, `items` for `tuple` — and `max_len` is the vector's declared bound (`4294967295`, i.e. `u32::MAX`, when unbounded).
 
 ## Type Definitions
 
@@ -235,7 +235,7 @@ Each entry in `events` describes one event the contract declares:
 |-------|-------------|
 | `name` | The Rust type name of the `#[derive(Event)]` struct. |
 | `signature` | The 32-byte event signature, hex-encoded without a `0x` prefix. Every emitted instance carries it as topic 0. |
-| `topics` | The `#[topic]` fields in declaration order. These occupy topics 1 and 2 of the emitted event. |
+| `topics` | The `#[topic]` fields in declaration order. These occupy the topic slots after the signature (at most two). |
 | `fields` | The remaining fields, XDR-serialized into the event's data payload. |
 
 The signature is computed as:
@@ -246,7 +246,7 @@ signature = sha256(MAJOR_VERSION ++ "::" ++ CRATE_NAME ++ "::" ++ TYPE_NAME)
 
 where `CRATE_NAME` is the crate that defines the event type and `MAJOR_VERSION` is its major version. For `TransferEvent` defined in `groundhog-erc20-if` version `0.1.2`: `sha256("0.1::groundhog-erc20-if::TransferEvent")` = `5ff62377…` above.
 
-To find instances of an event on chain, filter [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) on `topic0 = "0x" + signature`.
+To find instances of an event on chain, query [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) with the contract's address and `topic0 = "0x" + signature` (filters always require a contract address).
 
 Topic *values* that are not already 32 bytes wide (integers, strings) are XDR-encoded and SHA-256 hashed when emitted, so they can be filtered on but not recovered from the event. Data you need to read back belongs in `fields`.
 
@@ -267,7 +267,7 @@ The selector is the first 8 bytes of the same hash construction used for event s
 selector = sha256(MAJOR_VERSION ++ "::" ++ CRATE_NAME ++ "::" ++ TYPE_NAME)[0..8]
 ```
 
-When a contract throws, the exception payload is tagged with the selector. Clients use the spec to map a selector back to its named type and decode the payload; unrecognized selectors surface as `Unknown` in generated clients (see [SDK Macros](/reference/sdk-macros/#contract)).
+Unlike event signatures, selectors are rendered with a `0x` prefix. When a contract throws, the exception payload is tagged with the selector. Clients use the spec to map a selector back to its named type and decode the payload; unrecognized selectors surface as `Unknown` in generated clients (see [SDK Macros](/reference/sdk-macros/#contract)).
 
 ## How Code Surfaces Into the Spec
 
