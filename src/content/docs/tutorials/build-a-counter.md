@@ -234,6 +234,7 @@ This counter is trivial, but the pattern scales. Every mutation is a delta opera
 ## Next Steps
 
 - [Build a Token](/tutorials/build-a-token/) for a full ERC-20 implementation using the same patterns
+- [Add Events to a Contract](/tutorials/add-events-to-a-contract/) to extend this counter with an emitted event
 - [Storage Types](/programming-model/storage-types/) for `NNInt`, `Map`, `Vector`, `Value`, `Bytestring`, and `RetrocausalQueue`
 - [NNInt In Depth](/programming-model/nnint/) for the `set_add` primitive and commutativity rules
 - [SDK Macros](/reference/sdk-macros/) for details on `#[contract]`, `#[contract_exception]`, `#[storage]`
