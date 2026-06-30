@@ -304,7 +304,7 @@ Standard JSON-RPC 2.0 error codes apply. The gateway also defines application-sp
 
 ## Client Libraries
 
-**TypeScript/JavaScript.** The `@groundhogchain/client`, `@groundhogchain/protocol`, and related packages provide TypeScript types, codecs, and helpers for building gateway calls. See [TypeScript Bindings](/tools/typescript-sdk/) for details.
+**TypeScript/JavaScript.** `@groundhogchain/client` provides the app-facing JSON-RPC client, transports, actions, transaction helpers, and standard contract bindings. See [TypeScript SDK](/tools/typescript-sdk/) for details.
 
 **Rust.** The `groundhog-rpc` crate includes a typed JSON-RPC client generated from the same trait that defines the gateway. Import `groundhog_rpc_client` for a ready-made client.
 

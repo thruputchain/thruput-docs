@@ -133,7 +133,7 @@ Alongside the RV32 artifact, the CLI writes the contract's [spec](/reference/con
 
 The `signature` is `sha256(MAJOR_VERSION :: CRATE_NAME :: TYPE_NAME)`. Here it is `sha256("0.1::counter::CounterIncremented")`, for the crate `counter` at version `0.1.x`. Yours will differ if your crate's name or major version differs. This is the hash that appears as topic 0 of every emitted instance, and it's stable across SemVer-compatible releases of your contract.
 
-Anything that consumes the spec now understands the event, including `groundhog codegen ts`, which regenerates [TypeScript bindings](/tools/typescript-sdk/) aware of it.
+Anything that consumes the spec now understands the event, including `groundhog codegen ts`, which regenerates [TypeScript bindings](/tools/typescript-bindings/) aware of it.
 
 ## Step 5: Query It On Chain
 
@@ -171,5 +171,5 @@ Each returned event carries its topics (topic 1 is the caller's address, directl
 
 - [Contract Spec](/reference/contract-spec/) for the full spec format the event landed in
 - [SDK Macros](/reference/sdk-macros/#deriveevent) for `#[derive(Event)]` details, including `#[event_spec(export)]` for library-emitted events
-- [TypeScript Bindings](/tools/typescript-sdk/) to generate a typed client that knows about your event
+- [TypeScript Bindings](/tools/typescript-bindings/) to generate a typed client that knows about your event
 - [Build a Token](/tutorials/build-a-token/) for a contract emitting standard ERC-20 events
