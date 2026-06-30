@@ -58,9 +58,12 @@ import type {
   GasAmount,
   Invocation,
 } from "@groundhogchain/protocol";
-import { createInvocation, encodeCalldata } from "@groundhogchain/client";
+import { contractEntrypointID } from "@groundhogchain/protocol";
+import { fromHex } from "@groundhogchain/protocol/utils";
+import type { ContractSpec } from "@groundhogchain/client";
+import { buildNamedCodecs, createInvocation, encodeCalldata } from "@groundhogchain/client";
 
-export const spec = {
+export const spec: ContractSpec = {
   interfaces: [
     // Contract interface metadata from the spec.
   ],
@@ -72,16 +75,31 @@ export const spec = {
   ],
 };
 
-export function increment(
-  contract: ContractAddress,
-  amount: bigint,
-  gasLimit?: GasAmount,
-): Invocation {
-  // Builds an invocation for the contract entrypoint.
-}
+const namedCodecs = buildNamedCodecs(spec.type_defs);
+
+const entrypoints = {
+  Counter: {
+    increment: contractEntrypointID(fromHex("...")),
+  },
+} as const;
+
+export const Counter = {
+  increment(
+    contract: ContractAddress,
+    gasLimit: GasAmount,
+    args: { amount: bigint },
+  ): Invocation {
+    return createInvocation({
+      invoked_address: contract,
+      entrypoint: entrypoints.Counter.increment,
+      gas_limit: gasLimit,
+      calldata: encodeCalldata(spec, "Counter", "increment", [args.amount], namedCodecs),
+    });
+  },
+} as const;
 ```
 
-The exact output depends on the contract spec. Bindings import shared runtime types and codecs from packages such as `@groundhogchain/client`, `@groundhogchain/protocol`, `@groundhogchain/contract-spec`, and `@groundhogchain/xdr`.
+The exact output depends on the contract spec. Generated helpers are grouped under exported interface objects such as `Counter` or `ERC20`, matching the traits/interfaces declared by the spec. Bindings import shared runtime types and codecs from packages such as `@groundhogchain/client`, `@groundhogchain/protocol`, `@groundhogchain/contract-spec`, and `@groundhogchain/xdr`.
 
 ## Type Mapping
 

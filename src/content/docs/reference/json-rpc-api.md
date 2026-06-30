@@ -235,7 +235,7 @@ Read the latest committed storage item at an address/key pair.
 
 **Returns:** `StorageItemRead { blockHeight, item: StorageItemInfo | null }`. `blockHeight` is always the snapshot the read was performed against; `item` is `null` when no value exists at the key.
 
-See [Reading State](#reading-state) for the full `StorageItemInfo` variant table and the wallet-balance walkthrough.
+See [Reading State](#reading-state) for the full `StorageItemInfo` variant table.
 
 ---
 
