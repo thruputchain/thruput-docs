@@ -50,7 +50,7 @@ See `groundhog codegen ts --help` for the full set of flags.
 
 ## What the Output Looks Like
 
-For a counter contract, the generated file imports shared helpers and exposes contract-specific definitions:
+For a counter contract, the generated file imports shared helpers and exposes contract-specific definitions. Abbreviated output:
 
 ```typescript
 import type {
@@ -62,6 +62,12 @@ import { contractEntrypointID } from "@groundhogchain/protocol";
 import { fromHex } from "@groundhogchain/protocol/utils";
 import type { ContractSpec } from "@groundhogchain/client";
 import { buildNamedCodecs, createInvocation, encodeCalldata } from "@groundhogchain/client";
+
+const entrypoints = {
+  Counter: {
+    increment: contractEntrypointID(fromHex("...")),
+  },
+} as const;
 
 export const spec: ContractSpec = {
   interfaces: [
@@ -76,12 +82,6 @@ export const spec: ContractSpec = {
 };
 
 const namedCodecs = buildNamedCodecs(spec.type_defs);
-
-const entrypoints = {
-  Counter: {
-    increment: contractEntrypointID(fromHex("...")),
-  },
-} as const;
 
 export const Counter = {
   increment(
@@ -130,7 +130,7 @@ The ERC-20 binding includes helpers such as:
 | Helper | Contract method | Notes |
 |--------|-----------------|-------|
 | `ERC20.getBalance(contract, gasLimit)` | `get_balance()` | Reads the balance of the view caller. |
-| `ERC20.getBalanceOf(contract, gasLimit, { owner })` | `get_balance_of(owner)` | Reads an explicit address. Usually easiest for UI balance checks. |
+| `ERC20.getBalanceOf(contract, gasLimit, { addr })` | `get_balance_of(addr)` | Reads an explicit address. Usually easiest for UI balance checks. |
 | `ERC20.transfer(contract, gasLimit, { receiver, amount })` | `transfer(receiver, amount)` | Builds a token transfer invocation. |
 
 Example ERC-20 balance invocation:
@@ -141,10 +141,10 @@ import { addressFromHex } from "@groundhogchain/client";
 import { ERC20 } from "@groundhogchain/client/contracts";
 
 const token = addressFromHex("0x<64-character-token-address>");
-const owner = addressFromHex("0x<64-character-owner-address>");
+const addr = addressFromHex("0x<64-character-owner-address>");
 
 const invocation = ERC20.getBalanceOf(token, gasAmount(500_000n), {
-  owner,
+  addr,
 });
 ```
 

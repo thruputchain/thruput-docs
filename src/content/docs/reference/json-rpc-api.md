@@ -104,7 +104,7 @@ A few conventions the API follows consistently:
 - **`0x`-prefixed lowercase hex** for byte-typed fields: addresses, hashes, calldata, event topics, raw bytestrings.
 - **Decimal-string encoding for big integers** (`u128`, `i128`, anything that can exceed JavaScript's safe-integer range). Smaller numeric fields like block heights and event counts are JSON numbers.
 - **Tagged unions** are encoded with a discriminator field (`kind` for storage items, `result` for execution status). Variants carry their own named fields alongside the tag.
-- **Method namespacing**: `groundhog_*` for production methods every backend implements, `groundhog_dev_*` for local-node-only methods (account listing, transaction detail with full traces, reset). Production gateways do not expose `groundhog_dev_*`.
+- **Method namespacing**: `groundhog_*` for the public production namespace, `groundhog_dev_*` for local-node-only methods (account listing, transaction detail with full traces, reset). Production gateways do not expose `groundhog_dev_*`. Capability-dependent `groundhog_*` methods may return `NOT_IMPLEMENTED` on deployments without the required backend.
 
 Specific byte-field sizes:
 
@@ -166,6 +166,7 @@ Get the execution result and emitted events for a committed transaction.
 | `{"result": "ok"}` | Transaction executed and committed |
 | `{"result": "reverted", "message": "..."}` | Transaction executed but was reverted |
 | `{"result": "deterministicError", "kind": "..."}` | Transaction failed deterministically (e.g., WASM trap) |
+| `{"result": "nonDeterministicError"}` | Commit failed due to a race or proposal-time storage conflict |
 | `{"result": "failedGasSponsorship"}` | Gas sponsorship check failed |
 | `{"result": "other"}` | Unclassified execution outcome |
 
@@ -183,10 +184,10 @@ Check whether a transaction is pending, committed, or unknown.
 
 | Status | Meaning |
 |--------|---------|
-| `Pending` | Transaction is in the mempool, not yet committed |
-| `Committed` | Transaction has been included in a block (includes `height` and `blockHash`) |
-| `Invalid` | Transaction was rejected |
-| `Unknown` | Transaction not found in mempool or committed history |
+| `{"status": "pending"}` | Transaction is in the mempool, not yet committed |
+| `{"status": "committed", "height": 123}` | Transaction has been included in a block |
+| `{"status": "invalid", "reason": "..."}` | Transaction was rejected |
+| `{"status": "unknown"}` | Transaction not found in mempool or committed history |
 
 The gateway checks the mempool (scheduler) first, then the indexer. If the scheduler is unavailable, it returns best-effort results from the indexer only.
 
@@ -199,6 +200,44 @@ Get the current chain tip.
 **Parameters:** None.
 
 **Returns:** `ChainTip` with the current block height and block hash.
+
+---
+
+### groundhog_version
+
+Return gateway implementation and JSON-RPC wire-format version information.
+
+**Parameters:** None.
+
+**Returns:** `VersionInfo`.
+
+```json
+{
+  "wireFormat": "2.1.0",
+  "implementation": "groundhog-rpc",
+  "commitHash": "abc123"
+}
+```
+
+`commitHash` may be `null` when the gateway cannot report a build commit.
+
+---
+
+### groundhog_view
+
+Execute a read-only contract invocation against committed state. The invocation is sandboxed and does not enter the mempool.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `request` | `ViewRequest` | Contract address, entrypoint ID, calldata, and optional caller |
+
+**Returns:** `ViewResponse` with root output, emitted events, and snapshot height.
+
+`output.result` is one of `return`, `abort`, or `fault`. Successful returns carry `returnData`; aborts carry `abortData`.
+
+:::caution[Backend Dependent]
+Deployments without a configured view gateway return error code `-32052`.
+:::
 
 ---
 
@@ -305,10 +344,10 @@ Standard JSON-RPC 2.0 error codes apply. The gateway also defines application-sp
 | `-32001` | TX_REJECTED | Scheduler rejected the transaction |
 | `-32002` | TX_NOT_FOUND | Transaction not found in mempool or history |
 | `-32010` | BLOCK_NOT_FOUND | No block at the requested height |
-| `-32011` | RANGE_TOO_LARGE | Event query block range exceeds maximum |
-| `-32050` | BACKEND_UNAVAILABLE | Internal backend (indexer or scheduler) is not connected |
+| `-32050` | BACKEND_UNAVAILABLE | Internal backend (indexer, scheduler, or view gateway) is not connected |
 | `-32051` | BACKEND_TIMEOUT | Internal backend did not respond in time |
 | `-32052` | NOT_IMPLEMENTED | Method exists but is not yet functional |
+| `-32053` | OVERLOADED | Gateway or backend is overloaded; retry with backoff |
 
 ## Client Libraries
 

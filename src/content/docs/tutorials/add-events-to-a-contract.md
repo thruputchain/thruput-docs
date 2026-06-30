@@ -143,8 +143,8 @@ After deploying (see [Getting Started](/start/getting-started/) for the deploy f
 {
   "jsonrpc": "2.0",
   "method": "groundhog_getEvents",
-  "params": {
-    "query": {
+  "params": [
+    {
       "filters": [
         {
           "contractAddresses": ["0x<your contract address>"],
@@ -160,7 +160,7 @@ After deploying (see [Getting Started](/start/getting-started/) for the deploy f
       "cursor": "0x",
       "limit": 50
     }
-  },
+  ],
   "id": 1
 }
 ```
