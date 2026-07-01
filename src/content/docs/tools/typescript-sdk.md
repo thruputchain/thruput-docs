@@ -125,12 +125,12 @@ The TypeScript packages come from two repos:
 
 | Package | Source repo | Use for |
 |---------|-------------|---------|
-| `@groundhogchain/client` | `groundhog-client-ts` | App-facing JSON-RPC client, transaction helpers, signer helpers, and standard contract bindings |
-| `@groundhogchain/protocol` | `groundhog-protocol-ts` | Core protocol types, branded byte types, codecs, and protocol utilities |
-| `@groundhogchain/contract-spec` | `groundhog-protocol-ts` | Contract spec AST types used by generated bindings |
-| `@groundhogchain/xdr` | `groundhog-protocol-ts` | Low-level XDR/CXS readers, writers, and codecs |
-| `@groundhogchain/gateway` | `groundhog-protocol-ts` | Gateway and indexer protocol types |
-| `@groundhogchain/rpc` | `groundhog-protocol-ts` | Lower-level ONC-RPC client surface, not the normal JSON-RPC app client |
+| `@groundhogchain/client` | `client-ts` | JSON-RPC client, transaction helpers, generated standard contract bindings |
+| `@groundhogchain/protocol` | `protocol-ts` | Core protocol types, branded byte types, codecs, `gasAmount`, `contractEntrypointID`, and the `./utils` subpath |
+| `@groundhogchain/contract-spec` | `protocol-ts` | Contract spec AST types used by generated bindings |
+| `@groundhogchain/xdr` | `protocol-ts` | Low-level XDR/CXS readers, writers, and codecs |
+| `@groundhogchain/gateway` | `protocol-ts` | Gateway/indexer protocol types |
+| `@groundhogchain/rpc` | `protocol-ts` | Lower-level ONC-RPC client and internal RPC type definitions |
 
 Most application code should start with `@groundhogchain/client`. Use protocol packages when you need lower-level serialization, branded protocol values, generated binding dependencies, or gateway/indexer protocol types.
 

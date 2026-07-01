@@ -104,7 +104,7 @@ A few conventions the API follows consistently:
 - **`0x`-prefixed lowercase hex** for byte-typed fields: addresses, hashes, calldata, event topics, raw bytestrings.
 - **Decimal-string encoding for big integers** (`u128`, `i128`, anything that can exceed JavaScript's safe-integer range). Smaller numeric fields like block heights and event counts are JSON numbers.
 - **Tagged unions** are encoded with a discriminator field (`kind` for storage items, `result` for execution status). Variants carry their own named fields alongside the tag.
-- **Method namespacing**: `groundhog_*` for the public production namespace, `groundhog_dev_*` for local-node-only methods (account listing, transaction detail with full traces, reset). Production gateways do not expose `groundhog_dev_*`. Capability-dependent `groundhog_*` methods may return `NOT_IMPLEMENTED` on deployments without the required backend.
+- **Method namespacing**: `groundhog_*` for production methods every backend implements, `groundhog_dev_*` for local-node-only methods (account listing, transaction detail with full traces, reset). Production gateways do not expose `groundhog_dev_*`.
 
 Specific byte-field sizes:
 
@@ -135,7 +135,7 @@ The framing in one line: **Horizon-shaped JSON envelope, EVM-shaped naming and c
 
 ## Methods
 
-The methods below are the current public JSON-RPC surface. Some methods exist in the API and client before every backend can answer them in every deployment shape. Those cases are called out explicitly.
+Phase 1 methods. See [Future Phases](#future-phases) for what's planned next.
 
 ### groundhog_sendRawTransaction
 
@@ -184,10 +184,10 @@ Check whether a transaction is pending, committed, or unknown.
 
 | Status | Meaning |
 |--------|---------|
-| `{"status": "pending"}` | Transaction is in the mempool, not yet committed |
-| `{"status": "committed", "height": 123}` | Transaction has been included in a block |
-| `{"status": "invalid", "reason": "..."}` | Transaction was rejected |
-| `{"status": "unknown"}` | Transaction not found in mempool or committed history |
+| `Pending` | Transaction is in the mempool, not yet committed |
+| `Committed` | Transaction has been included in a block (includes `height`) |
+| `Invalid` | Transaction was rejected |
+| `Unknown` | Transaction not found in mempool or committed history |
 
 The gateway checks the mempool (scheduler) first, then the indexer. If the scheduler is unavailable, it returns best-effort results from the indexer only.
 
@@ -351,16 +351,14 @@ Standard JSON-RPC 2.0 error codes apply. The gateway also defines application-sp
 
 ## Client Libraries
 
-**TypeScript/JavaScript.** `@groundhogchain/client` provides the app-facing JSON-RPC client, transports, actions, transaction helpers, and standard contract bindings. See [TypeScript SDK](/tools/typescript-sdk/) for details.
+**TypeScript/JavaScript.** The `@groundhogchain/client`, `@groundhogchain/protocol`, and related packages provide TypeScript types, codecs, and helpers for building gateway calls. See [TypeScript SDK](/tools/typescript-sdk/) for details.
 
 **Rust.** The `groundhog-rpc` crate includes a typed JSON-RPC client generated from the same trait that defines the gateway. Import `groundhog_rpc_client` for a ready-made client.
 
 ## Future Phases
 
-| Phase | Planned |
-|-------|---------|
-| Phase 2 | WebSocket subscriptions (new blocks, pending transactions, contract events) |
-| Phase 4 | Production hardening (rate limiting, caching, metrics) |
+- WebSocket subscriptions (new blocks, pending transactions, contract events)
+- Production hardening (rate limiting, caching, metrics)
 
 ## Related Documentation
 
