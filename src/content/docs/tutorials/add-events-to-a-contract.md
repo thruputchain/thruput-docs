@@ -147,7 +147,7 @@ After deploying (see [Getting Started](/start/getting-started/) for the deploy f
     {
       "filters": [
         {
-          "contractAddresses": ["0x<your contract address>"],
+          "contractAddresses": ["0x<64-character-contract-address>"],
           "topics": {
             "topic0": ["0x66e9e0dfc1e9d3815c880cbd26ab9635ed58a7d544a989998a483797c45ea1a0"],
             "topic1": [],
