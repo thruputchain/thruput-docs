@@ -3,14 +3,14 @@ title: TypeScript SDK
 description: Using @groundhogchain/client and related TypeScript packages with Groundhog JSON-RPC.
 ---
 
-`@groundhogchain/client` is the TypeScript SDK for apps that talk to Groundhog. It wraps the JSON-RPC gateway with typed actions, transports, transaction helpers, signer interfaces, and contract calldata helpers.
+`@groundhogchain/client` is the TypeScript SDK for apps that interact with Groundhog. It wraps the JSON-RPC gateway with typed actions, transports, transaction helpers, signer interfaces, and contract calldata helpers.
 
-Use this page when you are building a web app, script, wallet integration, indexer, or test harness that talks to a Groundhog JSON-RPC endpoint.
+Use this page when you are building a web app, script, wallet integration, indexer, or test harness that interacts with a Groundhog JSON-RPC endpoint.
 
 For contract-specific generated files from `groundhog codegen ts`, see [TypeScript Bindings](/tools/typescript-bindings/).
 
 :::note[Generated API references]
-Generated TypeDoc API references are published from the TypeScript source repos. Use them for exact API signatures and local generation commands.
+Generated TypeDoc API references are published from the TypeScript source repos. Use them for exact API signatures.
 
 - Client API reference: `https://groundhogchain.github.io/groundhog-client-ts/`
 - Protocol packages API reference: `https://groundhogchain.github.io/groundhog-protocol-ts/`
@@ -21,18 +21,10 @@ Generated TypeDoc API references are published from the TypeScript source repos.
 Install the client package in your app:
 
 ```bash
-npm install @groundhogchain/client
+npm install @groundhogchain/client @groundhogchain/protocol
 ```
 
-Generated contract bindings and lower-level code may also import protocol packages:
-
-```bash
-npm install \
-  @groundhogchain/client \
-  @groundhogchain/protocol \
-  @groundhogchain/contract-spec \
-  @groundhogchain/xdr
-```
+`@groundhogchain/protocol` provides lower-level protocol helpers used by transaction code, generated bindings, and examples in this page.
 
 ## Minimal Client
 
@@ -51,19 +43,43 @@ const version = await client.getVersion();
 
 `HttpTransport` sends JSON-RPC 2.0 requests over HTTP. For tests, use `MockTransport` to get deterministic in-memory responses without running a node.
 
+## Transport Options and Errors
+
+`HttpTransport` supports request timeouts, custom headers, and a custom `fetch` implementation for tests or non-standard runtimes:
+
+```typescript
+import { HttpTransport, JsonRpcError } from "@groundhogchain/client";
+
+const transport = new HttpTransport("http://127.0.0.1:9545", {
+  timeoutMs: 10_000,
+  headers: { Authorization: "Bearer <token>" },
+});
+
+try {
+  const tip = await transport.request("groundhog_chainTip");
+  console.log(tip);
+} catch (error) {
+  if (error instanceof JsonRpcError) {
+    console.error(error.code, error.method, error.message);
+  }
+}
+```
+
+JSON-RPC error responses throw `JsonRpcError`. HTTP failures, timeouts, and malformed responses throw other exceptions.
+
 ## What the Client Provides
 
 | Area | What it provides |
 |------|------------------|
 | Client | `createGroundhogClient`, a typed wrapper around Groundhog JSON-RPC actions |
 | Transport | `HttpTransport`, `MockTransport`, and the `Transport` interface |
-| Actions | Standalone JSON-RPC actions for chain, blocks, balance, events, storage, views, and transactions |
+| Actions | Typed JSON-RPC actions for chain, blocks, balance, events, storage, views, and transactions |
 | Transactions | Helpers to create invocations, create transactions, serialize, deserialize, and sign |
 | Signers | `Signer` interface and `PrivateKeySigner` for Ed25519 signing |
 | Contracts | Calldata encoding and decoding helpers for contract specs |
 | Standard bindings | Generated helpers for standard interfaces under `@groundhogchain/client/contracts` |
 
-You can use either the convenience client or standalone actions. Most app code should start with `createGroundhogClient`.
+Most app code should start with `createGroundhogClient`. Lower-level exports are available when you are building custom tooling or integrating the SDK into another client abstraction.
 
 ## Common Reads
 
@@ -103,6 +119,60 @@ if (response.output.result !== "return") {
 ```
 
 Generated bindings are the usual way to build the `invocation` object for a contract method. See [TypeScript Bindings](/tools/typescript-bindings/).
+
+## Transactions
+
+Transactions follow a build, sign, submit flow:
+
+1. Build an `Invocation` for the contract entrypoint.
+2. Wrap it in a `Transaction` with authorization and uniqueness metadata.
+3. Sign the transaction.
+4. Submit it through `client.sendTransaction`.
+
+Generated bindings usually build the invocation for you. The SDK provides the transaction and signing helpers:
+
+```typescript
+import {
+  createTransaction,
+  PrivateKeySigner,
+  signTransaction,
+} from "@groundhogchain/client";
+import { blockHeight } from "@groundhogchain/protocol";
+
+const tip = await client.getChainTip();
+
+const uniquifier = {
+  block_expiry_height: blockHeight(tip.height + 100n),
+  nonce: BigInt(Date.now()),
+};
+
+const tx = createTransaction({
+  invocation,
+  uniquifier,
+  contracts_to_deploy: [],
+  auth_claim,
+});
+
+const signer = new PrivateKeySigner(secretKey);
+const signedTx = await signTransaction(tx, [
+  { signer, publicKeyId: 0n },
+]);
+
+const txHash = await client.sendTransaction(signedTx);
+```
+
+The `uniquifier` gives the transaction a nonce and an expiry height. Use a future block height for `block_expiry_height`, usually the current chain tip plus a safety margin. Use any `u64` nonce value that will not collide with another unexpired transaction from the same address. The nonce is not a sequential account nonce.
+
+Use `client.getTransactionStatus(txHash)` for lightweight polling, or `client.getTransactionReceipt(txHash)` when you need execution status, return data, and emitted events:
+
+```typescript
+const status = await client.getTransactionStatus(txHash);
+
+if (status.status === "committed") {
+  const receipt = await client.getTransactionReceipt(txHash);
+  console.log(receipt?.status, receipt?.events);
+}
+```
 
 ## SDK vs Bindings
 
