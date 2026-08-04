@@ -8,7 +8,7 @@ This tutorial walks through the complete local CLI loop. You will build and test
 Local development is the fastest way to exercise deployment and RPC behavior. It does not require a faucet, a hosted endpoint, or a persistent signing key.
 
 :::note[Version checked]
-This tutorial was source-checked against Groundhog CLI `0.6.3` and SDK `0.17.9` on August 5, 2026.
+This tutorial was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
 :::
 
 ## Prerequisites
@@ -18,7 +18,7 @@ You need:
 - Rust and Cargo through [rustup](https://rustup.rs/)
 - `jq` for structured-output checks
 - Access to the private Groundhog Cargo registry
-- Groundhog CLI `0.6.3`
+- Groundhog CLI `0.6.1`
 - A compatible `hog-devnode` executable supplied during onboarding
 
 Authenticate Cargo and install the published CLI:
@@ -26,16 +26,12 @@ Authenticate Cargo and install the published CLI:
 ```bash
 cargo login --registry groundhog
 cargo install groundhog-cli \
-  --version "=0.6.3" \
+  --version "=0.6.1" \
   --registry groundhog \
   --locked
 ```
 
-Point the CLI at `hog-devnode` if it is not beside the `groundhog` executable or on `PATH`:
-
-```bash
-export GROUNDHOG_DEVNODE_BINARY="/path/to/hog-devnode"
-```
+If `hog-devnode` is not beside the `groundhog` executable or on `PATH`, point the CLI at it with `GROUNDHOG_DEVNODE_BINARY` or `groundhog node --hog-devnode-binary <path>`.
 
 ## 1. Initialize the CLI
 
@@ -45,7 +41,7 @@ Run the guided environment check if this is your first Groundhog project:
 groundhog init
 ```
 
-Decline starter-project creation because the next step creates it explicitly. The local flow below selects `dev-0` in project configuration, so generating a normal key during initialization or having an existing global key does not change which local account deploys the contract.
+The wizard creates your global configuration with `local` and `devnet` profiles ready to use. Decline starter-project creation because the next step creates it explicitly. The local flow below selects `dev-0` in project configuration, so generating a normal key during initialization or having an existing global key does not change which local account deploys the contract.
 
 ## 2. Create a Counter Project
 
@@ -56,15 +52,16 @@ groundhog new my-counter
 cd my-counter
 ```
 
-Open `groundhog.toml` and select the built-in account under the existing local profile:
+Select the built-in account in the project's local profile:
 
-```toml
-[profile.local]
-network = "local"
-default_key = "dev-0"
+```bash
+groundhog config set default-key dev-0 \
+  --profile local \
+  --project
+groundhog config get local --sources
 ```
 
-`dev-0` is not stored in your key directory. The CLI derives its development signer and wallet address from the runtime manifest advertised by the active local node.
+The project override ensures that a stored global key selected during init does not replace `dev-0` in this tutorial. `dev-0` is not stored in your key directory. The CLI derives its development signer and wallet address from the runtime manifest advertised by the active local node.
 
 ## 3. Build and Test Locally
 
@@ -104,13 +101,18 @@ my_counter.spec.json
 Open a second terminal, keep it running, and start the node:
 
 ```bash
-export GROUNDHOG_DEVNODE_BINARY="/path/to/hog-devnode"
 groundhog node
 ```
 
 The command starts one supervised `hog-devnode`, exposes JSON-RPC on `http://127.0.0.1:9545`, and records the active endpoint and runtime manifest in global CLI state.
 
 The node is ephemeral. Deployments and calls share state while this process runs, but stopping it discards chain state and clears the active-runtime record.
+
+To preserve chain state across clean restarts, stop the ephemeral node and start one with a data directory:
+
+```bash
+groundhog node --data-dir .groundhog/node
+```
 
 ## 5. Check the Active Local Profile
 
@@ -184,9 +186,10 @@ the RV32 artifact, and runs the scaffolded `tests/integration.rs`. Invoke it
 like this:
 
 ```bash
-GROUNDHOG_DEVNODE_BINARY="/path/to/hog-devnode" \
-  groundhog test --integration
+groundhog test --integration
 ```
+
+If `hog-devnode` is not discoverable beside `groundhog` or on `PATH`, set `GROUNDHOG_DEVNODE_BINARY` for this command.
 
 The generated starter stays ignored under ordinary `cargo test`. Add your
 contract-specific RPC assertions to `tests/integration.rs`. See
@@ -212,7 +215,7 @@ Set `GROUNDHOG_DEVNODE_BINARY` to the compatible executable supplied during onbo
 
 ### A stored key is selected instead
 
-Set `default_key = "dev-0"` in the project's `[profile.local]` table. Project profile configuration takes precedence over the global key selected by `groundhog keys use`.
+Run `groundhog config set default-key dev-0 --profile local --project`. The project profile takes precedence over the global key selected by `groundhog keys use`.
 
 ### Protocol mismatch
 

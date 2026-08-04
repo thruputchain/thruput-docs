@@ -15,7 +15,7 @@ That said, the CLI is a convenience, not a requirement. You can also:
 The CLI is just a consumer of the SDK. It generates the same Rust crate you'd write by hand: a standard Cargo project that depends on the SDK and uses its storage types and macros. Normal `cargo build` and `cargo test` target the host. `groundhog build` and `groundhog test` target RV32 by default.
 
 :::note[Version checked]
-This workflow was source-checked against Groundhog CLI `0.6.3` and SDK `0.17.9` on August 5, 2026.
+This workflow was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
 :::
 
 ## Configure Cargo and Install
@@ -28,7 +28,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Install the published CLI from the private registry
 cargo install groundhog-cli \
-  --version "=0.6.3" \
+  --version "=0.6.1" \
   --registry groundhog \
   --locked
 ```
@@ -40,6 +40,46 @@ cargo install --locked --path crates/tools/cli
 ```
 
 The Groundhog CLI does not manage Cargo registry credentials.
+
+## Initialize the CLI
+
+Run the first-use wizard after installation:
+
+```bash
+groundhog init
+```
+
+The wizard creates your global Groundhog configuration with `local` and `devnet` profiles ready to use, then guides you through the rest of the first-time setup. You can decline project creation and use `groundhog new` in the next step.
+
+## Configuration Model
+
+Groundhog stores reusable profiles in `~/.config/groundhog/config.toml` by default. A project's `groundhog.toml` is an optional overlay for project defaults, profile overrides, and deployed contract aliases. Profiles with the same name merge, with project values taking precedence. Groundhog honors `XDG_CONFIG_HOME` when set.
+
+Inspect the available profiles:
+
+```bash
+groundhog config profiles
+```
+
+After you create and enter the project below, `groundhog config get local --sources` shows how its local overlay merges with global config. Use `groundhog config new`, `set`, `unset`, and `use` for routine profile management instead of editing TOML. See [Groundhog CLI configuration](/tools/groundhog-cli/#configuration) for selection precedence, mutation scope, and examples.
+
+### Create a Devnet Wallet
+
+If you accepted key generation during init, the selected key is named `default`. Create its Devnet wallet from outside a project so the binding is available globally:
+
+```bash
+groundhog wallet create --profile devnet
+groundhog balance default --profile devnet
+```
+
+Wallet creation prefunds the address, so no separate airdrop is required. Request more HOG later when needed:
+
+```bash
+groundhog airdrop default --profile devnet
+groundhog balance default --profile devnet
+```
+
+Devnet chooses the airdrop amount. Do not pass `--amount`. See [Faucet](/tools/faucet/) for endpoint checks, funding behavior, and retry guidance.
 
 ## Create and Run
 
@@ -65,6 +105,9 @@ Generated projects work with both `cargo` and `groundhog`. Use `cargo` for nativ
 | `groundhog build` | Builds the deployable RV32 artifact and lowering metadata | Deployable contract artifact |
 | `groundhog node` | Starts a standalone local `hog-devnode` on port `9545` | Local deploy/call testing |
 | `groundhog deploy` | Signs and submits the selected built artifact | Deploy to the selected profile |
+| `groundhog wallet create` | Prefunds and creates a contract wallet for a stored key | First wallet setup |
+| `groundhog airdrop <recipient>` | Requests additional HOG for a wallet or address | Development funding |
+| `groundhog balance <target>` | Reads the committed native HOG balance | Funding checks |
 | `groundhog test` | Runs executor-backed RV32 artifact tests | Contract artifact tests |
 | `groundhog test --integration` | Starts an ephemeral `hog-devnode`, deploys the contract, and runs `tests/integration.rs` | End-to-end RPC tests |
 
@@ -116,7 +159,7 @@ The starter test confirms that the node is live and the contract was deployed. A
 my-counter/
   Cargo.toml              # SDK dependency, RV32 bin wrapper, dev feature toggle
   build.rs                # Activates the RPC test during integration runs
-  groundhog.toml          # local/devnet profile selection and contract aliases
+  groundhog.toml          # project profile overrides, default selection, and contract aliases
   rust-toolchain.toml     # Rust toolchain and targets
   .gitignore              # ignores /target/ and /.groundhog/
   .cargo/
