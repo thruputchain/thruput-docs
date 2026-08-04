@@ -266,6 +266,8 @@ Useful flags and environment variables:
 
 `groundhog node` records the active local endpoint and runtime manifest in global CLI state. Local profiles inherit only runtime fields they do not set explicitly. The implicit `dev-0` signer is available when the resolved endpoint and manifest match the active runtime. The node removes its active-runtime record when it shuts down. The command also prints an export line for `GROUNDHOG_RUNTIME_MANIFEST` when the node reports a manifest.
 
+Persistent mode does not import state from an earlier ephemeral node. The CLI does not provide `groundhog node --reset`; use a new data directory when you need a clean persistent chain.
+
 Use `groundhog test --integration` when you want disposable state per test run.
 
 ## Deploy and Interact

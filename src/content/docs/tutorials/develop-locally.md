@@ -108,11 +108,13 @@ The command starts one supervised `hog-devnode`, exposes JSON-RPC on `http://127
 
 The node is ephemeral. Deployments and calls share state while this process runs, but stopping it discards chain state and clears the active-runtime record.
 
-To preserve chain state across clean restarts, stop the ephemeral node and start one with a data directory:
+For a separate node that preserves its own state across clean restarts, start it with a data directory:
 
 ```bash
 groundhog node --data-dir .groundhog/node
 ```
+
+This does not import state from the ephemeral node. There is no `groundhog node --reset` command; choose a new data directory when you need a clean persistent chain.
 
 ## 5. Check the Active Local Profile
 
