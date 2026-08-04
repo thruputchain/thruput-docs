@@ -1,14 +1,14 @@
 ---
 title: Add Events to a Contract
-description: "Tutorial: define an event, emit it from a Groundhog contract, test it, and find it in the contract spec and on chain."
+description: "Tutorial: define an event, emit it from a Groundhog contract, test it, and inspect it on chain."
 ---
 
-We're extending the counter from [Build a Counter](/tutorials/build-a-counter/) with a `CounterIncremented` event: define the event type, declare it as part of the contract's interface, emit it, assert on it in a test, find it in the contract spec, and query it over JSON-RPC.
+We're extending the counter from [Build a Counter](/tutorials/build-a-counter/) with a `CounterIncremented` event: define the event type, declare it as part of the contract's interface, emit it, assert on it in a test, find it in the contract spec, and inspect it through the CLI and JSON-RPC.
 
 **Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/).
 
 :::note[Version checked]
-This tutorial was source-checked against Groundhog CLI `0.6.3` and SDK `0.17.9` on August 5, 2026.
+This tutorial was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
 :::
 
 ## How Events Work on Groundhog
@@ -180,6 +180,26 @@ After deploying (see [Getting Started](/start/getting-started/) for the deploy f
 ```
 
 Each returned event carries its topics (topic 1 is the caller's address, directly comparable) and the XDR payload (`amount`). To filter on a *specific* caller, put that address in `topic1`. See [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) for pagination and filter semantics.
+
+## Step 6: Inspect It with the CLI
+
+For normal development, use the CLI instead of assembling the JSON-RPC request by hand. List one newest-first page of raw events emitted by the deployed `counter` contract:
+
+```bash
+groundhog events list counter
+```
+
+Decode `CounterIncremented` with the canonical spec generated in step 4:
+
+```bash
+groundhog events list counter \
+  --spec target/groundhog/counter.spec.xdr \
+  --event CounterIncremented
+```
+
+`--event` selects the case-sensitive event name from the supplied spec and applies its signature as the topic-0 filter. The decoded output names the `by` topic and reads `amount` from the payload.
+
+See [Groundhog CLI](/tools/groundhog-cli/#inspect-contract-events) for topic filters, pagination, and decoding behavior.
 
 ## Next Steps
 

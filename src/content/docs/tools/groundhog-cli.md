@@ -274,18 +274,87 @@ Build before deploying. `groundhog deploy` auto-detects the selected artifact (`
 
 Use `groundhog call` for signed state changes and `groundhog view` for read-only simulation. Add `--from dev-0` to simulate a caller. `groundhog storage` reads one raw committed storage item; prefer contract methods and `groundhog view` when you want typed behavior. `groundhog balance`, `groundhog transfer`, and `groundhog airdrop` cover native HOG account work.
 
-## Transactions, Events, and Tokens
+## Transfer and Inspect Activity
 
-The inspection commands return one page at a time. Cursors are opaque and must be reused with the same target and filters.
+### Transfer Native HOG
+
+Send HOG to a saved wallet, contract alias, local `dev-N` account, or direct address:
 
 ```bash
-groundhog tx show 0x<32-byte-hash>
-groundhog tx list my-counter --limit 50
-groundhog events list my-counter --topic0 0x<topic>
-groundhog token transfers HOG --account dev-0
+groundhog transfer bob 10.5 --profile devnet
+groundhog transfer 0x<address> 10.5 --from default --profile devnet
+groundhog transfer bob 10.5 --dry-run --profile devnet
 ```
 
-`tx show` returns public status and receipt fields, not raw transaction bodies or deep traces. `tx list` filters by root invocation target. `events list` scans one contract newest first and supports repeated topic options for OR within a topic position. `token transfers` returns canonical ERC-20 transfer records and leaves amounts as base-unit decimal strings.
+Amounts support up to seven decimal places. `--from` selects a saved source wallet owned by the effective signing key; it does not switch signing keys to match a wallet.
+
+Transfer dry runs fetch the current chain tip, build an expiring transaction, and sign it without submitting it. The resulting signed transaction remains submit-capable until its expiry height. A live transfer succeeds only after the CLI receives a matching committed receipt with successful execution.
+
+If confirmation is unavailable, the transaction may still commit. Do not blindly resubmit it. Inspect the locally computed hash with `groundhog tx show`.
+
+### Inspect Transactions
+
+Inspect one transaction without waiting:
+
+```bash
+groundhog tx show 0x<transaction-hash> --profile devnet
+```
+
+`tx show` performs one status lookup and fetches a receipt only when the status is committed. It reports public status and receipt fields, not the raw transaction body, inferred transfers, or execution traces. Inspecting a committed transaction succeeds even when its execution status is reverted or failed.
+
+List one newest-first page of transactions whose root invocation targets an address:
+
+```bash
+groundhog tx list default --limit 25 --profile devnet
+groundhog tx list default --cursor 0x<cursor> --profile devnet
+```
+
+The default page limit is 50. The CLI does not fetch a receipt for each reference. Cursors are opaque; pass the returned value back with the same target and query options.
+
+:::caution[Root invocations only]
+Address history is not a complete asset ledger. Incoming wallet-wrapped transfers may not appear when the recipient was invoked below the transaction root.
+:::
+
+### Inspect Contract Events
+
+Request one newest-first page of raw events from one contract:
+
+```bash
+groundhog events list my-counter --profile devnet
+groundhog events list my-counter \
+  --topic0 0x<topic> \
+  --profile devnet
+```
+
+Repeat one topic option to match any supplied value at that position. Constraints across topic positions combine. For example, repeated `--topic1` values are ORed, while `--topic1` and `--topic2` are ANDed. The default page limit is 50, and continuation cursors must be reused with the same contract and filters.
+
+Decode matching events with a trusted local `.xdr` or `.wasm` contract spec:
+
+```bash
+groundhog events list my-counter \
+  --spec target/groundhog/my_counter.spec.xdr \
+  --event CounterIncremented \
+  --profile devnet
+```
+
+`--event` is case-sensitive and requires `--spec`. The CLI adds the selected event signature to topic 0 unless the supplied topic-0 filter conflicts. Raw topics and data remain authoritative. Unknown signatures and malformed records remain in the page with their decode status instead of failing the whole request.
+
+### Inspect Token Transfers
+
+List one newest-first page of canonical ERC-20 `TransferEvent` records:
+
+```bash
+groundhog token transfers my-token --profile devnet
+groundhog token transfers my-token \
+  --from default \
+  --to 0x<address> \
+  --profile devnet
+groundhog token transfers my-token --account default --profile devnet
+```
+
+`--from` and `--to` may be combined. `--account` matches either direction and cannot be combined with them. Participant filters run on the server.
+
+The output distinguishes transfers, mints, burns, and malformed records. Amounts are unformatted base-unit decimal strings because this command does not fetch token metadata or decimal precision. Like event inspection, it returns one page, preserves raw evidence, and uses an opaque continuation cursor.
 
 ## Keys and Wallets
 
