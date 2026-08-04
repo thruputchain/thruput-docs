@@ -178,7 +178,7 @@ Get the execution result and emitted events for a committed transaction.
 
 ### groundhog_getTransactionStatus
 
-Check whether a transaction is pending, committed, or unknown.
+Check the gateway's current knowledge of a transaction.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -188,14 +188,16 @@ Check whether a transaction is pending, committed, or unknown.
 
 | Status | Meaning |
 |--------|---------|
-| `Pending` | Transaction is in the mempool, not yet committed |
-| `Committed` | Transaction has been included in a block (includes `height`) |
-| `Invalid` | Transaction was rejected |
-| `RecentFailure` | A recent proposal attempt hit a two-phase-commit conflict; includes attempt height and a best-effort conflict diagnostic |
-| `Unknown` | Transaction not found in mempool or committed history |
-| `Other` | Status tag came from a newer server version |
+| `pending` | Transaction is in the mempool, not yet committed |
+| `committed` | Transaction has been included in a block (includes `height`) |
+| `invalid` | Transaction was rejected |
+| `recentFailure` | A recent attempt failed during two-phase commit; the transaction may still be retried |
+| `unknown` | Transaction not found in mempool or committed history |
+| `other` | Status returned by a newer server but not recognized by this client |
 
 The gateway checks the mempool (scheduler) first, then the indexer. `RecentFailure` is advisory: reports may be dropped, and a later retry of the same transaction may commit. If the scheduler is unavailable and the indexer has no record, the gateway returns `BACKEND_UNAVAILABLE` rather than incorrectly reporting `Unknown` while the transaction may still be pending.
+
+Use [`groundhog tx show`](/tools/groundhog-cli/#inspect-transactions) to inspect a transaction from the terminal.
 
 ---
 
@@ -337,7 +339,7 @@ Query emitted contract events with cursor pagination and topic filters.
 
 `EventQuery.filters` ORs across filters and ANDs within each filter. Contract address filters are required. Topic filters are positional: `topic0`, `topic1`, and `topic2`.
 
-See [Add Events to a Contract](/tutorials/add-events-to-a-contract/#step-5-query-it-on-chain) for an end-to-end event query example.
+Use [`groundhog events list`](/tools/groundhog-cli/#inspect-contract-events) for contract events, or [`groundhog token transfers`](/tools/groundhog-cli/#inspect-token-transfers) for decoded token transfers. See [Add Events to a Contract](/tutorials/add-events-to-a-contract/#step-5-query-it-on-chain) for an end-to-end JSON-RPC example.
 
 ---
 
@@ -354,6 +356,8 @@ The initial request uses cursor `"0x"`. A limit of `0` selects the server defaul
 **Returns:** `TransactionRefPage` containing transaction hash and block-height references, the next cursor, latest indexed block, and oldest retained block. Hydrate each reference with `groundhog_getTransactionReceipt`.
 
 This is root-address history. Transactions that only invoke or touch the address below the root do not match.
+
+Use [`groundhog tx list`](/tools/groundhog-cli/#inspect-transactions) to query this history from the terminal.
 
 ## Error Codes
 

@@ -33,12 +33,16 @@ There is no public whole-chain `groundhog_getTransactions` method. Those gaps pr
 
 ## Inspect State Without an Explorer
 
-Use the CLI for common development checks:
+Use the CLI for common development checks and activity inspection:
 
 ```bash
 groundhog balance <wallet-or-address> --profile devnet
 groundhog view <contract-or-alias> <method> --profile devnet
 groundhog storage <contract-or-alias> 0x<32-byte-key> --profile devnet
+groundhog tx show <transaction-hash> --profile devnet
+groundhog tx list <wallet-or-address> --profile devnet
+groundhog events list <contract-or-alias> --profile devnet
+groundhog token transfers <token-or-alias> --profile devnet
 ```
 
-Use the [JSON-RPC API](/reference/json-rpc-api/) directly for receipts, status, address-rooted history, and event pagination. This page will link to the public explorer once a supported UI and deployment URL exist.
+See [Transfer and inspect activity](/tools/groundhog-cli/#transfer-and-inspect-activity) for command options. Use the [JSON-RPC API](/reference/json-rpc-api/) directly for programmatic access to receipts, status, address-rooted history, and event pagination. This page will link to the public explorer once a supported UI and deployment URL exist.

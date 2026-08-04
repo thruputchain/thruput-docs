@@ -7,8 +7,8 @@ description: Use @groundhogchain/client and related TypeScript packages with Gro
 
 Use this page for current package setup and supported chain reads. For contract-specific invocation builders, see [TypeScript Bindings](/tools/typescript-bindings/).
 
-:::note[Version checked]
-This page was source-checked against published `@groundhogchain/client` `0.1.6`, protocol packages `0.5.0`, and the `client-ts` main branch on August 5, 2026. The client implements the current method set, including transaction history and `recentFailure`. Its pinned OpenRPC file still reports wire `2.3.1`, while the current Rust gateway reports `3.0.0`.
+:::caution[Check gateway compatibility]
+The client's generated JSON-RPC schema may lag the gateway. Check `groundhog_version` on your target network and consult the client release notes before depending on version-specific response shapes. Use the CLI for wallet-backed transaction submission until the client provides the same wallet builder.
 :::
 
 ## Install
@@ -20,27 +20,17 @@ Dependencies are hosted on GitHub Packages. Add the scope and a token with `read
 //npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
 ```
 
-The client requires Node.js `22.12.0` or newer. Install the published client and the direct dependencies used by generated bindings:
+With `NODE_AUTH_TOKEN` set to a token with `read:packages`, install the published client and the direct dependencies used by generated bindings:
 
 ```bash
-NODE_AUTH_TOKEN="$(gh auth token)" npm install \
-  @groundhogchain/client@0.1.6 \
-  @groundhogchain/protocol@0.5.0 \
-  @groundhogchain/contract-spec@0.5.0 \
-  @groundhogchain/xdr@0.5.0
+npm install \
+  @groundhogchain/client \
+  @groundhogchain/protocol \
+  @groundhogchain/contract-spec \
+  @groundhogchain/xdr
 ```
 
 Generated bindings import `contract-spec` directly and import `xdr` when event decoders are present. Declare them in applications that compile generated files, especially with pnpm's strict dependency layout.
-
-## Version Matrix
-
-| Component | Version checked | Status |
-|-----------|-----------------|--------|
-| `@groundhogchain/client` | `0.1.6` | Published client with transaction history and recent-failure status support |
-| TypeScript protocol packages | `0.5.0` | Published binding dependencies |
-| Groundhog gateway | `0.6.3`, wire `3.0.0` | Current Rust source |
-| Client's pinned OpenRPC | wire `2.3.1` | Has not yet been regenerated to the gateway's advertised wire version |
-| Rust SDK | `0.17.9` | Current contract template baseline |
 
 ## Minimal Client
 
@@ -86,12 +76,12 @@ The convenience client supports:
 - Chain tip and gateway version
 - Native HOG balances
 - Read-only contract views
-- Transaction status and committed receipts, subject to the status compatibility warning above
+- Transaction status and committed receipts
+- Address-rooted transaction history
 - Event queries
-- Transaction history by root invocation address
 - Raw committed storage reads
 
-`getBlockByNumber` and `getPendingTransactionCount` exist in client `0.1.6`, but the current gateway returns JSON-RPC error `-32052` for both.
+`getBlockByNumber` and `getPendingTransactionCount` are present in the published client, but current gateway source returns JSON-RPC error `-32052` for both.
 
 Read a native HOG balance:
 

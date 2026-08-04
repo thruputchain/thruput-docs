@@ -9,10 +9,6 @@ Use this page when you have a `.spec.xdr` sidecar or a legacy `.wasm` artifact a
 
 For the general JSON-RPC client, transports, signing, and package map, see [TypeScript SDK](/tools/typescript-sdk/).
 
-:::note[Version checked]
-This page was source-checked against Groundhog CLI `0.6.3`, published `@groundhogchain/client` `0.1.6`, and protocol packages `0.5.0` on August 5, 2026.
-:::
-
 ## What Bindings Provide
 
 Generated bindings turn a contract spec into TypeScript code:
@@ -135,7 +131,7 @@ The codegen maps Rust contract types to TypeScript as follows:
 `@groundhogchain/client` also ships generated bindings for standard interfaces under the `./contracts` subpath. These are useful when your app talks to well-known contracts without generating local bindings first.
 
 :::caution[Bundled ERC-20 version]
-Published client `0.1.6` exports `./contracts` and bundles ERC-20 spec metadata from interface `0.1.3`; the current Rust standard interface source is `0.1.7`. The shown methods remain SemVer-compatible, but the Rust interface is the current source of truth for metadata.
+The published client exports the `./contracts` subpath, but its bundled ERC-20 metadata may lag the current Rust standard interface. Verify the target contract's declared interface version before relying on bundled metadata.
 :::
 
 The ERC-20 binding includes helpers such as:

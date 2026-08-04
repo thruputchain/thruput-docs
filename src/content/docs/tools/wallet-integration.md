@@ -38,7 +38,7 @@ Groundhog authorization is rooted at the transaction's invoked address. For norm
 The current CLI resolves wallet entrypoints from the active local runtime manifest or hosted `/v1/network` descriptor. Wallet integrations should do the same rather than hard-coding entrypoint IDs.
 
 :::caution[TypeScript support boundary]
-Published client `0.1.6` provides low-level transaction, submission, and signer primitives, but it does not provide the descriptor-driven wallet transaction builder used by the CLI. Do not submit a generated target-contract invocation as the root transaction and assume the wallet will authorize it.
+Published `@groundhogchain/client` provides low-level transaction and signer primitives, but it does not provide the descriptor-driven wallet transaction builder used by the CLI. Do not submit a generated target-contract invocation as the root transaction and assume the wallet will authorize it.
 :::
 
 Until the wallet builder and browser adapter are published, use the CLI for state-changing calls and the [TypeScript SDK](/tools/typescript-sdk/) for supported reads and views.

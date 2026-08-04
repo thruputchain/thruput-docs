@@ -43,6 +43,10 @@ groundhog-erc20-if = { path = "/path/to/sdk_rs/standard-interfaces/groundhog-erc
 erc20 = { path = ".", features = ["dev"] }
 ```
 
+:::caution[Version compatibility]
+The CLI template and current standard-interface source may depend on different SDK releases. Use the two path dependencies above so the interface and SDK resolve from the same checkout.
+:::
+
 The interface crate is the source of truth for:
 
 - `ERC20`, `ERC20Client`, and generated client errors
