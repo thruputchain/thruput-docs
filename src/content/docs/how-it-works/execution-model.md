@@ -98,7 +98,7 @@ Tx B contract returns with delta -5
 
 Whichever transaction reserves first wins. The lock is per-key, per-block and is initialized from the snapshot. Two transactions touching different keys never interact. Two transactions touching the same key contend for the same aggregate bounds. Reservation can happen concurrently across executor workers; atomic capacity accounting ensures the combined admitted delta remains in range.
 
-For operations that commute (two increases, or two decreases that fit within the balance), both reservations succeed and both transactions land. Checked and lazy operations share this merge behavior. The difference is that checked operations may fail earlier in contract code, while lazy operations leave the snapshot-bound decision to reservation. A lazy operation can therefore be admitted when an offsetting concurrent delta makes the aggregate valid, even if it would not be valid against the snapshot alone.
+For operations that commute (two increases, or two decreases that fit within the balance), both reservations succeed and both transactions land. Checked and lazy operations share this merge behavior. The difference is that checked operations may fail earlier in contract code, while lazy operations leave the snapshot-bound decision to reservation. A lazy adjustment that is invalid against the snapshot can still be admitted if a compatible offsetting delta has already been admitted before its batch is reserved. If the lazy adjustment reserves first, it is excluded. This possibility depends on reservation order, not eventual block-wide netting.
 
 ### What Block Close Does
 
