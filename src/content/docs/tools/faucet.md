@@ -34,6 +34,8 @@ curl -fsS "$DEVNET_FAUCET_URL/v1/network" \
   | jq -e --arg rpc "$DEVNET_RPC_URL" '.endpoints.rpcUrl == $rpc'
 ```
 
+The final command compares the raw URL strings. A `false` result may only reflect host casing, a default port, or a trailing root slash. Compare the canonical URLs and stop only if they identify different endpoints.
+
 ## Create a Wallet
 
 Create a contract wallet for the signing key selected during init:

@@ -5,8 +5,6 @@ description: Current signer APIs and the support boundary for browser-wallet int
 
 No official browser-wallet provider or adapter is published yet. The current supported user flow is the Groundhog CLI: it creates a key-owned contract wallet, resolves network-specific wallet entrypoints, wraps application calls in the wallet's `do_action` invocation, signs, and submits them.
 
-This page was source-checked against published `@groundhogchain/client` `0.1.6` and Groundhog CLI `0.6.3` on August 5, 2026.
-
 See [Develop on Devnet with the CLI](/tutorials/develop-on-devnet/) for that end-to-end flow.
 
 ## Current TypeScript Extension Point

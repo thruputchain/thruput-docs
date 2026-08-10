@@ -7,10 +7,6 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
-:::note[Version checked]
-This tutorial was source-checked against Groundhog CLI `0.6.3`, SDK `0.17.9`, and `groundhog-erc20-if` `0.1.7` on August 5, 2026.
-:::
-
 ## 1. Create the Project
 
 Start from the minimal CLI template:
@@ -56,6 +52,8 @@ The interface crate is the source of truth for:
 - The zero-address constant used for mint and burn events
 
 Its `#[contract]` declaration includes `throws = ERC20Error` and `emits(TransferEvent, ApprovalEvent)`, so implementations and generated clients share the same wire contract.
+
+This tutorial implements the core ERC-20 interface only. It does not expose `name`, `symbol`, or `decimals`; those methods belong to the separate `groundhog-erc20-metadata-if` interface.
 
 ## 2. Wire the Library
 

@@ -8,10 +8,12 @@ description: Use @groundhogchain/client and related TypeScript packages with Gro
 Use this page for current package setup and supported chain reads. For contract-specific invocation builders, see [TypeScript Bindings](/tools/typescript-bindings/).
 
 :::caution[Check gateway compatibility]
-The client's generated JSON-RPC schema may lag the gateway. Check `groundhog_version` on your target network and consult the client release notes before depending on version-specific response shapes. Use the CLI for wallet-backed transaction submission until the client provides the same wallet builder.
+The client's pinned OpenRPC document and handwritten actions and parsers may lag the gateway. Check `groundhog_version` on your target network and consult the client release notes before depending on response shapes. Use the CLI for wallet-backed transaction submission until the client provides the same wallet builder.
 :::
 
 ## Install
+
+Use Node.js 22.12 or newer.
 
 Dependencies are hosted on GitHub Packages. Add the scope and a token with `read:packages` to your npm configuration:
 
@@ -81,7 +83,7 @@ The convenience client supports:
 - Event queries
 - Raw committed storage reads
 
-`getBlockByNumber` and `getPendingTransactionCount` are present in the published client, but current gateway source returns JSON-RPC error `-32052` for both.
+`getBlockByNumber` and `getPendingTransactionCount` are present in the published client, but current gateway source returns JSON-RPC error `-32052` for both. The client's block parser also targets an older `BlockInfo` response shape, so do not depend on `getBlockByNumber` until the client is aligned with the current gateway schema.
 
 Read a native HOG balance:
 

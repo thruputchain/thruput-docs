@@ -7,10 +7,6 @@ This tutorial walks through the complete local CLI loop. You will build and test
 
 Local development is the fastest way to exercise deployment and RPC behavior. It does not require a faucet, a hosted endpoint, or a persistent signing key.
 
-:::note[Version checked]
-This tutorial was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
-:::
-
 ## Prerequisites
 
 You need:
@@ -18,7 +14,7 @@ You need:
 - Rust and Cargo through [rustup](https://rustup.rs/)
 - `jq` for structured-output checks
 - Access to the private Groundhog Cargo registry
-- Groundhog CLI `0.6.1`
+- Groundhog CLI
 - A compatible `hog-devnode` executable supplied during onboarding
 
 Authenticate Cargo and install the published CLI:
@@ -26,7 +22,6 @@ Authenticate Cargo and install the published CLI:
 ```bash
 cargo login --registry groundhog
 cargo install groundhog-cli \
-  --version "=0.6.1" \
   --registry groundhog \
   --locked
 ```
@@ -108,7 +103,9 @@ The command starts one supervised `hog-devnode`, exposes JSON-RPC on `http://127
 
 The node is ephemeral. Deployments and calls share state while this process runs, but stopping it discards chain state and clears the active-runtime record.
 
-For a separate node that preserves its own state across clean restarts, start it with a data directory:
+To use persistent state instead, stop the ephemeral node with Ctrl-C, then start a new node with a data directory:
+
+Persistent local-node state is currently supported only on Unix platforms.
 
 ```bash
 groundhog node --data-dir .groundhog/node

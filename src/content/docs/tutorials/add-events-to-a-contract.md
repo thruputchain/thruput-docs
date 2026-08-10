@@ -7,10 +7,6 @@ We're extending the counter from [Build a Counter](/tutorials/build-a-counter/) 
 
 **Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/).
 
-:::note[Version checked]
-This tutorial was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
-:::
-
 ## How Events Work on Groundhog
 
 An event is up to three 32-byte **topics** plus an XDR-serialized **payload** (at most 1 KB in total). Topics are indexed: off-chain consumers filter on them via [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents). The payload is not indexed; it carries the data you want to read back.

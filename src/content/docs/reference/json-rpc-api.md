@@ -7,10 +7,6 @@ description: How Groundhog's JSON-RPC is shaped and the methods it exposes.
 This API is under active development. Method signatures and response formats may change.
 :::
 
-:::note[Version checked]
-This page was source-checked against `groundhog-rpc` `0.6.3` and JSON-RPC wire format `3.0.0` on August 5, 2026.
-:::
-
 The Groundhog JSON-RPC gateway (`groundhog-rpc`) is a separate service that exposes a JSON-RPC 2.0 API over HTTP. It connects to the validator stack (hogd) via internal RPC and provides external access for clients, wallets, and tooling.
 
 For how the gateway fits into the node architecture, see [Networking](/how-it-works/networking/). The first half of this page covers the *shape* of the API and the design choices behind it; the second half is the per-method reference. If you're picking up the API for the first time, read the design section first. If you're looking up a specific method, jump to [Methods](#methods).
@@ -66,7 +62,7 @@ A transaction receipt:
 }
 ```
 
-`status` is a tagged variant, not a binary 0/1. A reverted call returns `{ "result": "reverted", "message": "insufficient balance" }`; a deterministic engine error returns `{ "result": "deterministicError", "kind": "outOfGas" }`. Clients switch on `result` and handle each case directly. Compare to EVM, where a `0` status leaves you guessing why.
+`status` is a tagged variant, not a binary 0/1. The current gateway returns `{ "result": "reverted", "message": null }` for a reverted call and exposes recorded revert bytes separately as `abortData`. It returns `{ "result": "deterministicError", "kind": "unknown" }` for deterministic engine errors because the indexer does not yet provide a more specific kind. Clients switch on `result` and handle each case directly.
 
 Events look familiar to anyone who has worked with `eth_getLogs`: structured records with a `contractAddress`, indexed `topics`, and a `data` payload. The page wrapper carries a cursor for pagination.
 
@@ -147,7 +143,7 @@ Submit a signed transaction to the mempool.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `bytes` | `0x`-prefixed hex | The signed transaction bytes |
+| `tx_hex` | `0x`-prefixed hex | The signed transaction bytes |
 
 **Returns:** `TxHash` (the transaction hash).
 
@@ -159,7 +155,7 @@ Get the execution result and emitted events for a committed transaction.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `hash` | `0x`-prefixed hex (64 chars) | The transaction hash |
+| `tx_hash` | `0x`-prefixed hex (64 chars) | The transaction hash |
 
 **Returns:** `TransactionReceipt` or `null` if not found. The receipt includes execution status, emitted events, and block height. See [The Shape of a Response](#the-shape-of-a-response) for the wire shape.
 
@@ -168,8 +164,8 @@ Get the execution result and emitted events for a committed transaction.
 | Status | Meaning |
 |--------|---------|
 | `{"result": "ok"}` | Transaction executed and committed |
-| `{"result": "reverted", "message": "..."}` | Transaction executed but was reverted |
-| `{"result": "deterministicError", "kind": "..."}` | Transaction failed deterministically (e.g., WASM trap) |
+| `{"result": "reverted", "message": null}` | Transaction executed but reverted; recorded revert bytes appear in `abortData` |
+| `{"result": "deterministicError", "kind": "unknown"}` | Transaction failed deterministically; the current indexer does not report a specific kind |
 | `{"result": "nonDeterministicError"}` | Commit failed due to a race or proposal-time storage conflict |
 | `{"result": "failedGasSponsorship"}` | Gas sponsorship check failed |
 | `{"result": "other"}` | Unclassified execution outcome |
@@ -182,20 +178,38 @@ Check the gateway's current knowledge of a transaction.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `hash` | `0x`-prefixed hex (64 chars) | The transaction hash |
+| `tx_hash` | `0x`-prefixed hex (64 chars) | The transaction hash |
 
 **Returns:** One of:
 
-| Status | Meaning |
-|--------|---------|
-| `pending` | Transaction is in the mempool, not yet committed |
-| `committed` | Transaction has been included in a block (includes `height`) |
-| `invalid` | Transaction was rejected |
-| `recentFailure` | A recent attempt failed during two-phase commit; the transaction may still be retried |
-| `unknown` | Transaction not found in mempool or committed history |
-| `other` | Status returned by a newer server but not recognized by this client |
+| Wire shape | Meaning |
+|------------|---------|
+| `{"status":"pending"}` | Transaction is in the mempool, not yet committed |
+| `{"status":"committed","height":123}` | Transaction has been included in a block |
+| `{"status":"invalid","reason":"..."}` | Scheduler rejected the transaction |
+| `{"status":"recentFailure",...}` | A recent attempt failed during two-phase commit; a later retry may still commit |
+| `{"status":"unknown"}` | Both the scheduler and indexer successfully reported no match |
+| `{"status":"other"}` | Forward-compatibility variant for an unrecognized status |
 
-The gateway checks the mempool (scheduler) first, then the indexer. `RecentFailure` is advisory: reports may be dropped, and a later retry of the same transaction may commit. If the scheduler is unavailable and the indexer has no record, the gateway returns `BACKEND_UNAVAILABLE` rather than incorrectly reporting `Unknown` while the transaction may still be pending.
+The current gateway handler emits `pending`, `committed`, `recentFailure`, or `unknown`. `invalid` and `other` are schema variants but are not currently produced by this handler.
+
+A recent failure includes the first reported storage conflict:
+
+```json
+{
+  "status": "recentFailure",
+  "attemptHeight": 123,
+  "conflict": {
+    "address": "0x...",
+    "key": "0x...",
+    "code": "boundsExceeded"
+  }
+}
+```
+
+`conflict.code` is one of `exclusiveLock`, `typeMismatch`, `valueMismatch`, `boundsExceeded`, `overflow`, `replayProtection`, `queueConsumer`, `capacityExceeded`, or `other`.
+
+The gateway checks the mempool first, then the indexer. If the scheduler is unavailable, committed and recent-failure records from the indexer can still be returned. If the indexer has no record, the method returns `-32050 BACKEND_UNAVAILABLE` rather than `unknown` because the transaction may still be pending.
 
 Use [`groundhog tx show`](/tools/groundhog-cli/#inspect-transactions) to inspect a transaction from the terminal.
 
@@ -221,13 +235,13 @@ Return gateway implementation and JSON-RPC wire-format version information.
 
 ```json
 {
-  "wireFormat": "3.0.0",
-  "implementation": "groundhog-rpc",
-  "commitHash": "abc123"
+  "wireFormat": "<wire-semver>",
+  "implementation": "<binary-version>",
+  "commitHash": "<git-commit>"
 }
 ```
 
-`commitHash` may be `null` when the gateway cannot report a build commit.
+`wireFormat` identifies the public JSON-RPC schema. `implementation` and `commitHash` are diagnostic only; clients must not branch on them. `commitHash` may be `null` when the gateway cannot report a build commit.
 
 ---
 
@@ -298,12 +312,18 @@ Get block information by height.
 
 ```json
 {
-  "networkId": 1,
+  "blockHash": "0x...",
+  "protocol": 1,
+  "networkHash": "0x...",
+  "proposer": "0x...",
+  "blockTimepoint": 1700000000,
   "blockHeight": 42,
-  "txsetHash": "0x...",
-  "dbHash": "0x...",
+  "txsHash": "0x...",
+  "storageHash": "0x...",
   "eventsHash": "0x...",
-  "prevBlockHash": "0x..."
+  "prevBlockHash": "0x...",
+  "proposalTxsHash": "0x...",
+  "upgrades": []
 }
 ```
 

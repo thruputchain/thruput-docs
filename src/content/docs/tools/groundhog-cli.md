@@ -5,10 +5,6 @@ description: How Groundhog CLI commands fit into RV32 builds, local nodes, tests
 
 Run normal Rust loops with `cargo`. Run Groundhog-specific work with `groundhog`: scaffolds, RV32 artifacts, local nodes, deployments, RPC calls, state inspection, keys, wallets, and generated bindings. RV32 is Groundhog's 32-bit RISC-V contract target.
 
-:::note[Version checked]
-This page was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
-:::
-
 ## First-Run Setup
 
 Early-access Cargo registry credentials are handled by Cargo, not the CLI. Configure Cargo from your onboarding instructions before creating or building SDK projects.
@@ -23,7 +19,7 @@ groundhog init
 
 `groundhog node` and `groundhog test --integration` also require a compatible `hog-devnode` executable, which is distributed separately. `groundhog node` accepts `--hog-devnode-binary`; both commands support `GROUNDHOG_DEVNODE_BINARY`, a sibling executable beside `groundhog`, or `PATH`. Integration mode does not accept the command-line flag.
 
-`groundhog new <name>` creates a project from the `counter` or `stub` template. `groundhog status` checks toolchain, key, and project config state. `groundhog completion <shell>` prints shell completions.
+`groundhog new <name>` creates a project from the `counter` or `stub` template. `groundhog status` checks toolchain, devnode, key, executor-auth, and project-config state. `groundhog completion <shell>` prints shell completions.
 
 ## Foundry Mental Model
 
@@ -146,7 +142,7 @@ groundhog config get devnet
 groundhog config get devnet --sources
 ```
 
-`--sources` identifies whether each value came from global or project config. `config get` reports the persisted merge. It does not apply active local-node state, signer fallback, `GROUNDHOG_RUNTIME_MANIFEST`, or command-line endpoint overrides. Use `groundhog status --profile <name>` when you need diagnostics for the effective runtime configuration.
+`--sources` identifies the origin of each value shown in human output. Use `groundhog --json config get <profile> --sources` to inspect `runtimeManifest`, `runtimeArtifactsDir`, and their source metadata. `config get` reports the persisted merge. It does not apply active local-node state, signer fallback, `GROUNDHOG_RUNTIME_MANIFEST`, or command-line endpoint overrides. Use `groundhog status --profile <name>` when you need diagnostics for the effective runtime configuration.
 
 ### Create and Update Profiles
 
@@ -236,6 +232,8 @@ For testing guidance, see [Testing](/programming-model/testing/).
 
 `groundhog node` starts one supervised `hog-devnode`. It uses ephemeral state when `--data-dir` is omitted. Pass a data directory to preserve chain state across clean stop and restart cycles.
 
+Persistent local-node state is currently supported only on Unix platforms. On other platforms, `groundhog node --data-dir <dir>` fails.
+
 ```bash
 groundhog node
 groundhog node --data-dir .groundhog/node
@@ -243,7 +241,7 @@ groundhog node --port 9546
 groundhog node --verbose
 groundhog node --block-driver interval
 groundhog node --block-driver interval --block-interval-ms 1000
-groundhog node --ramdb-bytes <bytes>
+groundhog node --ramdb-bytes <size>
 ```
 
 Useful flags and environment variables:
@@ -339,7 +337,7 @@ groundhog events list my-counter \
   --profile devnet
 ```
 
-`--event` is case-sensitive and requires `--spec`. The CLI adds the selected event signature to topic 0 unless the supplied topic-0 filter conflicts. Raw topics and data remain authoritative. Unknown signatures and malformed records remain in the page with their decode status instead of failing the whole request.
+`--event` is case-sensitive and requires `--spec`. The CLI adds the selected event signature to topic 0 unless the supplied topic-0 filter conflicts. Raw topics and data remain authoritative. Unknown signatures and structurally valid records that fail spec decoding remain in the page with their decode status instead of failing the whole request. The gateway may drop structurally malformed serialized events before they reach the CLI.
 
 ### Inspect Token Transfers
 
@@ -356,7 +354,7 @@ groundhog token transfers my-token --account default --profile devnet
 
 `--from` and `--to` may be combined. `--account` matches either direction and cannot be combined with them. Participant filters run on the server.
 
-The output distinguishes transfers, mints, burns, and malformed records. Amounts are unformatted base-unit decimal strings because this command does not fetch token metadata or decimal precision. Like event inspection, it returns one page, preserves raw evidence, and uses an opaque continuation cursor.
+The output distinguishes transfers, mints, burns, and malformed records. Amounts are unformatted base-unit decimal strings because this command does not fetch token metadata or decimal precision. Like event inspection, it returns one page, preserves raw evidence for every record returned by the gateway, and uses an opaque continuation cursor.
 
 ## Keys and Wallets
 

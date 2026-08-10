@@ -14,10 +14,6 @@ That said, the CLI is a convenience, not a requirement. You can also:
 
 The CLI is just a consumer of the SDK. It generates the same Rust crate you'd write by hand: a standard Cargo project that depends on the SDK and uses its storage types and macros. Normal `cargo build` and `cargo test` target the host. `groundhog build` and `groundhog test` target RV32 by default.
 
-:::note[Version checked]
-This workflow was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
-:::
-
 ## Configure Cargo and Install
 
 During early access, the SDK and CLI are distributed through the private Groundhog Cargo registry. Configure Cargo with the registry index and token from your onboarding instructions first.
@@ -28,7 +24,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Install the published CLI from the private registry
 cargo install groundhog-cli \
-  --version "=0.6.1" \
   --registry groundhog \
   --locked
 ```

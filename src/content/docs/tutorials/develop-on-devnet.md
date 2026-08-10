@@ -7,10 +7,6 @@ This tutorial moves the local development loop onto Devnet. You will use the per
 
 Complete [Develop Locally with the CLI](/tutorials/develop-locally/) first if you have not yet built, deployed, and called a contract against `hog-devnode`. If you already completed it, reuse that `my-counter` project in step 6.
 
-:::note[Version checked]
-This tutorial was last checked against Groundhog CLI `0.6.1` and SDK `0.17.1` on August 4, 2026.
-:::
-
 ## Before You Start
 
 You need:
@@ -31,7 +27,6 @@ Authenticate Cargo and install the current CLI if needed:
 ```bash
 cargo login --registry groundhog
 cargo install groundhog-cli \
-  --version "=0.6.1" \
   --registry groundhog \
   --locked
 
@@ -69,7 +64,7 @@ curl -fsS "$DEVNET_FAUCET_URL/v1/network" \
   | jq -e --arg rpc "$DEVNET_RPC_URL" '.endpoints.rpcUrl == $rpc'
 ```
 
-The final command should print `true`. Stop if it prints `false` or exits with an error.
+The final command should normally print `true`. A `false` result may be a formatting-only difference, such as host casing, a default port, or a trailing root slash. Compare the canonical URLs and stop only if they identify different endpoints.
 
 Check the RPC directly:
 
