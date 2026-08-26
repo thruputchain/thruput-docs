@@ -3,11 +3,11 @@ title: Authorization
 description: How transaction signatures, address auth data, caller identity, and auth tokens work in Groundhog.
 ---
 
-Groundhog treats addresses uniformly. A contract address can hold code, store auth data, receive calls, and originate transactions once its auth data is installed.
+Groundhog treats addresses uniformly. A contract address can hold code, store auth data, receive calls, and originate transactions. A pubkey-derived address can also originate a transaction without first deploying code or installing address auth data.
 
 Authorization has two layers:
 
-1. **Transaction admission**: hogd checks source-address signatures before execution.
+1. **Transaction admission**: hogd checks the transaction's authorization claim and signatures before execution.
 2. **Runtime authorization**: contracts use caller identity, explicit signature checks, and typed auth tokens while executing.
 
 These layers are related but separate. Transaction admission decides whether the root transaction may enter the block. Runtime authorization decides what authority a contract gives to a caller or token it receives.
@@ -28,13 +28,13 @@ struct SignedTransaction {
 };
 ```
 
-The source address for admission is the root invocation's `invoked_address`. hogd loads that address's `AddressAuthData`, then verifies the signatures over the XDR-encoded `Transaction` (`tx`), not over the `SignedTransaction` wrapper.
+The source address for admission is the root invocation's `invoked_address`. Each signature covers the transaction domain separator, the protocol network hash, and the encoded `Transaction` (`tx`), not the `SignedTransaction` wrapper. A signature created for one network is invalid on another.
 
-If hogd cannot load auth data for the source address, admission fails. Devnode and genesis accounts have auth data installed for them. Other addresses can install or update their own auth data during execution with the auth-data syscalls.
+How hogd resolves authorization depends on the claim. A source-address claim requires stored `AddressAuthData`. A pubkey claim derives and verifies the root address directly and requires that address to have no stored auth data. If the pubkey address is also undeployed, root execution uses the DefaultWallet fallback described below.
 
-## Source-Address Claims
+## Admission Claims
 
-The active admission claim is `kSourceAddressAuthData`:
+The protocol supports two admission claims:
 
 ```text
 enum AuthClaim switch (AuthClaimType claim_type) {
@@ -49,7 +49,7 @@ case kPubkeySignature:
 };
 ```
 
-`kPubkeySignature` exists in the protocol type today, but hogd rejects it as malformed. Do not build against it yet.
+### Source-Address Auth Data
 
 For `kSourceAddressAuthData`, hogd checks:
 
@@ -63,6 +63,46 @@ For `kSourceAddressAuthData`, hogd checks:
 That last rule lets the address set a standing minimum threshold while each transaction can require an equal or higher threshold.
 
 Contracts can inspect the root transaction's auth claim with [`get_auth_claim()`](https://groundhog.dev/docs/sdk/latest/sdk/auth_claim/fn.get_auth_claim.html), but admission has already happened by the time contract code runs.
+
+### Pubkey Signature
+
+`kPubkeySignature` is the simple single-key account path. The claim carries a `PubkeyAccountPreimage` containing a public key and address nonce. Release tooling sometimes calls this path PubKeyAuth. The TypeScript account API is `createPubkeyAccount()`.
+
+hogd checks that:
+
+- The claim uses Ed25519.
+- The transaction has exactly one signature with public key ID `0`.
+- The root invoked address equals the domain-separated hash of the pubkey-account preimage.
+- The invoked address has no registered `AddressAuthData`.
+- The signature is valid for the network-bound transaction preimage.
+
+The TypeScript client creates this claim and address together:
+
+```ts
+const account = createPubkeyAccount({ signer, nonce: 0n });
+```
+
+The address nonce selects another address for the same key. It is not the transaction replay nonce.
+
+## Default Wallet Fallback
+
+An undeployed pubkey-account address has no contract deployment row. When it is the transaction root, the runtime resolves it to the chain's configured native-compatible DefaultWallet.
+
+DefaultWallet accepts only a root invocation with the matching `kPubkeySignature` claim. It exposes:
+
+- `execute(calls)`, which runs up to 16 child calls atomically and returns one raw return buffer per call
+- `deploy(nonce, contract_hash)`, which deploys from the pubkey-account address
+
+This produces the new-account flow:
+
+```text
+create keypair
+    -> derive pubkey-account address
+    -> fund the address
+    -> execute calls or deploy contracts
+```
+
+There is no separate wallet deployment or initialization step. More advanced policies such as multisig, recovery, spending limits, and custom auth-token behavior belong in account contracts using source-address auth data.
 
 ## Address Auth Data
 
@@ -240,7 +280,6 @@ The protocol currently caps an auth-token payload at 256 bytes, tree depth at 4,
 
 Do not rely on these patterns yet:
 
-- `kPubkeySignature` auth claims. The type exists, but hogd rejects it.
 - Detached admission-time signatures that directly become `Signed<T>` values.
 - Nonce or gas-sponsorship policy fields in `AddressAuthData`.
 - Durable, storable, or off-chain portable `Signed<T>` handles. A `Signed<T>` is a runtime handle owned by invocation frames inside a transaction.

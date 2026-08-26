@@ -7,8 +7,10 @@ description: Use @groundhogchain/client and related TypeScript packages with Gro
 
 Use this page for client setup, typed views, receipts, transactions, and deployment. For contract-specific generated APIs, see [TypeScript Bindings](/tools/typescript-bindings/).
 
+For a guided CLI-to-application workflow, start with [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/).
+
 :::note[Version checked]
-This page was source-checked against `@groundhogchain/client` `0.2.0`, protocol packages `0.7.1`, Groundhog CLI `0.9.6`, and the current source repositories on August 20, 2026. The client's pinned OpenRPC file reports wire `2.3.1`, while the current Rust gateway advertises wire `3.0.0`.
+This page was source-checked against `@groundhogchain/client` `0.4.0`, protocol packages `0.8.0`, Groundhog CLI `0.10.3`, and RPC wire `3.3.0` on August 26, 2026.
 :::
 
 ## Install
@@ -24,35 +26,32 @@ The client requires Node.js `22.12.0` or newer. Install the client and the direc
 
 ```bash
 NODE_AUTH_TOKEN="$(gh auth token)" npm install \
-  @groundhogchain/client@0.2.0 \
-  @groundhogchain/protocol@0.7.1 \
-  @groundhogchain/contract-spec@0.7.1
+  @groundhogchain/client@0.4.0 \
+  @groundhogchain/protocol@0.8.0 \
+  @groundhogchain/contract-spec@0.8.0
 ```
 
 ## Version Matrix
 
-| Component                    | Version checked | Status                                             |
-| ---------------------------- | --------------- | -------------------------------------------------- |
-| `@groundhogchain/client`     | `0.2.0`         | Typed method and event descriptor runtime          |
-| TypeScript protocol packages | `0.7.1`         | Coordinated generated-binding dependencies         |
-| Groundhog CLI codegen        | `0.9.6`         | Generated TypeScript binding shape                 |
-| Rust gateway                 | wire `3.0.0`    | Current gateway source                             |
-| Client's pinned OpenRPC      | wire `2.3.1`    | Not synchronized with the current gateway document |
+| Component                    | Version checked | Status                                                   |
+| ---------------------------- | --------------- | -------------------------------------------------------- |
+| `@groundhogchain/client`     | `0.4.0`         | Cluster, wallet-client, and generated descriptor APIs    |
+| TypeScript protocol packages | `0.8.0`         | Coordinated generated-binding dependencies               |
+| Groundhog CLI codegen        | `0.10.3`        | Generated TypeScript binding shape                       |
+| Client's pinned OpenRPC      | wire `3.3.0`    | Network identity, airdrop, read, and transaction methods |
 
 ## Create a Client
 
 ```ts
-import { createGroundhogClient, HttpTransport } from "@groundhogchain/client";
+import { createGroundhogClient, localnet } from "@groundhogchain/client";
 
-const client = createGroundhogClient(
-  new HttpTransport("http://127.0.0.1:9545"),
-);
+const client = await createGroundhogClient({ cluster: localnet() });
 
 const tip = await client.getChainTip();
 const version = await client.getVersion();
 ```
 
-`GroundhogClient` binds the supported actions to one transport. `HttpTransport` sends JSON-RPC requests over HTTP. `MockTransport` provides deterministic responses for tests.
+`createGroundhogClient()` is asynchronous. A cluster client fetches network information and validates the endpoint before returning. The predefined clusters are `localnet()`, `devnet()`, and `mainnet()`. Pass a custom `HttpTransport` instead when the application does not need cluster qualification.
 
 ## Transport Options and Errors
 
@@ -87,8 +86,6 @@ The current gateway-backed client supports:
 - Event queries
 - Transaction history by root invocation address
 - Raw committed storage reads
-
-`getBlockByNumber` and `getPendingTransactionCount` exist in client `0.2.0`, but the current gateway returns JSON-RPC error `-32052` for both.
 
 Read a native HOG balance:
 
@@ -149,7 +146,7 @@ switch (outcome.kind) {
 
 Transport and JSON-RPC errors pass through unchanged. Malformed return or abort data throws `ContractDecodeError` from both view APIs.
 
-## Transaction Model
+## Wallet Clients and Transactions
 
 Generated descriptors build application invocations:
 
@@ -159,112 +156,87 @@ const invocation = Counter.increment.invocation(contract, gasLimit, {
 });
 ```
 
-The client package exports standalone `createTransaction()` and `signTransaction()` helpers. `GroundhogClient` submits signed transactions and polls their status or receipt.
+For a new single-key account, create a pubkey account and bind it to a cluster client:
+
+```ts
+import { randomBytes } from "node:crypto";
+import {
+  PrivateKeySigner,
+  createPubkeyAccount,
+  createWalletClient,
+} from "@groundhogchain/client";
+
+const account = createPubkeyAccount({
+  signer: new PrivateKeySigner(randomBytes(32)),
+});
+const wallet = createWalletClient({ client, account });
+
+const airdrop = await wallet.requestAirdrop();
+if (airdrop.status.result !== "ok") {
+  throw new Error(`Airdrop failed with ${airdrop.status.result}`);
+}
+
+const txHash = await wallet.execute({
+  invocation,
+  gasLimit: walletGasLimit,
+});
+const receipt = await wallet.waitForTransactionReceipt(txHash);
+```
+
+Pubkey accounts use `kPubkeySignature` authorization. The wallet client selects the native-compatible DefaultWallet adapter automatically, wraps the application invocation in `DefaultWallet.execute`, binds the signature to the connected network hash, and submits the root transaction.
 
 :::caution[Application invocations are not wallet roots]
-A generated application invocation is normally an inner invocation. For a wallet-backed account, the transaction root targets the wallet contract, which authorizes and invokes the application contract. The package does not discover network wallet interfaces or construct that wallet-root invocation automatically. Do not submit an inner application invocation as the root unless that application contract is intentionally the authorization root.
+A generated application invocation is normally an inner invocation. `wallet.execute()` constructs the wallet root for the account's configured adapter. Do not pass an application invocation to `wallet.sendInvocation()` unless that application contract is intentionally the authorization root.
 :::
 
-The transaction uniqueness key is the root invoked address plus `(block_expiry_height, nonce)`. The nonce is a caller-chosen `u64`, not a sequential account nonce.
+Use `createSourceAddressAccount()` and an explicit adapter such as `devWalletAdapter` for existing deployed account contracts. Use `prepareExecution()` to inspect the wrapped transaction before signing. `prepareTransaction()`, `signTransaction()`, `sendTransaction()`, and `sendInvocation()` remain available for explicit root workflows.
+
+The transaction uniqueness key is the root invoked address plus `(block_expiry_height, nonce)`. The wallet client generates a random `u64` transaction nonce unless the caller overrides it. This transaction nonce is separate from the pubkey account's address-derivation nonce.
 
 See [Wallet Integration](/tools/wallet-integration/) for the signer and wallet-root boundary.
 
 ## Root Receipt Decoding
 
-Wait for a committed receipt, then decode the root method result:
+Wait for a committed receipt, then decode it with the generated descriptor for the root method. For `wallet.execute()`, the root is `DefaultWallet.execute`:
 
 ```ts
+import { DefaultWallet } from "@groundhogchain/client/contracts";
+
 const receipt = await client.waitForTransactionReceipt(txHash);
-const result = Counter.get.decodeReceipt(receipt);
+const root = DefaultWallet.execute.decodeReceipt(receipt);
+const childReturn = root.value[0];
 
-console.log(result.value, result.txHash, result.height, result.events);
-```
-
-`decodeReceipt()` returns the typed value and receipt metadata. It throws `ContractReceiptError` for an abort, execution failure, or missing return data from a non-void method. A successful void method may have no return data.
-
-Use `decodeReceiptOutcome()` to handle a discriminated `return`, `abort`, or `failure` result instead of `ContractReceiptError`:
-
-```ts
-const outcome = Counter.get.decodeReceiptOutcome(receipt);
-
-if (outcome.kind === "return") {
-  console.log(outcome.value);
+if (!childReturn) {
+  throw new Error("Expected one child return");
 }
+
+const childValue = Counter.increment.decodeReturn(childReturn);
 ```
 
-Both receipt APIs can throw `ContractDecodeError` for malformed return or abort data.
+`decodeReceipt()` returns the typed root value and receipt metadata. It throws `ContractReceiptError` for an abort, execution failure, or missing return data from a non-void method. `decodeReceiptOutcome()` returns a discriminated `return`, `abort`, or `failure` result instead. Both can throw `ContractDecodeError` for malformed return or abort data.
 
-The caller must know that the receipt came from a transaction whose root invocation called that method. A receipt does not carry enough method identity for the descriptor to verify this. The decoder does not search nested application invocations inside a wallet call.
+The caller must know that the receipt came from a transaction whose root invocation called that method. A receipt does not carry enough method identity for the descriptor to verify this.
+
+DefaultWallet makes nested returns available as an ordered list of raw buffers. Decoding the child with `Counter.increment.decodeReturn()` is spec-driven deserialization. The application selects that descriptor because it knows which invocation it submitted; the client does not guess a nested method from the return bytes.
 
 ## Contract Deployment
 
-The local DevWallet exposes a generated `deploy` method. Given a protocol `Contract`, wallet address, signer, authorization claim, and transaction uniquifier:
-
-```ts
-import { randomBytes } from "node:crypto";
-import {
-  createTransaction,
-  deriveContractAddress,
-  fixedBytes,
-  hashContract,
-  signTransaction,
-} from "@groundhogchain/client";
-import { gasAmount, sha256Hash } from "@groundhogchain/protocol";
-import { DevWallet } from "./contracts/dev-wallet";
-
-const deploymentNonce = sha256Hash(randomBytes(32));
-const contractHash = hashContract(contract);
-const contractAddress = deriveContractAddress(
-  wallet,
-  deploymentNonce,
-  contractHash,
-);
-
-const deployInvocation = DevWallet.deploy.invocation(
-  wallet,
-  gasAmount(10_000_000n),
-  {
-    nonce: fixedBytes(deploymentNonce, 32),
-    contractHash: fixedBytes(contractHash, 32),
-  },
-);
-
-const transaction = createTransaction({
-  invocation: deployInvocation,
-  uniquifier,
-  contracts_to_deploy: [contract],
-  auth_claim: sourceAuthClaim,
-});
-
-const signed = await signTransaction(transaction, [
-  { signer, publicKeyId: 0n },
-]);
-const txHash = await client.sendTransaction(signed);
-const result = DevWallet.deploy.decodeReceipt(
-  await client.waitForTransactionReceipt(txHash),
-);
-
-console.log(result.value, contractAddress);
-```
-
-`contracts_to_deploy` makes the code available to the transaction. The `DevWallet.deploy` root invocation performs the deployment. Its decoded receipt returns the deployed address.
+DefaultWallet and DevWallet both expose a generated `deploy` method. Deployment is a wallet-specific root operation, so build that root descriptor and call `wallet.sendInvocation()` with the artifact in `contractsToDeploy`. The method's decoded receipt returns the deployed address.
 
 The deployment nonce derives the contract address. It is separate from the transaction uniquifier's replay-protection nonce. `hashContract()` hashes the complete protocol `Contract`, not only its payload bytes.
 
-`DevWallet` and its funding policy are local-node-specific. See the maintained [contract deployment guide](https://github.com/groundhogchain/client-ts/blob/main/docs/contract-deployment.md) and [Counter deployment example](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts) for setup and a complete runnable flow.
+See the maintained [contract deployment guide](https://github.com/groundhogchain/client-ts/blob/main/docs/contract-deployment.md) and [Counter deployment example](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts) for the complete local DevWallet flow.
 
 ## SDK vs Bindings
 
-| Use case                                                          | Owner                             |
-| ----------------------------------------------------------------- | --------------------------------- |
-| Connect to JSON-RPC and run chain queries                         | `@groundhogchain/client`          |
-| Construct and sign low-level transactions                         | Client transaction helpers        |
-| Submit transactions and poll receipts                             | `GroundhogClient`                 |
-| Build a contract application invocation                           | Generated method descriptor       |
-| Decode method returns and declared exceptions                     | Generated method descriptor       |
-| Run typed views and decode root receipts                          | Generated method descriptor       |
-| Decode events, build named filters, and extract receipt events    | Generated event descriptor        |
-| Discover a network wallet interface and build its root invocation | Application or wallet integration |
+| Use case                                                       | Owner                            |
+| -------------------------------------------------------------- | -------------------------------- |
+| Connect to JSON-RPC and validate network identity              | `createGroundhogClient()`        |
+| Bind an account, wrap wallet calls, sign, submit, and poll      | `createWalletClient()`           |
+| Construct or sign an explicit low-level transaction            | Client transaction helpers       |
+| Build a typed application invocation                           | Generated method descriptor      |
+| Decode method returns, exceptions, views, receipts, and events | Generated contract binding       |
+| Connect browser account and approval UX                        | External wallet provider         |
 
 ## Public Entry Points
 
@@ -277,6 +249,7 @@ The deployment nonce derives the contract address. It is separate from the trans
 | `@groundhogchain/client/contracts`   | Generated standard contract bindings                          |
 | `@groundhogchain/client/signers`     | Signer interface and private-key signer                       |
 | `@groundhogchain/client/actions`     | Standalone typed actions                                      |
+| `@groundhogchain/client/local-dev`   | Node-only local bootstrap account loader                      |
 
 ## Maintained Examples
 
@@ -287,7 +260,7 @@ The client repository maintains examples for:
 - [HOG transfer](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts)
 - [Counter deployment](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts)
 
-The maintained example workflow expects a local node. Transfer and deployment also use the local DevWallet interface and bootstrap account material.
+The HOG transfer example is written for a wire `3.3.0` Devnet deployment with `groundhog_networkInfo` and `groundhog_requestAirdrop`. The current older public endpoint does not expose those methods yet, so treat the example as the target flow rather than current deployment evidence. The balance and counter examples use a local node; counter deployment uses its bootstrap source-address account and DevWallet adapter.
 
 ## Related Documentation
 

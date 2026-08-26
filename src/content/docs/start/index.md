@@ -14,6 +14,7 @@ The core concept to learn is mergeable storage. Instead of overwriting a balance
 | Your background | Groundhog feels like... | Start here |
 |---|---|---|
 | **Smart contracts** (EVM, SVM, Move) | Familiar contracts without gas fees, sequential nonces, reentrancy guards, or declared access lists. Commutative paths do not depend on transaction order. | [Guide for Blockchain Developers](/start/for-blockchain-developers/) |
+| **TypeScript and web apps** | The CLI builds and deploys contracts. Generated bindings and `@groundhogchain/client` provide the typed application API. | [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/) |
 | **SQL databases** | `UPDATE balance = balance + 5` maps to a `Balance` increase. Concurrent updates can combine while balance constraints still hold. | [Guide for Backend Developers](/start/for-backend-developers/) |
 | **Distributed systems** | Your intuition transfers, but don't worry Groundhog is **not** CRDTs on a blockchain. | [Guide for Distributed Systems Developers](/start/for-distributed-systems-developers/) |
 
@@ -24,5 +25,6 @@ The core concept to learn is mergeable storage. Instead of overwriting a balance
 Pick the guide that matches your background, then head to [Getting Started](/start/getting-started/) to set up the SDK.
 
 - **[Guide for Blockchain Developers](/start/for-blockchain-developers/)** if you've written Solidity, Solana, or Move contracts
+- **[Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/)** if you're building an application against Groundhog contracts
 - **[Guide for Backend Developers](/start/for-backend-developers/)** if you come from Postgres or web backends
 - **[Guide for Distributed Systems Developers](/start/for-distributed-systems-developers/)** if you've worked with CRDTs or eventual consistency

@@ -37,6 +37,7 @@ export default defineConfig({
           items: [
             'start/getting-started',
             'tutorials/develop-locally',
+            'tutorials/work-with-groundhog-from-typescript',
             'tutorials/develop-on-devnet',
             'tutorials/build-a-counter',
             'tutorials/build-a-token',

@@ -7,8 +7,10 @@ TypeScript bindings turn a contract spec into typed method descriptors, event de
 
 For JSON-RPC transports, transaction helpers, deployment, and package setup, see [TypeScript SDK](/tools/typescript-sdk/).
 
+For a runnable introduction to contract builds, codegen, typed views, and wallet-backed writes, follow [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/).
+
 :::note[Version checked]
-This page was source-checked against Groundhog CLI and codegen `0.9.6`, `@groundhogchain/client` `0.2.0`, and protocol packages `0.7.1` on August 20, 2026.
+This page was source-checked against Groundhog CLI and codegen `0.10.3`, `@groundhogchain/client` `0.4.0`, and protocol packages `0.8.0` on August 26, 2026.
 :::
 
 ## What Bindings Provide
@@ -162,7 +164,24 @@ const receiptOutcome = Counter.get.decodeReceiptOutcome(receipt);
 
 `decodeReceipt()` returns the typed value with `txHash`, `height`, and `events`. It throws `ContractReceiptError` for an abort, execution failure, or missing return data from a non-void method. `decodeReceiptOutcome()` returns a discriminated `return`, `abort`, or `failure` result. Both can throw `ContractDecodeError` for malformed data.
 
-These APIs require a receipt known to come from a transaction whose root invocation called that method. The descriptor cannot verify the root method identity and does not inspect nested application invocations inside a wallet call.
+These APIs require a receipt known to come from a transaction whose root invocation called that method. The descriptor cannot verify the root method identity.
+
+For a DefaultWallet transaction, decode the root `DefaultWallet.execute` receipt first. It returns one raw return buffer per child call. Then use each child method's generated `decodeReturn()` method:
+
+```ts
+import { DefaultWallet } from "@groundhogchain/client/contracts";
+
+const root = DefaultWallet.execute.decodeReceipt(receipt);
+const childReturn = root.value[0];
+
+if (!childReturn) {
+  throw new Error("Expected one child return");
+}
+
+const childValue = Counter.get.decodeReturn(childReturn);
+```
+
+This deserialization is generated from the Rust contract specification. It is not necessary to construct an XDR reader or codec manually. The application selects the descriptor because it knows which child calls it submitted; the receipt does not contain enough TypeScript method identity for the client to choose one automatically.
 
 ## Generated Exceptions
 
@@ -233,7 +252,7 @@ const event = decodeEvent(emittedEvent);
 
 ## Type Mapping
 
-CLI `0.9.6` maps contract-spec types as follows:
+CLI `0.10.3` maps contract-spec types as follows:
 
 | Contract type                            | TypeScript representation                          |
 | ---------------------------------------- | -------------------------------------------------- |
@@ -268,7 +287,7 @@ Encoding and decoding enforce the declared lengths. `fixedBytes()` validates and
 
 ## Standard Contract Bindings
 
-Client `0.2.0` ships supported `ERC20` and `ERC20Metadata` bindings generated from interface `0.1.9`:
+Client `0.4.0` ships supported `ERC20`, `ERC20Metadata`, `DefaultWallet`, and `DevWallet` bindings:
 
 ```ts
 import { ERC20 } from "@groundhogchain/client/contracts";
@@ -294,7 +313,7 @@ Generated bindings sit on top of the client runtime:
 | Need                                                      | Use                                                        |
 | --------------------------------------------------------- | ---------------------------------------------------------- |
 | Connect to JSON-RPC                                       | [TypeScript SDK](/tools/typescript-sdk/)                   |
-| Construct, sign, submit, and poll a low-level transaction | [TypeScript SDK](/tools/typescript-sdk/#transaction-model) |
+| Construct, sign, submit, and poll a transaction           | [TypeScript SDK](/tools/typescript-sdk/#wallet-clients-and-transactions) |
 | Build a typed application invocation                      | Generated method descriptor                                |
 | Decode a typed method return or exception                 | Generated method descriptor                                |
 | Run a typed view or decode a root receipt                 | Generated method descriptor                                |
@@ -305,5 +324,5 @@ Generated bindings sit on top of the client runtime:
 - [TypeScript SDK](/tools/typescript-sdk/) for the app-facing client package
 - [Groundhog CLI](/tools/groundhog-cli/) for CLI codegen commands
 - [Contract Spec](/reference/contract-spec/) for the canonical codegen input
-- [Wallet Integration](/tools/wallet-integration/) for wallet-root limitations
+- [Wallet Integration](/tools/wallet-integration/) for pubkey accounts, DefaultWallet, and custom signers
 - [JSON-RPC API](/reference/json-rpc-api/) for the underlying gateway surface

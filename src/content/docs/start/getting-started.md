@@ -206,6 +206,7 @@ The [Groundhog CLI reference](/tools/groundhog-cli/) documents individual comman
 - **[Groundhog CLI](/tools/groundhog-cli/)**: Map each CLI command to the development job it handles
 - **[Develop Locally with the CLI](/tutorials/develop-locally/)**: Build, deploy, and call the counter against `hog-devnode`
 - **[Develop on Devnet with the CLI](/tutorials/develop-on-devnet/)**: Create a persistent key-owned wallet and deploy the counter to Devnet
+- **[Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/)**: Generate a contract binding, run typed views, and execute through a pubkey account and DefaultWallet
 - **[Rust API Docs](/tools/rust-api-docs/)**: Find generated Rustdoc for the SDK crates
 - **[Build a Counter](/tutorials/build-a-counter/)**: Line-by-line walkthrough of the contract you just generated
 - **[Merged Deltas](/programming-model/execution/#merged-deltas)**: Understand how concurrent state changes combine

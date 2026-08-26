@@ -358,6 +358,7 @@ This is the [merged-delta model](/programming-model/execution/#merged-deltas): t
 
 ## Next Steps
 
+- [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/#8-work-with-erc-20-tokens) for standard bindings and the application-side token call sequence
 - [Understand a Swap Contract](/tutorials/build-a-swap/) for a source walkthrough of cross-contract token calls
 - [Add Events to a Contract](/tutorials/add-events-to-a-contract/) for event testing and queries
 - [Merged Deltas](/programming-model/execution/#merged-deltas) for the snapshot, execution, and exclusion model behind this contract
