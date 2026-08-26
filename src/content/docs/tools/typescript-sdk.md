@@ -47,7 +47,7 @@ const [network, tip, version] = await Promise.all([
 console.log(toHex0x(network.networkHash), tip.height, version.wireFormat);
 ```
 
-The predefined helpers are `devnet()`, and `localnet()`. Use `defineCluster()` for a reusable custom cluster. `devnet()` supplies a default endpoint and declares airdrop support, but it does not pin a network hash. It completes the identity handshake and uses the identity returned by that endpoint for signing.
+The predefined helpers are `mainnet()`, `devnet()`, and `localnet()`. Use `defineCluster()` for a reusable custom cluster. `devnet()` supplies a default endpoint and declares airdrop support, but it does not pin a network hash. It completes the identity handshake and uses the identity returned by that endpoint for signing.
 
 Pin the identity when the application must reject an endpoint for a different network:
 
@@ -121,17 +121,22 @@ Generated bindings build typed application invocations. Execute the invocation t
 import { HOG_ADDRESS, gasAmount } from "@groundhogchain/protocol";
 import { DefaultWallet, ERC20 } from "@groundhogchain/client/contracts";
 
+const receiver = createPubkeyAccount({
+  signer: new PrivateKeySigner(randomBytes(32)),
+}).address;
+const receiverAirdrop = await client.requestAirdrop({ recipient: receiver });
+if (receiverAirdrop.status.result !== "ok") {
+  throw new Error(`Receiver airdrop failed: ${receiverAirdrop.status.result}`);
+}
 const transfer = ERC20.transfer.invocation(HOG_ADDRESS, gasAmount(500_000n), {
   receiver,
   amount: 1_000n,
 });
 
-const txHash = await wallet.execute({
+const transferTxHash = await wallet.execute({
   invocation: transfer,
   gasLimit: gasAmount(10_000_000n),
 });
-const receipt = await wallet.waitForTransactionReceipt(txHash);
-const result = DefaultWallet.execute.decodeReceipt(receipt);
 ```
 
 `execute()` prepares a fresh transaction, wraps the application invocation through DefaultWallet, signs for the connected network, and submits it. Use `prepareExecution()` to inspect the wrapped transaction before signing. Both accept `nonce`, `blockExpiryHeight`, `expiryBlocks`, and `contractsToDeploy` overrides.
@@ -183,7 +188,13 @@ Source-address accounts need an explicit invocation adapter before they expose `
 Deployment is a wallet-specific root operation. Build the generated DevWallet deployment invocation, then use the wallet client's explicit root path:
 
 ```ts
-import { gasAmount, sha256Hash } from "@groundhogchain/protocol";
+import { readFile } from "node:fs/promises";
+import {
+  ContractType,
+  gasAmount,
+  sha256Hash,
+  type Contract,
+} from "@groundhogchain/protocol";
 import {
   deriveContractAddress,
   fixedBytes,
@@ -191,6 +202,11 @@ import {
 } from "@groundhogchain/client";
 import { DevWallet } from "@groundhogchain/client/contracts";
 
+const artifact = await readFile("target/groundhog/counter.rv32a");
+const contract: Contract = {
+  contract_type: ContractType.kRv32,
+  rv32_contract: { data: artifact },
+};
 const deploymentNonce = sha256Hash(crypto.getRandomValues(new Uint8Array(32)));
 const contractHash = hashContract(contract);
 const contractAddress = deriveContractAddress(
@@ -269,8 +285,8 @@ Transport and JSON-RPC errors pass through unchanged. Malformed return or abort 
 Decode a receipt with the descriptor for the transaction's root method:
 
 ```ts
-const receipt = await client.waitForTransactionReceipt(txHash);
-const outcome = DevWallet.doAction.decodeReceiptOutcome(receipt);
+const receipt = await client.waitForTransactionReceipt(transferTxHash);
+const outcome = DefaultWallet.execute.decodeReceiptOutcome(receipt);
 
 if (outcome.kind === "return") {
   console.log(outcome.height, outcome.events);

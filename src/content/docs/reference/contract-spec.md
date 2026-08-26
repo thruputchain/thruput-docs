@@ -33,7 +33,7 @@ The JSON rendering has four top-level keys:
 | `type_defs` | The layout of every named user type (struct, enum, union) reachable from an interface. |
 | `events` | Every event the contract declares. |
 
-The complete spec for the counter contract from [Build a Counter](/tutorials/build-a-counter/), built as crate `counter` at version `0.1.0` (the `version` and `selector` values below depend on the crate's name and version):
+The complete spec for the counter contract from [Build a Counter](/tutorials/build-a-counter/), built as crate `counter` at version `0.1.0` (the identifiers below depend on the crate's name and version):
 
 ```json
 {
@@ -44,15 +44,20 @@ The complete spec for the counter contract from [Build a Counter](/tutorials/bui
       "version": "0.1.0",
       "throws": [
         {
-          "selector": "0x7a90653c020cb9ec",
-          "type": { "kind": "named", "name": "Error" }
+          "selector": "0xeb2cf72be75a4c62",
+          "type": { "kind": "named", "name": "CounterError" }
         }
       ],
       "methods": [
         {
           "name": "decrement",
-          "args": [{ "name": "amount", "ty": { "kind": "u64" } }],
+          "args": [{ "name": "amount", "type": { "kind": "u64" } }],
           "return_type": { "kind": "void" }
+        },
+        {
+          "name": "error",
+          "args": [],
+          "return_type": { "kind": "u64" }
         },
         {
           "name": "get",
@@ -61,12 +66,17 @@ The complete spec for the counter contract from [Build a Counter](/tutorials/bui
         },
         {
           "name": "increment",
-          "args": [{ "name": "amount", "ty": { "kind": "u64" } }],
+          "args": [{ "name": "amount", "type": { "kind": "u64" } }],
           "return_type": { "kind": "void" }
         },
         {
           "name": "initialize",
-          "args": [{ "name": "initial_value", "ty": { "kind": "u64" } }],
+          "args": [{ "name": "initial_value", "type": { "kind": "u64" } }],
+          "return_type": { "kind": "void" }
+        },
+        {
+          "name": "ping",
+          "args": [{ "name": "tag", "type": { "kind": "u64" } }],
           "return_type": { "kind": "void" }
         }
       ]
@@ -75,11 +85,18 @@ The complete spec for the counter contract from [Build a Counter](/tutorials/bui
   "type_defs": [
     {
       "kind": "enum",
-      "name": "Error",
+      "name": "CounterError",
       "variants": [{ "name": "NotAuthorized", "value": 1 }]
     }
   ],
-  "events": []
+  "events": [
+    {
+      "name": "PingEvent",
+      "signature": "f0c8fa264c489d9d6bc8796daa7d6ab408d76b37ef41b6d6d951e20f63d10f52",
+      "topics": [{ "name": "tag", "type": { "kind": "u64" } }],
+      "fields": []
+    }
+  ]
 }
 ```
 
@@ -94,7 +111,7 @@ Each interface entry corresponds to one `#[contract]` trait or inherent impl:
 | `throws` | Error types any method of this interface may throw, with their selectors. See [Errors](#errors). |
 | `methods` | The exported methods, sorted by name. |
 
-Each method lists its `name`, `args` (each `{ "name", "ty" }`), and `return_type`.
+Each method lists its `name`, `args` (each `{ "name", "type" }`), and `return_type`.
 
 Entrypoint IDs are **not** stored in the spec. Clients derive them deterministically from the interface name, the major version, and the normalized method signature. See [Contracts](/how-it-works/contracts/) for entrypoint encoding details.
 
@@ -150,7 +167,7 @@ pub struct Payload {
 {
   "kind": "struct",
   "name": "Payload",
-  "fields": [{ "name": "count", "ty": { "kind": "u32" } }]
+  "fields": [{ "name": "count", "type": { "kind": "u32" } }]
 }
 ```
 
@@ -201,7 +218,7 @@ pub enum Envelope {
       "discriminant": 1,
       "case_type": {
         "kind": "struct",
-        "fields": [{ "name": "payload", "ty": { "kind": "named", "name": "Payload" } }]
+        "fields": [{ "name": "payload", "type": { "kind": "named", "name": "Payload" } }]
       }
     },
     {
@@ -230,10 +247,10 @@ Each entry in `events` describes one event the contract declares. Inclusion work
   "name": "TransferEvent",
   "signature": "5ff62377bf52711e75461f4d8f9b4585f17d1c20f7e1eceb280194a7764bae5f",
   "topics": [
-    { "name": "from", "ty": { "kind": "address" } },
-    { "name": "to", "ty": { "kind": "address" } }
+    { "name": "from", "type": { "kind": "address" } },
+    { "name": "to", "type": { "kind": "address" } }
   ],
-  "fields": [{ "name": "amount", "ty": { "kind": "u128" } }]
+  "fields": [{ "name": "amount", "type": { "kind": "u128" } }]
 }
 ```
 

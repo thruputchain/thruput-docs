@@ -62,9 +62,9 @@ groundhog config get devnet --sources
 
 Use `groundhog config new`, `set`, `unset`, and `use` for routine profile management instead of editing TOML. See [Groundhog CLI configuration](/tools/groundhog-cli/#configuration) for merge behavior, selection precedence, and mutation scope.
 
-### Create a Devnet Wallet
+### Optional: Create a Devnet Wallet
 
-For a fresh installation, create a globally reusable wallet for the selected `default` key from outside a Groundhog project:
+Skip this section if you are starting with local development. To prepare for the hosted Devnet tutorial, create a globally reusable wallet for the selected `default` key from outside a Groundhog project:
 
 ```bash
 groundhog wallet create --profile devnet
