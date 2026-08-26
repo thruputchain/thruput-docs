@@ -173,7 +173,24 @@ const receiptOutcome = Counter.get.decodeReceiptOutcome(receipt);
 
 `decodeReceipt()` returns the typed value with `txHash`, `height`, and `events`. It throws `ContractReceiptError` for an abort, execution failure, or missing return data from a non-void method. `decodeReceiptOutcome()` returns a discriminated `return`, `abort`, or `failure` result. Both can throw `ContractDecodeError` for malformed data.
 
-These APIs require a receipt known to come from a transaction whose root invocation called that method. The descriptor cannot verify the root method identity and does not inspect nested application invocations inside a wallet call.
+These APIs require a receipt known to come from a transaction whose root invocation called that method. The descriptor cannot verify the root method identity.
+
+For a DefaultWallet transaction, decode the root `DefaultWallet.execute` receipt first. It returns one raw return buffer per child call. Then use each child method's generated `decodeReturn()` method:
+
+```ts
+import { DefaultWallet } from "@groundhogchain/client/contracts";
+
+const root = DefaultWallet.execute.decodeReceipt(receipt);
+const childReturn = root.value[0];
+
+if (!childReturn) {
+  throw new Error("Expected one child return");
+}
+
+const childValue = Counter.get.decodeReturn(childReturn);
+```
+
+This deserialization is generated from the Rust contract specification. It is not necessary to construct an XDR reader or codec manually. The application selects the descriptor because it knows which child calls it submitted; the receipt does not contain enough TypeScript method identity for the client to choose one automatically.
 
 ## Generated Exceptions
 
