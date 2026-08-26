@@ -6,7 +6,7 @@ description: "Reference for the Groundhog contract spec: the machine-readable in
 Every Groundhog contract carries a **spec**: a machine-readable description of its interfaces, the types they use, the events they emit, and the errors they throw. The spec is Groundhog's equivalent of an EVM ABI. It is generated at compile time by the SDK macros and consumed by `groundhog codegen ts`, `groundhog call`, indexers, and any other tool that needs to encode calldata or decode results and events.
 
 :::note[Version checked]
-This page was source-checked against Groundhog CLI `0.6.3` and SDK `0.17.9` on August 5, 2026. The TypeScript codegen guidance was checked against CLI codegen `0.9.6` on August 20, 2026.
+This page was checked against the latest tagged CLI, `0.10.2`, and current CLI `0.10.3` source. The tagged CLI scaffolds SDK `0.21.0`; current source scaffolds SDK `0.23.1`.
 :::
 
 ## Where the Spec Lives
@@ -17,11 +17,10 @@ This page was source-checked against Groundhog CLI `0.6.3` and SDK `0.17.9` on A
 |----------|--------|---------|
 | `<artifact>.spec.xdr` sidecar | XDR | Canonical, as a standalone file. Accepted by `groundhog codegen ts`. |
 | `<artifact>.spec.json` sidecar | JSON | Human-readable rendering for inspection and debugging. Not designed to be parsed back. |
-| `groundhogspecv0` custom section inside a `.wasm` | XDR | WASM-only. Lets legacy WASM tooling read the spec from the binary. |
 
 For a contract crate named `counter`, the default RV32 build writes `target/groundhog/counter.rv32a`, `target/groundhog/counter.spec.json`, and `target/groundhog/counter.spec.xdr`.
 
-Under the hood, the SDK macros embed raw spec fragments in the compiled binary. `groundhog build` collects the fragments, canonicalizes them (deduplication, sorting, validation), and writes the sidecars. WASM builds also get a finalized `groundhogspecv0` custom section in the `.wasm`.
+Under the hood, the SDK macros embed raw spec fragments in the compiled binary. `groundhog build` collects the fragments, canonicalizes them (deduplication, sorting, validation), and writes the sidecars.
 
 ## Top-Level Structure
 
@@ -97,7 +96,7 @@ Each interface entry corresponds to one `#[contract]` trait or inherent impl:
 
 Each method lists its `name`, `args` (each `{ "name", "ty" }`), and `return_type`.
 
-Entrypoint IDs are **not** stored in the spec. Clients derive them deterministically from the interface name, the major version, and the normalized method signature. See [Contracts](/how-it-works/contracts/) for how entrypoint IDs are encoded into wasm export names.
+Entrypoint IDs are **not** stored in the spec. Clients derive them deterministically from the interface name, the major version, and the normalized method signature. See [Contracts](/how-it-works/contracts/) for entrypoint encoding details.
 
 :::note[What "major version" means]
 Selectors, event signatures, and entrypoint IDs all hash the interface or crate's *major version*, defined as the leftmost non-zero version component (mirroring Cargo's SemVer-compatibility rule): `1.2.3` → `1`, `0.9.2` → `0.9`, `0.0.2` → `0.0.2`. SemVer-compatible releases therefore keep the same identifiers; a breaking version bump changes all of them.
@@ -293,7 +292,7 @@ See [SDK Macros](/reference/sdk-macros/) for the full macro reference and [Add E
 ## Consuming the Spec
 
 - `groundhog build --bindings ts` generates TypeScript bindings as part of the build.
-- [`groundhog codegen ts`](/tools/typescript-bindings/) accepts a canonical `.spec.xdr` when the binding needs a custom output path. It does not accept `.wasm`, `.rv32a`, or `.spec.json` input.
+- [`groundhog codegen ts`](/tools/typescript-bindings/) accepts a canonical `.spec.xdr` when the binding needs a custom output path. It does not accept an artifact or `.spec.json` input.
 - `groundhog call` uses local contract metadata when it can resolve it from the project or artifact.
 - Indexers and explorers can read the `.spec.json` sidecar to label methods and decode events.
 
