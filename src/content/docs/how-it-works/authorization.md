@@ -31,12 +31,12 @@ struct SignedTransaction {
 The source address is the root invocation's `invoked_address`. Every transaction signature covers this preimage:
 
 ```text
-cxs(DomainSeparator("Transaction")) || networkHash || xdr(transaction)
+cxs(DomainSeparator("Transaction")) || networkHash || txs(transaction)
 ```
 
-The domain separator prevents a transaction signature from being interpreted as a signature over another object. The network hash binds the signature to one Groundhog network and prevents cross-network replay.
+`txs(value)` denotes its standard XDR encoding. The domain separator prevents a transaction signature from being interpreted as a signature over another object. The network hash binds the signature to one Groundhog network and prevents cross-network replay.
 
-The canonical transaction hash is `sha256(xdr(transaction))`. It identifies the inner transaction and excludes signatures. It is distinct from both the signature preimage and the encoded `SignedTransaction` wrapper.
+The canonical transaction hash is `sha256(txs(transaction))`. It identifies the inner transaction and excludes signatures. It is distinct from both the signature preimage and the encoded `SignedTransaction` wrapper.
 
 ## Admission Models
 
