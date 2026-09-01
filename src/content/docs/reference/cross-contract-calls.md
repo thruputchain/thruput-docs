@@ -193,7 +193,7 @@ match client.try_call_something().unwrap_err().try_decode::<SomeKnownError>() {
 }
 ```
 
-This matters more than "a callee sent garbage" suggests. An exception's selector is `sha256(major_version :: crate :: type)` and says nothing about the payload's layout, so a callee that **adds a variant** to an exception enum makes a semver-compatible change that leaves the selector unchanged — and an older caller cannot decode the result. Through `try_as` that is indistinguishable from an error type the caller has never heard of. If confusing the two would change a decision your contract makes, ask `try_decode`.
+This matters more than "a callee sent garbage" suggests. An exception's selector is the first 8 bytes of `sha256(major_version :: crate :: type)` and says nothing about the payload's layout, so a callee that **adds a variant** to an exception enum makes a semver-compatible change that leaves the selector unchanged — and an older caller cannot decode the result. Through `try_as` that is indistinguishable from an error type the caller has never heard of. If confusing the two would change a decision your contract makes, ask `try_decode`.
 
 The reverse direction is not detectable at all: decoding reads a *prefix*, so a callee that **appends a field** to a struct exception is accepted silently by an older caller, which decodes the shorter shape and drops the extra data.
 
