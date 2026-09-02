@@ -82,7 +82,6 @@ export default defineConfig({
             "reference/contract-spec",
             "reference/error-handling",
             "reference/cross-contract-calls",
-            "reference/xdr-protocol",
             "reference/json-rpc-api",
           ],
         },
@@ -92,11 +91,7 @@ export default defineConfig({
         },
         {
           label: "Community",
-          items: [
-            "community/contributing",
-            "community/security",
-            "community/roadmap",
-          ],
+          items: ["community/security"],
         },
       ],
     }),
