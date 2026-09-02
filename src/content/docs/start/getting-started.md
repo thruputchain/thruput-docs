@@ -83,6 +83,10 @@ cargo test
 groundhog build
 ```
 
+:::caution[Native tests need the executor download credentials]
+`cargo test` builds the SDK's native test executor, which during early access is downloaded from a credential-gated URL. Export `HOGD_FFI_PASSWORD` (from your onboarding instructions) before running `cargo test`, or store the credentials with `groundhog init` and run `groundhog test`, which passes them to Cargo for you. Without them the build fails with an HTTP 401 while fetching `libtest_ffi`. `groundhog build` and RV32 contract builds do not need the download.
+:::
+
 You now have a working counter contract with passing native tests and a deployable RV32 artifact under `target/groundhog/`. The CLI also offers a `stub` template (`groundhog new my-contract --template stub`) if you want a bare-bones starting point.
 
 The scaffold creates `.gitignore` entries for `/target/` and `/.groundhog/`.
