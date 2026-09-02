@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.12.0`, whose generated project uses SDK `0.27.0`. The matching standard interface crate is `groundhog-erc20-if` `0.1.19`.
+This tutorial starts from CLI `0.13.0`, whose generated project uses SDK `0.27.0`. The matching standard interface crate is `groundhog-erc20-if` `0.1.19`.
 :::
 
 ## 1. Create the Project
@@ -33,11 +33,13 @@ Now make two edits to the generated `Cargo.toml`. Extend the `dev` feature so it
 dev = ["sdk/dev", "groundhog-erc20-if/dev"]
 ```
 
-and add the interface crate next to the generated `sdk` dependency:
+and add the interface crate. The generated manifest declares `sdk` twice, once
+per target, because it needs `std` on the host and forbids it on the guest.
+`groundhog-erc20-if` needs no such split, so add it as a plain dependency
+rather than editing either `[target.'cfg(...)']` block:
 
 ```toml
 [dependencies]
-sdk = { version = "0.27.0", registry = "groundhog" }
 groundhog-erc20-if = { version = "=0.1.19", registry = "groundhog" }
 ```
 

@@ -8,7 +8,7 @@ description: "How to test Groundhog contracts: native logic tests, RV32 integrat
 Groundhog contracts have three useful test paths:
 
 :::note[Version checked]
-The published CLI, `0.12.0`, scaffolds SDK `0.27.0` and `groundhog-json-rpc-client` `0.12.0`.
+The published CLI, `0.13.0`, scaffolds SDK `0.27.0` and `groundhog-json-rpc-client` `0.12.0`.
 :::
 
 | Command | What it covers | Use for |
