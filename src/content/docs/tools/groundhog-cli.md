@@ -286,7 +286,7 @@ Use `groundhog test --integration` when you want disposable state per test run.
 
 Build before deploying. `groundhog deploy` auto-detects the selected artifact (`.rv32a` by default), signs a deploy transaction with the active key, submits it to the selected profile, and saves a contract alias in `groundhog.toml` when deploy succeeds. If source files are newer than the artifact, it warns so you can rebuild before submitting stale code.
 
-Use `groundhog call` for signed state changes and `groundhog view` for read-only simulation. Add `--from dev-1` to simulate a normal local caller. `groundhog storage` reads one raw committed storage item; prefer contract methods and `groundhog view` when you want typed behavior. `groundhog balance`, `groundhog transfer`, and `groundhog airdrop` cover native HOG account work.
+Use `groundhog call` for signed state changes and `groundhog view` for read-only simulation. `groundhog view` takes `--from dev-1` to set the simulated caller. `groundhog call` signs with the active key instead, so pick the caller with `--wallet`; `--from` on a signed command belongs to `groundhog transfer`, which uses it to select the source wallet. `groundhog storage` reads one raw committed storage item; prefer contract methods and `groundhog view` when you want typed behavior. `groundhog balance`, `groundhog transfer`, and `groundhog airdrop` cover native HOG account work.
 
 The target is optional for these commands:
 
