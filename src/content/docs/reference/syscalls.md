@@ -59,6 +59,22 @@ Errors:
 
 Finalizes the SHA-256 hash computation at the specified index, returns the digest, and removes the buffer.
 
+### SHA256Copy
+
+| | |
+|---|---|
+| **Number** | 33 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| in | `src_index` | `u32` |
+| in | `dst_index` | `u32` |
+
+Errors:
+- `InvalidSyscallInput` if the hash computation at `src_index` does not exist, or if `dst_index` does not already hold a hash computation and there are too many active hash buffers.
+
+Copies the in-progress SHA-256 hash computation at `src_index` to `dst_index`, replacing any hash computation already at `dst_index`. Both computations can then be extended and finalized independently. Copying an index onto itself succeeds and changes nothing.
+
 ## Calldata
 
 ### GetCalldataLen
@@ -553,6 +569,40 @@ Deploys a contract with the specified nonce and contract hash at the computed ad
 Errors: none beyond the universal `Fault` / `NoSyscall`.
 
 Returns the current block height.
+
+### GetBlockTimepoint
+
+| | |
+|---|---|
+| **Number** | 35 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| out | `block_timepoint` | `TimePoint` |
+
+Errors: none beyond the universal `Fault` / `NoSyscall`.
+
+Returns the timepoint of the block currently executing. The value is fixed by the coordinator before execution begins and is carried in the block's `ProposalHeader`, so it is part of the block identity and is identical for every invocation in the block.
+
+Like a block height, this is consensus data rather than a trusted clock: it is chosen by the proposer within whatever bounds the network's validators enforce. Contracts should treat it as coarse-grained wall-clock time, suitable for expiries, vesting schedules, and deadlines, and must not rely on it for fine-grained ordering or as a source of randomness.
+
+## Network
+
+### GetNetworkHash
+
+| | |
+|---|---|
+| **Number** | 34 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| out | `network_hash` | `NetworkHash` |
+
+Errors: none beyond the universal `Fault` / `NoSyscall`.
+
+Returns the hash of the network name, the identifier that separates this network's blocks from those of every other network. It is fixed for the life of the network, so it is constant across every block and every invocation.
+
+Transaction signatures already commit to this value (the signature preimage is `cxs(DomainSeparator("Transaction")) || network_hash || xdr(tx)`). Exposing it to contracts lets a contract bind its own off-chain signed messages to this network the same way, so a message signed for one network cannot be replayed against a contract at the same address on another.
 
 ## Transaction
 
