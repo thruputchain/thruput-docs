@@ -71,7 +71,7 @@ Create the generated counter project and select the local development account:
 groundhog new my-counter
 cd my-counter
 
-groundhog config set default-key dev-0 \
+groundhog config set default-key dev-1 \
   --profile local \
   --project
 ```
@@ -320,7 +320,7 @@ Accounts loaded by `loadLocalDevAccount()` are existing source-address accounts 
 
 For additional implementation references, see the maintained client examples:
 
-- [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts). This targets the planned wire `3.3.0` Devnet deployment and is not runnable against the older public endpoint.
+- [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts).
 - [Deploy and call a counter](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts)
 
 For the current integration boundary, see [Wallet Integration Status](/tools/wallet-integration/).

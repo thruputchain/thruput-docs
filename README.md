@@ -21,8 +21,9 @@ Markdown files live in `src/content/docs/`, organized by section. The sidebar is
 | Tutorials | `start/`, `tutorials/` | Getting Started + step-by-step contract builds |
 | Tools | `tools/` | TypeScript SDK, block explorer, wallet, faucet |
 | How It Works | `how-it-works/` | Architecture, execution model, contracts |
+| Programming Model | `programming-model/` | Execution, storage types, NNInt, testing, advanced patterns |
 | Reference | `reference/` | Storage types, syscalls, SDK macros, error handling |
-| Migration Guides | `migration/` | Stellar, EVM, Solana migration paths |
+| Ecosystem Guides | `ecosystem/` | EVM, Solana, Stellar comparison guides |
 | Community | `community/` | Contributing, security, roadmap |
 
 ## Adding a Page
@@ -31,3 +32,10 @@ Markdown files live in `src/content/docs/`, organized by section. The sidebar is
 2. Add frontmatter with `title` and `description`
 3. Add the slug to the sidebar array in `astro.config.mjs`
 4. Run `pnpm build` to verify
+
+## Deployment
+
+The site is a static build served by Caddy on Railway. `Caddyfile` serves
+`dist/` on `$PORT`, answers `/health`, and applies the response headers; the
+site is public and has no authentication. Push to `main` and the Railway
+service rebuilds with `pnpm build`.
