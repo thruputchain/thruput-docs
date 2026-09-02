@@ -5,7 +5,7 @@ description: Calling other contracts from your contract.
 
 ## Client Generation
 
-The `#[contract]` macro generates a client struct when you specify the `client` parameter. The client mirrors every public method on the trait or impl block.
+The `#[contract]` macro generates a client struct by default, named `{Interface}Client`: `ERC20Client` for a trait `ERC20`, `CounterClient` for an inherent impl on `Counter`. The `client = ...` parameter only overrides that name. The client mirrors every public method on the trait or impl block.
 
 For exact macro behavior, see [`#[contract]` Rustdoc](https://groundhog.dev/docs/sdk/latest/sdk/attr.contract.html) or [SDK Macros](/reference/sdk-macros/#contract).
 
@@ -35,7 +35,7 @@ For each method `foo`, the generated client provides:
 | Method | Signature | On error |
 |--------|-----------|----------|
 | `foo(...)` | Same return type as the trait method | Re-throws. Your contract aborts too. |
-| `try_foo(...)` | `Result<T, {Client}Error>` | Returns the error for inspection. |
+| `try_foo(...)` | `Result<T, CallError>` | Returns the error for inspection. |
 
 ## Making Calls
 
@@ -51,7 +51,7 @@ Client methods take `&self` (not `&mut self`). Clients are lightweight value typ
 
 ## Gas Limits
 
-Use `with_gas_limit` to cap how much computation the callee can perform. It returns a new client instance (non-mutating).
+Use `with_gas_limit` to cap how much computation the callee can perform. It returns a client with the limit set.
 
 ```rust
 let token = ERC20Client::new(&token_addr);
@@ -61,14 +61,14 @@ capped.transfer(&recipient, 100);
 
 The default gas limit is `u64::MAX` (no effective cap). Gas is metered but free. Limits prevent runaway computation. See [Execution Model](/programming-model/execution/#gas) for details.
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `new(address)` | `fn new(&ContractAddress) -> Self` | Create a client for the given contract address. |
-| `with_gas_limit(gas_limit)` | `fn with_gas_limit(&self, u64) -> Self` | Return a new client with the specified gas limit. |
-| `with_commit_locking()` | `fn with_commit_locking(self) -> Self` | Ask the child frame to acquire its commit locks before returning, so a `try_` call can handle a conflict. |
-| `with_read_only()` | `fn with_read_only(self) -> Self` | Prevent the child frame from modifying state. |
+| Method | Description |
+|--------|-------------|
+| `new(address)` | Create a client for the given contract address. |
+| `with_gas_limit(gas_limit)` | Return a client with the specified gas limit. |
+| `with_commit_locking()` | Return a client whose calls ask the child frame to acquire its commit locks before returning, so a `try_` call can handle a conflict. |
+| `with_read_only()` | Return a client whose calls prevent the child frame from modifying state. |
 
-`with_commit_locking()` and `with_read_only()` consume the client and return the configured value. They can be combined:
+`with_commit_locking()` and `with_read_only()` each return a client with the flag set. They can be combined:
 
 ```rust
 let result = ERC20Client::new(&token_addr)
@@ -128,7 +128,7 @@ pub enum CallError {
 | Variant | When it appears |
 |---------|-----------------|
 | `Exception(RawException)` | The callee threw. Any exception type — declared in `throws` or not, including the SDK's own `LibraryExn`. |
-| `Fault(FaultString)` | The callee panicked. Contains a debug message when the `debugging` feature is enabled. |
+| `Fault(FaultString)` | The callee panicked. On host targets the string carries a debug message; RV32 guest builds omit the message text. |
 | `Invalid` | The call could not be made (e.g. invalid contract address before the call dispatched). |
 | `UnparseableReturn(FaultString)` | The callee committed but its return buffer could not be decoded as the expected type. |
 | `UnparseableAbort(FaultString)` | The callee aborted but the abort payload could not be parsed. |

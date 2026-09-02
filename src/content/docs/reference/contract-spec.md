@@ -6,7 +6,7 @@ description: "Reference for the Groundhog contract spec: the machine-readable in
 Every Groundhog contract carries a **spec**: a machine-readable description of its interfaces, the types they use, the events they emit, and the errors they throw. The spec is Groundhog's equivalent of an EVM ABI. It is generated at compile time by the SDK macros and consumed by `groundhog codegen ts`, `groundhog call`, indexers, and any other tool that needs to encode calldata or decode results and events.
 
 :::note[Version checked]
-This page was checked against the latest tagged CLI, `0.10.2`, and current CLI `0.10.3` source. The tagged CLI scaffolds SDK `0.21.0`; current source scaffolds SDK `0.23.1`.
+This page was checked against the latest tagged CLI, `0.12.0`, which scaffolds SDK `0.27.0`, on September 2, 2026.
 :::
 
 ## Where the Spec Lives
@@ -290,7 +290,7 @@ The selector is the first 8 bytes of the same hash construction used for event s
 selector = sha256(MAJOR_VERSION ++ "::" ++ CRATE_NAME ++ "::" ++ TYPE_NAME)[0..8]
 ```
 
-Unlike event signatures, selectors are rendered with a `0x` prefix. When a contract throws, the exception payload is tagged with the selector. Clients use the spec to map a selector back to its named type and decode the payload; unrecognized selectors surface as `Unknown` in generated clients (see [SDK Macros](/reference/sdk-macros/#contract)).
+Unlike event signatures, selectors are rendered with a `0x` prefix. When a contract throws, the exception payload is tagged with the selector. Clients use the spec to map a selector back to its named type and decode the payload. A Rust client keeps an unrecognized selector undecoded inside `CallError::Exception`, where it falls through to the `_` arm of `match_exn!` (see [Cross-Contract Calls](/reference/cross-contract-calls/#callerror)); the TypeScript client surfaces it as `UnknownContractException`.
 
 ## How Code Surfaces Into the Spec
 

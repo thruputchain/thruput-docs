@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.10.2`, whose generated project uses SDK `0.21.0` and `groundhog-erc20-if` `0.1.12`.
+This tutorial starts from CLI `0.12.0`, whose generated project pins SDK `0.27.0`, and adds `groundhog-erc20-if` `0.1.19` from the same SDK release. The `[features]` block below follows current CLI source after `0.12.0`, which no longer generates the `rv32-entrypoints` alias or `default = ["dev"]`.
 :::
 
 ## 1. Create the Project
@@ -26,18 +26,16 @@ The generated RV32 wrapper and Groundhog profiles can remain unchanged. This tut
 rm tests/test_rv32.rs
 ```
 
-Add the matching standard interface dependency and extend the generated `dev` feature in `Cargo.toml`:
+Add the matching standard interface dependency and extend the generated `dev` feature in `Cargo.toml`. Leave the generated `sdk` dependency entries alone: they pin the SDK release the CLI was built for (currently `0.27.0`), and the optional RPC-test dependencies stay host-only.
 
 ```toml
 [features]
 entrypoints = []
-rv32-entrypoints = ["entrypoints"]
-default = ["dev"]
 dev = ["sdk/dev", "groundhog-erc20-if/dev"]
+groundhog-integration-test = ["dep:groundhog-json-rpc-client", "dep:tokio"]
 
 [dependencies]
-sdk = { version = "0.21.0", registry = "groundhog" }
-groundhog-erc20-if = { version = "=0.1.12", registry = "groundhog" }
+groundhog-erc20-if = { version = "=0.1.19", registry = "groundhog" }
 
 [dev-dependencies]
 erc20 = { path = ".", features = ["dev"] }
@@ -45,7 +43,7 @@ erc20 = { path = ".", features = ["dev"] }
 
 The interface crate is the source of truth for:
 
-- `ERC20`, `ERC20Client`, and generated client errors
+- `ERC20` and `ERC20Client`
 - `Amount = u128` and `Difference = i128`
 - `ERC20Error`
 - `TransferEvent`, `ApprovalEvent`, and their logging helpers
@@ -315,7 +313,7 @@ static NONCE: SHA256Hash = sdk::sha256_static!("ERC20_TUTORIAL_NONCE");
 fn transfer_updates_balances_and_supply() {
     let env = TestEnvironment::no_cost();
     let test_contract = register_mock_contract(&env);
-    let contract_hash = test_contract.as_hash().clone();
+    let contract_hash = *test_contract.as_hash();
 
     let alice = ContractAddress::named("alice");
     let bob = ContractAddress::named("bob");

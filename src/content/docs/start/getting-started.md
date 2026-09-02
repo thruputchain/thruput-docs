@@ -15,7 +15,7 @@ That said, the CLI is a convenience, not a requirement. You can also:
 The CLI is just a consumer of the SDK. It generates the same Rust crate you'd write by hand: a standard Cargo project that depends on the SDK and uses its storage types and macros. Normal `cargo build` and `cargo test` target the host. `groundhog build` and `groundhog test` target RV32 by default.
 
 :::note[Version checked]
-The latest tagged CLI release is `0.10.2`. Its generated projects use SDK `0.21.0` and `groundhog-json-rpc-client` `0.9.6`. Current CLI `0.10.3` source uses SDK `0.23.1` and RPC client `0.10.2`, but that CLI release is not available yet.
+The latest tagged CLI release is `0.12.0` (September 1, 2026). Its generated projects pin SDK `0.27.0` and `groundhog-json-rpc-client` `0.12.0` on toolchain `nightly-2026-07-01`. The latest Groundhog client bundle, `0.1.26`, still ships CLI `0.11.1`. The crate layout described on this site follows current CLI source after `0.12.0`, which drops the `cdylib` crate type, the `rv32-entrypoints` alias feature, and `dev` as a default feature.
 :::
 
 ## Configure Cargo and Install
@@ -28,7 +28,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # Install the published CLI from the private registry
 cargo install groundhog-cli \
-  --version "=0.10.2" \
+  --version "=0.12.0" \
   --registry groundhog \
   --locked
 ```
@@ -118,16 +118,16 @@ For a command-by-command map, including the Foundry/Anvil mental model for local
 The effective Cargo build is:
 
 ```bash
-cargo build \
+cargo --config .cargo/contract.toml build \
   --release \
   --no-default-features \
-  --features rv32-entrypoints \
+  --features entrypoints \
   --target riscv32im-unknown-none-elf \
   -p my-counter \
   --bin my_counter
 ```
 
-Then the CLI lowers the ELF into the `.rv32a` artifact consumed by the node.
+`.cargo/contract.toml` is a CLI-only Cargo overlay that enables `build-std` for the RV32 target. Then the CLI lowers the ELF into the `.rv32a` artifact consumed by the node.
 
 ### Integration Tests
 
