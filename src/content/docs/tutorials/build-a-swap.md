@@ -8,9 +8,26 @@ This source walkthrough studies the SDK's UniswapV2-style pair contract: two res
 **Prerequisites:** Complete [Build a Token](/tutorials/build-a-token/) first. The pair deploys an ERC-20-compatible contract whose code hash is supplied to `initialize`.
 
 :::note[Source status]
-This page was source-checked against `sdk_rs/example-contracts/swap` and SDK `0.17.9` on August 5, 2026. The product-facing `groundhog-examples` repository now contains a larger split-contract design (`swap-pair`, `swap-factory`, `swap-router`, `swap-handler`, and `swap-driver`) on SDK `0.17.5`. This walkthrough stays with the smaller SDK pair contract because its purpose is to explain the pair mechanics in isolation.
+**The crate this page was written against no longer exists.** It walked
+through `sdk_rs/example-contracts/swap` (SDK `0.17.9`, checked August 5,
+2026); that directory has since been removed from the SDK, so none of the
+file paths below resolve.
 
-The excerpts below are not a complete standalone crate. Use the SDK copy for the current big-number module, events, Cargo configuration, companion token contract, and full test harness.
+The excerpts are kept because the pair mechanics they explain — the
+constant-product invariant, LP minting and burning, the reserve accounting —
+are still how the design works, and explaining them on one contract is
+clearer than on the split version. Treat the code as illustrative rather
+than as something to open.
+
+For contracts you can actually build and run, see the swap workspace in
+[`groundhog-examples`](https://github.com/groundhogchain/groundhog-examples):
+`contracts/swap-router`, `contracts/swap-factory`, `contracts/swap-handler`,
+`contracts/swap-driver`, and the pair implementation at
+`engines/swap-pair/src/pair.rs`, with the design written up in
+[`docs/README-swap.md`](https://github.com/groundhogchain/groundhog-examples/blob/main/docs/README-swap.md).
+That design differs from this page in one structural way worth knowing before
+you read across: the pair is no longer a deployed contract of its own but an
+engine the handler runs inside its own invocation.
 :::
 
 ## What You'll Build
@@ -445,7 +462,7 @@ Cross-contract calls contribute all nested events to the transaction result. Ass
 
 ## Closing Notes
 
-The selected excerpts are adapted from the real `example-contracts/swap` crate. The full source includes:
+The selected excerpts are adapted from the `example-contracts/swap` crate as it stood in SDK 0.17.9. That crate also contained:
 
 - `Reserves::update`, which advances the cumulative-price oracle using a `UQ112x112` fixed-point representation
 - `skim` and `sync`, the UniswapV2 reconciliation helpers
@@ -453,7 +470,9 @@ The selected excerpts are adapted from the real `example-contracts/swap` crate. 
 - Custom `U112` / `U256` types in `src/bignum/`
 - A full integration test harness in `tests/common/`
 
-Read `example-contracts/swap/src/swapv2_pair.rs` end to end, then use its workspace tests for the omitted wiring and helpers.
+For a version you can read, build and test today, start from
+[`engines/swap-pair/src/pair.rs`](https://github.com/groundhogchain/groundhog-examples/blob/main/engines/swap-pair/src/pair.rs)
+in `groundhog-examples` and follow its callers in `contracts/swap-handler`.
 
 ## Next Steps
 
