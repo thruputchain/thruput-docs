@@ -123,7 +123,7 @@ cargo \
   build \
   --release \
   --no-default-features \
-  --features rv32-entrypoints \
+  --features entrypoints \
   --target riscv32im-unknown-none-elf \
   -p my-counter \
   --bin my_counter
