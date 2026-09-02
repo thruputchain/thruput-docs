@@ -25,6 +25,17 @@ Markdown files live in `src/content/docs/`, organized by section. The sidebar is
 | Migration Guides | `migration/` | Stellar, EVM, Solana migration paths |
 | Community | `community/` | Contributing, security, roadmap |
 
+## Deployment
+
+The site is deployed to Railway. CI (`.github/workflows/ci.yml`) runs `pnpm install --frozen-lockfile`, `pnpm astro check`, and `pnpm build` on every push and PR to `main`; the deployment serves the `dist/` output that build produces.
+
+The repo carries two static-serving configs and does not record which one Railway uses. That choice lives in the Railway service settings, not here.
+
+- `Caddyfile` serves `/app/dist` on `$PORT` with `try_files` for extensionless URLs, gzip/zstd compression, security headers, a custom 404 page, and an unauthenticated `/health` endpoint. Everything else sits behind `basic_auth`, configured through the `BASIC_AUTH_USER` and `BASIC_AUTH_HASH` environment variables.
+- `Staticfile` contains a single `index_fallback: false` line, the config format read by static-site buildpacks.
+
+If the Caddyfile is the live config, the `basic_auth` block is the gate that has to come down before the docs are public.
+
 ## Adding a Page
 
 1. Create a `.md` file in the appropriate `src/content/docs/<section>/` directory
