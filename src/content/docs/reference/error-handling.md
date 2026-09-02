@@ -168,6 +168,7 @@ Every public SDK function whose name starts with `try_` reports its own failures
 | `StorageKeypathOverflow` | 10 | A no-allocation storage keypath exceeded its fixed budget |
 | `RetrocausalQueueEntryWrongSize { expected, found }` | 11 | A fixed-size queue read found a different entry length |
 | `CapacityConstraintAlreadyWritten` | 12 | `set_capacity` followed an incompatible write in the same transaction |
+| `UnknownMethod` | 13 | The callee has no entrypoint for the invoked method ID |
 
 `LibraryExn` is `#[non_exhaustive]`: when matching, always include a wildcard arm.
 

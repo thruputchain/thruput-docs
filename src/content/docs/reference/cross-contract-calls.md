@@ -5,7 +5,7 @@ description: Calling other contracts from your contract.
 
 ## Client Generation
 
-The `#[contract]` macro generates a client struct when you specify the `client` parameter. The client mirrors every public method on the trait or impl block.
+The `#[contract]` macro always generates a client struct, named `{Interface}Client` unless you override it with `client = CustomName`. The client mirrors every public method on the trait or impl block.
 
 For exact macro behavior, see [`#[contract]` Rustdoc](https://groundhog.dev/docs/sdk/latest/sdk/attr.contract.html) or [SDK Macros](/reference/sdk-macros/#contract).
 
@@ -35,7 +35,7 @@ For each method `foo`, the generated client provides:
 | Method | Signature | On error |
 |--------|-----------|----------|
 | `foo(...)` | Same return type as the trait method | Re-throws. Your contract aborts too. |
-| `try_foo(...)` | `Result<T, {Client}Error>` | Returns the error for inspection. |
+| `try_foo(...)` | `Result<T, CallError>` | Returns the error for inspection. Match it with `match_exn!`, or decode it with `try_as` / `try_decode`. |
 
 ## Making Calls
 
@@ -128,7 +128,7 @@ pub enum CallError {
 | Variant | When it appears |
 |---------|-----------------|
 | `Exception(RawException)` | The callee threw. Any exception type — declared in `throws` or not, including the SDK's own `LibraryExn`. |
-| `Fault(FaultString)` | The callee panicked. Contains a debug message when the `debugging` feature is enabled. |
+| `Fault(FaultString)` | The callee panicked. `FaultString` carries a human-readable message on host builds and nothing on a guest; it encodes to zero bytes either way. |
 | `Invalid` | The call could not be made (e.g. invalid contract address before the call dispatched). |
 | `UnparseableReturn(FaultString)` | The callee committed but its return buffer could not be decoded as the expected type. |
 | `UnparseableAbort(FaultString)` | The callee aborted but the abort payload could not be parsed. |
