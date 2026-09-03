@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.12.0`, whose generated project pins SDK `0.27.0`, and adds `groundhog-erc20-if` `0.1.19` from the same SDK release. The `[features]` block below follows current CLI source after `0.12.0`, which no longer generates the `rv32-entrypoints` alias or `default = ["dev"]`.
+This tutorial starts from CLI `0.13.0`, whose generated project pins SDK `0.27.0`, and adds `groundhog-erc20-if` `0.1.19` from the same SDK release.
 :::
 
 ## 1. Create the Project
