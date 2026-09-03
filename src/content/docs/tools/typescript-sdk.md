@@ -22,9 +22,9 @@ Install the coordinated package set:
 
 ```bash
 NODE_AUTH_TOKEN="$(gh auth token)" npm install \
-  @groundhogchain/client@0.4.0 \
-  @groundhogchain/protocol@0.8.0 \
-  @groundhogchain/contract-spec@0.8.0
+  @groundhogchain/client@0.5.1 \
+  @groundhogchain/protocol@0.10.0 \
+  @groundhogchain/contract-spec@0.10.0
 ```
 
 ## Connect to a Cluster
