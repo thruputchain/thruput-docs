@@ -267,7 +267,7 @@ The signature is computed as:
 signature = sha256(MAJOR_VERSION ++ "::" ++ CRATE_NAME ++ "::" ++ TYPE_NAME)
 ```
 
-where `CRATE_NAME` is the crate that defines the event type and `MAJOR_VERSION` is its major version. For `TransferEvent` defined in `groundhog-erc20-if` (currently `0.1.19`): `sha256("0.1::groundhog-erc20-if::TransferEvent")` = `5ff62377…` above. Only the major component enters the hash, so patch releases of the interface crate keep the same signature.
+where `CRATE_NAME` is the crate that defines the event type and `MAJOR_VERSION` is its major version. For `TransferEvent` defined in `groundhog-erc20-if` (currently `0.1.21`): `sha256("0.1::groundhog-erc20-if::TransferEvent")` = `5ff62377…` above. Only the major component enters the hash, so patch releases of the interface crate keep the same signature.
 
 To find instances of an event on chain, query [`groundhog_getEvents`](/reference/json-rpc-api/#groundhog_getevents) with the contract's address and `topic0 = "0x" + signature` (filters always require a contract address).
 
