@@ -3,8 +3,8 @@ title: JSON-RPC API
 description: Groundhog JSON-RPC methods, wire types, and error codes.
 ---
 
-:::caution[Preview]
-The wire format is versioned. Check `groundhog_version.wireFormat` before relying on a response shape; breaking changes bump its major version.
+:::caution[Draft]
+This API is under active development. Method signatures and response formats may change; breaking changes bump the major version of `groundhog_version.wireFormat`.
 :::
 
 :::note[Version checked]
