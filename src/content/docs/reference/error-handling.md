@@ -157,7 +157,7 @@ Every public SDK function whose name starts with `try_` reports its own failures
 |---------|--------------|---------|
 | `Syscall(SyscallExn)` | 0 | A host syscall returned an error (e.g. storage key not found) |
 | `Handling(HandlingError)` | 1 | Error while handling an incoming contract call (decoding args, encoding result) |
-| `Calling(CallingError)` | 2 | Error while making an outgoing contract call (encoding args, decoding result) |
+| `Calling(CallingError)` | 2 | Error while making an outgoing contract call: encoding args, decoding the result, or the runtime refusing the invoke as reentrant (`Reentrance`) or past the cross-invoke depth bound (`DepthExceeded`) |
 | `Called(FaultString)` | 3 | The called contract reverted |
 | `AuthToken(AuthTokenError)` | 4 | Error encoding or consuming an authorization token |
 | `BytestringWrongSize { expected, found }` | 5 | A fixed-size bytestring read found a different length |
