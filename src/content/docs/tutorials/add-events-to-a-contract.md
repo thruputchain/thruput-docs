@@ -73,8 +73,9 @@ pub use implementation::CounterIncremented;
 Every event emitted during a test transaction is captured on the `TransactResult` that `env.transact` returns. Add to `tests/test.rs`:
 
 ```rust
-use counter::{register_mock_contract, CounterClient, CounterIncremented};
 use sdk::*;
+
+use counter::{CounterClient, CounterIncremented, register_mock_contract};
 
 static NONCE: SHA256Hash = sdk::sha256_static!("COUNTER_NONCE");
 

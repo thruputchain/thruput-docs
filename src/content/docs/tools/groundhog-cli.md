@@ -6,7 +6,7 @@ description: How Groundhog CLI commands fit into RV32 builds, local nodes, tests
 Run normal Rust loops with `cargo`. Run Groundhog-specific work with `groundhog`: scaffolds, RV32 artifacts, local nodes, deployments, RPC calls, state inspection, keys, wallets, and generated bindings. RV32 is Groundhog's 32-bit RISC-V contract target.
 
 :::note[Version checked]
-The latest tagged CLI release is `0.13.0` (September 2, 2026). Its generated project pins SDK `0.27.0` and `groundhog-json-rpc-client` `0.12.0`. The latest Groundhog client bundle, `0.1.26`, still ships CLI `0.11.1` and `hog-devnode` `0.1.26`; that CLI's scaffold declares SDK `0.24.1` and RPC client `0.11.0`. Command behavior on this page was source-checked on August 31, 2026 against CLI `0.11.1`.
+The latest tagged CLI release is `0.14.0` (September 4, 2026). Its generated project pins SDK `0.29.0` and `groundhog-json-rpc-client` `0.13.0`. The latest Groundhog client bundle, `0.1.26`, still ships CLI `0.11.1` and `hog-devnode` `0.1.26`; that CLI's scaffold declares SDK `0.24.1` and RPC client `0.11.0`. Command behavior on this page was source-checked on August 31, 2026 against CLI `0.11.1`.
 :::
 
 ## Foundry Mental Model

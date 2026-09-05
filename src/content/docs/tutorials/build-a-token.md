@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.13.0`, whose generated project pins SDK `0.27.0`, and adds `groundhog-erc20-if` `0.1.19` from the same SDK release.
+This tutorial starts from CLI `0.14.0`, whose generated project pins SDK `0.29.0`, and adds `groundhog-erc20-if` `0.1.19`. The `groundhog-erc20-if` pin was checked against SDK `0.27.0` and not re-checked for `0.29.0`.
 :::
 
 ## 1. Create the Project
@@ -26,7 +26,7 @@ The generated RV32 wrapper and Groundhog profiles can remain unchanged. This tut
 rm tests/test_rv32.rs
 ```
 
-Add the matching standard interface dependency and extend the generated `dev` feature in `Cargo.toml`. Leave the generated `sdk` dependency entries alone: they pin the SDK release the CLI was built for (currently `0.27.0`), and the optional RPC-test dependencies stay host-only.
+Add the matching standard interface dependency and extend the generated `dev` feature in `Cargo.toml`. Leave the generated `sdk` dependency entries alone: they pin the SDK release the CLI was built for (currently `0.29.0`), and the optional RPC-test dependencies stay host-only.
 
 ```toml
 [features]
