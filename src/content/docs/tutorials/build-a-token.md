@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.14.0`, whose generated project pins SDK `0.29.0`, and adds `groundhog-erc20-if` `0.1.19`. The `groundhog-erc20-if` pin was checked against SDK `0.27.0` and not re-checked for `0.29.0`.
+This tutorial starts from CLI `0.14.0`, whose generated project pins SDK `0.29.0`, and adds `groundhog-erc20-if` `0.1.21` from the same SDK release.
 :::
 
 ## 1. Create the Project
@@ -35,7 +35,7 @@ dev = ["sdk/dev", "groundhog-erc20-if/dev"]
 groundhog-integration-test = ["dep:groundhog-json-rpc-client", "dep:tokio"]
 
 [dependencies]
-groundhog-erc20-if = { version = "=0.1.19", registry = "groundhog" }
+groundhog-erc20-if = { version = "=0.1.21", registry = "groundhog" }
 
 [dev-dependencies]
 erc20 = { path = ".", features = ["dev"] }
