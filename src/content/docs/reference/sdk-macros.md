@@ -4,14 +4,14 @@ description: "Reference for #[contract], #[contract_exception], #[contract_type]
 ---
 
 :::note[Version checked]
-This reference was source-checked against SDK `0.27.0` on September 2, 2026.
+This reference was source-checked against SDK `0.29.0`.
 :::
 
 Rustdoc shortcuts: [`#[contract]`](https://groundhog.dev/docs/sdk/latest/sdk/attr.contract.html), [`#[contract_exception]`](https://groundhog.dev/docs/sdk/latest/sdk/attr.contract_exception.html), [`#[storage]`](https://groundhog.dev/docs/sdk/latest/sdk/attr.storage.html), [`#[contract_type]`](https://groundhog.dev/docs/sdk/latest/sdk/attr.contract_type.html), [`#[derive(Event)]`](https://groundhog.dev/docs/sdk/latest/sdk/derive.Event.html), [`#[derive(Deletable)]`](https://groundhog.dev/docs/sdk/latest/sdk/derive.Deletable.html), [`#[derive(ContractTypeSpec)]`](https://groundhog.dev/docs/sdk/latest/sdk/derive.ContractTypeSpec.html), and [`declare_mock_contract!`](https://groundhog.dev/docs/sdk/latest/sdk/macro.declare_mock_contract.html). See [Rust API Docs](/tools/rust-api-docs/) for common SDK links.
 
 ## `#[contract]`
 
-Generates contract entrypoints and a client struct for cross-contract calls and tests. The client's `try_*` methods return `Result<T, CallError>`; there is no per-client error enum.
+Generates contract entrypoints, a client struct for cross-contract calls, and the spec metadata for the declared errors and events.
 
 ### Applies to
 
@@ -53,7 +53,7 @@ The generated client struct provides:
 | Method | Description |
 |--------|-------------|
 | `ClientName::new(&ContractAddress)` | Constructor. |
-| `client.with_gas_limit(u64)` | Returns a client with the gas limit set. |
+| `client.with_gas_limit(u64)` | Returns a new client with the specified gas limit. |
 | `client.with_commit_locking()` | Returns a client whose calls use the runtime's try-invoke commit-locking flag. |
 | `client.with_read_only()` | Returns a client whose calls are rejected if the callee writes storage. |
 | `client.method(args...)` | Calls the contract method. Re-throws on exception. |
@@ -81,7 +81,7 @@ See [Error Handling](/reference/error-handling/) for the full model.
 
 ### Examples
 
-Trait definition with an explicit client name and an error type (`client` only overrides the default `ERC20Client`):
+Trait definition with client and error:
 
 ```rust
 #[contract(client = ERC20Client, throws = ERC20Error)]
@@ -462,7 +462,6 @@ sdk::declare_mock_contract!();
 
 Annotates a user-defined struct or enum so that the SDK knows how to serialize, deserialize, and describe it across contract boundaries. Required for any type used as an argument, return value, or storage value where the SDK needs a typed schema.
 
-The deprecated spelling `#[contracttype]` is still accepted but should not be used in new code.
 
 ### Applies to
 

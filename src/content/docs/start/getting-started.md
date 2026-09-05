@@ -15,7 +15,7 @@ That said, the CLI is a convenience, not a requirement. You can also:
 The CLI is just a consumer of the SDK. It generates the same Rust crate you'd write by hand: a standard Cargo project that depends on the SDK and uses its storage types and macros. Normal `cargo build` and `cargo test` target the host. `groundhog build` and `groundhog test` target RV32 by default.
 
 :::note[Version checked]
-The latest tagged CLI release is `0.14.0` (September 4, 2026). Its generated projects pin SDK `0.29.0` and `groundhog-json-rpc-client` `0.13.0` on toolchain `nightly-2026-07-01`. The latest Groundhog client bundle, `0.1.26`, still ships CLI `0.11.1`.
+The published Groundhog CLI is `0.14.0`. Its generated projects use SDK `0.29.0` and `groundhog-json-rpc-client` `0.13.0`, on the toolchain pinned in the generated `rust-toolchain.toml` (`nightly-2026-07-01`).
 :::
 
 ## Configure Cargo and Install
@@ -83,10 +83,6 @@ cargo test
 groundhog build
 ```
 
-:::caution[Native tests need the executor download credentials]
-`cargo test` builds the SDK's native test executor, which during early access is downloaded from a credential-gated URL. Export `HOGD_FFI_PASSWORD` (from your onboarding instructions) before running `cargo test`, or store the credentials with `groundhog init` and run `groundhog test`, which passes them to Cargo for you. Without them the build fails with an HTTP 401 while fetching `libtest_ffi`. `groundhog build` and RV32 contract builds do not need the download.
-:::
-
 You now have a working counter contract with passing native tests and a deployable RV32 artifact under `target/groundhog/`. The CLI also offers a `stub` template (`groundhog new my-contract --template stub`) if you want a bare-bones starting point.
 
 The scaffold creates `.gitignore` entries for `/target/` and `/.groundhog/`.
@@ -133,7 +129,7 @@ cargo \
   --bin my_counter
 ```
 
-`.cargo/contract.toml` is a CLI-only Cargo overlay that enables `build-std` for the RV32 target. Then the CLI lowers the ELF into the `.rv32a` artifact consumed by the node.
+Then the CLI lowers the ELF into the `.rv32a` artifact consumed by the node.
 
 ### Integration Tests
 

@@ -8,7 +8,7 @@ This tutorial builds an ERC-20-compatible token with transfers, allowances, mint
 **Prerequisites:** Complete [Build a Counter](/tutorials/build-a-counter/) first.
 
 :::note[Version checked]
-This tutorial starts from CLI `0.14.0`, whose generated project pins SDK `0.29.0`, and adds `groundhog-erc20-if` `0.1.21` from the same SDK release.
+This tutorial starts from CLI `0.14.0`, whose generated project uses SDK `0.29.0`. The matching standard interface crate is `groundhog-erc20-if` `0.1.21`.
 :::
 
 ## 1. Create the Project
@@ -20,26 +20,33 @@ groundhog new erc20 --template stub
 cd erc20
 ```
 
-The generated RV32 wrapper and Groundhog profiles can remain unchanged. This tutorial replaces the library implementation and native test. Remove the stub RV32 test because it refers to the generated `StubClient`:
+The generated RV32 wrapper and Groundhog profiles can remain unchanged. This tutorial replaces the library implementation and native test. The generated RV32 test only deploys the artifact, so it keeps passing; remove it if you would rather not carry it:
 
 ```bash
 rm tests/test_rv32.rs
 ```
 
-Add the matching standard interface dependency and extend the generated `dev` feature in `Cargo.toml`. Leave the generated `sdk` dependency entries alone: they pin the SDK release the CLI was built for (currently `0.29.0`), and the optional RPC-test dependencies stay host-only.
+Now make two edits to the generated `Cargo.toml`. Extend the `dev` feature so it forwards to the interface crate:
 
 ```toml
 [features]
-entrypoints = []
 dev = ["sdk/dev", "groundhog-erc20-if/dev"]
-groundhog-integration-test = ["dep:groundhog-json-rpc-client", "dep:tokio"]
+```
 
+and add the interface crate. The generated manifest declares `sdk` twice, once
+per target, because it needs `std` on the host and forbids it on the guest.
+`groundhog-erc20-if` needs no such split, so add it as a plain dependency
+rather than editing either `[target.'cfg(...)']` block:
+
+```toml
 [dependencies]
 groundhog-erc20-if = { version = "=0.1.21", registry = "groundhog" }
-
-[dev-dependencies]
-erc20 = { path = ".", features = ["dev"] }
 ```
+
+Leave the rest of the generated manifest alone. In particular keep the
+`groundhog-integration-test` feature and the `[target.'cfg(not(target_arch = "riscv32"))'.dependencies]`
+block: `tests/integration.rs` is gated on them, and removing them makes
+`groundhog test --integration` fail with cargo's "package does not have the feature".
 
 The interface crate is the source of truth for:
 
@@ -313,7 +320,7 @@ static NONCE: SHA256Hash = sdk::sha256_static!("ERC20_TUTORIAL_NONCE");
 fn transfer_updates_balances_and_supply() {
     let env = TestEnvironment::no_cost();
     let test_contract = register_mock_contract(&env);
-    let contract_hash = *test_contract.as_hash();
+    let contract_hash = test_contract.as_hash().clone();
 
     let alice = ContractAddress::named("alice");
     let bob = ContractAddress::named("bob");
