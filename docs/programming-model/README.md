@@ -30,4 +30,4 @@ When writing or editing content, verify claims against sibling source repos befo
 - Protocol storage rules: `../protocol/storage_item.x`, `../protocol/syscalls.yaml`
 - Engine merge/reservation rules: `../hogd/hogd/storage_item/`, `../hogd/hogd/hogexec/runtime/`
 - JSON-RPC and TypeScript client behavior: `../groundhog-rpc/`, `../protocol-ts/`, `../client-ts/`
-- Current examples: `../sdk_rs/example-contracts/` first; `../groundhog-examples/` as a secondary reference
+- Current examples: `../groundhog-examples/` first; `../sdk_rs/example-contracts/` second, and read those as integration tests rather than reference code
