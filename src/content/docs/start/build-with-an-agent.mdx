@@ -13,7 +13,7 @@ The early-access site requires authentication. Your agent may not share your bro
 
 1. Read the project's `AGENTS.md` if you are working in an existing repository. Preserve existing work and configuration.
 2. Check the developer's operating system, architecture, Rust installation, and whether `groundhog` is already available.
-3. Follow [Getting Started](/start/getting-started/) for registry setup and CLI installation. Early access still requires private Cargo registry access. Native tests also need access to the SDK's FFI download. Never ask the developer to paste credentials or signing keys into the agent conversation.
+3. Follow [Getting Started](/start/getting-started/#choose-and-install-a-client-bundle) for client-bundle installation and registry setup. Early access still requires private Cargo registry access. Native tests also need access to the SDK's FFI download. Never ask the developer to paste credentials or signing keys into the agent conversation.
 4. For a hackathon or shared Devnet, use the CLI/client bundle selected by the organisers. Do not choose a newer prerelease simply because its guide is available here. See [Develop Locally](/tutorials/develop-locally/) for the client-bundle layout and [Develop on Devnet](/tutorials/develop-on-devnet/) for matching the deployed network.
 5. If access or a compatible runtime is missing, report the exact missing requirement and ask the developer to complete the access step. Do not work around authentication or substitute an arbitrary SDK or node version.
 
@@ -30,11 +30,13 @@ groundhog --skill
 
 Read the returned guidance before writing code. Use the installed command's `--help` output to confirm syntax. If the installed CLI does not support `--skill`, use an organiser-approved compatible release that does, or continue with its version-matched human documentation. Do not silently apply the preview reference below to an older installation.
 
-For an existing project, also read its `groundhog.toml` and inspect the environment:
+Read the project’s `groundhog.toml` when present and inspect the environment before starting a node:
 
 ```bash
 groundhog status --json
 ```
+
+Read `.data.environment.devnode.path` and `.version` from that output and compare them with the selected bundle. Do not merely run the check and continue. An inherited `GROUNDHOG_DEVNODE_BINARY` can select a different runtime even when the correct CLI is first on `PATH`. Follow the [runtime selection check](/tutorials/develop-locally/#verify-the-selected-runtime) if they differ. Resolve that discrepancy before attempting a protocol override.
 
 Keep private keys, registry tokens, and other credentials out of logs, prompts, and generated files. Use the project's public SDK APIs and generated TypeScript bindings before searching dependency internals.
 
