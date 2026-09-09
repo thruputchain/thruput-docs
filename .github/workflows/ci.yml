@@ -21,6 +21,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Agent guide checks
+        run: pnpm test
+
       - name: Type check
         run: pnpm astro check
 
