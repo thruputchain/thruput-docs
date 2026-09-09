@@ -51,11 +51,7 @@ groundhog new my-counter
 cd my-counter
 ```
 
-The generated project defines the private registry in `.cargo/config.toml`. Authenticate from the project directory before the first build:
-
-```bash
-cargo login --registry groundhog
-```
+The generated project defines the private registry in `.cargo/config.toml`. Complete [Cargo access setup](/start/getting-started/#configure-cargo-access) from this project directory before the first build. For the native tests below, also supply the [FFI password in the task environment](/start/getting-started/#test-and-build). Credentials saved by `groundhog init` do not reach raw `cargo test`.
 
 Select the built-in account in the project's local profile:
 
