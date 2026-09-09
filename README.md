@@ -60,3 +60,9 @@ To promote another guide:
 The build checks that the current alias matches the versioned artifact, version
 marker, and recorded checksum. Astro copies the Markdown unchanged. Deployment
 uses the site's existing hosting process; building does not publish anything.
+
+CI also compares versioned guide paths against the PR base commit (or the previous
+commit for a push to main). Existing versions cannot be modified, removed, or
+renamed, even if the alias and checksum are updated together. To run this check
+locally, use `node scripts/check-agent-guide-history.mjs origin/main` after fetching
+the base branch. Source-artifact verification in step 1 remains part of promotion.
