@@ -62,6 +62,10 @@ for (const width of [320, 375, 701, 800, 1024, 1280, 1920]) {
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await expect(page.locator('h1')).toContainText('The blockchain built for');
     await expect(page.locator('[id="_top"]')).toHaveCount(1);
+    for (const title of ['More room for the idea', 'Start small. Then stretch it.']) {
+      await expect(page.getByRole('heading', { name: title, level: 2 })).toHaveCSS('text-align', 'center');
+    }
+    await expect(page.locator('.feature-card')).toHaveCount(6);
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
     await page.keyboard.press('Enter');
@@ -276,16 +280,19 @@ test('header rebrand retains Groundhog page identity and the exact install promp
 
 test('homepage learn-more links navigate to real docs and valid anchors', async ({ page }) => {
   for (const [feature, href, title] of [
-    ['free compute', '/how-it-works/storage-economics/', 'Storage & Scheduling Economics'],
-    ['parallel execution', '/how-it-works/execution-model/', 'Execution Model'],
-    ['irrevocable finality', '/how-it-works/consensus/#finality-model', 'Consensus'],
+    ['Keep the logic on-chain', '/programming-model/execution/', 'Execution Model'],
+    ['Compute without gas fees', '/programming-model/execution/#gas', 'Execution Model'],
+    ['Build on shared state', '/programming-model/storage-types/', 'Storage Types'],
+    ['Make something work', '/tutorials/build-a-counter/', 'Build a Counter'],
+    ['Connect an interface', '/tutorials/work-with-groundhog-from-typescript/', 'Work with Groundhog from TypeScript'],
+    ['Understand the engine', '/how-it-works/architecture/', 'Architecture'],
   ]) {
     await page.goto(origin);
-    const link = page.getByRole('link', { name: `Learn more about ${feature}`, exact: true });
+    const link = page.getByRole('link', { name: feature, exact: true });
     await expect(link).toHaveAttribute('href', href);
     await expect(link).toHaveClass(/\bfeature-card\b/);
     await expect(link.locator('a')).toHaveCount(0);
-    await expect(link.locator('.learn-more')).toContainText('Learn more');
+    await expect(link.locator('.learn-more')).toBeVisible();
     await link.hover();
     await expect(link).toHaveCSS('border-color', 'rgb(233, 239, 100)');
     await expect(link.locator('.learn-more')).toHaveCSS('text-decoration-line', 'none');
