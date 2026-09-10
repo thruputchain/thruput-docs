@@ -1,0 +1,115 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import AgentPrompt from '../components/home/AgentPrompt.astro';
+import DotField from '../components/home/DotField.astro';
+
+const features = [
+  {
+    id: 'free-compute', label: '01 / COMPUTE', title: 'Free Compute',
+    href: '/how-it-works/storage-economics/',
+    description: 'No gas fees. Hold HOG tokens for capacity, not pay per operation. Storage is a refundable deposit, not a burn.',
+  },
+  {
+    id: 'parallel-execution', label: '02 / EXECUTION', title: 'Parallel Execution',
+    href: '/how-it-works/execution-model/',
+    description: 'Typed storage primitives let independent and commutative transactions execute across available cores.',
+  },
+  {
+    id: 'irrevocable-finality', label: '03 / FINALITY', title: 'Irrevocable Finality',
+    href: '/how-it-works/consensus/#finality-model',
+    description: 'Transactions are final when confirmed. No reorgs, no probabilistic finality.',
+  },
+];
+---
+
+<StarlightPage hasSidebar={true} frontmatter={{
+  title: 'Groundhog',
+  description: 'The blockchain built for abundance. Free compute, parallel execution, and irrevocable finality.',
+  template: 'splash', pagefind: false, prev: false, next: false,
+}}>
+  <div class="home-page not-content">
+    <noscript>
+      <nav class="home-fallback" aria-label="Site navigation">
+        <a href="/start/">Documentation</a>
+        <a href="/start/build-with-an-agent/">Start Building</a>
+      </nav>
+    </noscript>
+    <section id="hero" aria-labelledby="_top">
+      <DotField />
+      <div class="home-container hero-content">
+        <h1 id="_top">The blockchain built for <br /><span class="abundance">abundance<span class="hero-cursor" aria-hidden="true">_</span></span></h1>
+        <AgentPrompt />
+      </div>
+    </section>
+    <section class="features" aria-label="Why Groundhog">
+      <div class="home-container feature-grid">
+        {features.map((feature, index) => (
+          <a class="feature-card" id={feature.id} href={feature.href} aria-label={`Learn more about ${feature.title.toLowerCase()}`}>
+            <div class="feature-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                {index === 0 && <path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" />}
+                {index === 1 && <><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></>}
+                {index === 2 && <><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></>}
+              </svg>
+              <span>{feature.label}</span>
+            </div>
+            <h2 id={`${feature.id}-title`}>{feature.title}</h2>
+            <p>{feature.description}</p>
+            <span class="learn-more">Learn more <span aria-hidden="true">&rarr;</span></span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</StarlightPage>
+
+<style>
+  .home-page { isolation: isolate; color-scheme: only dark; background: var(--brand-background); color: var(--brand-foreground); font-family: var(--sl-font-mono); -webkit-font-smoothing: antialiased; }
+  .home-fallback { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem; border-bottom: 1px solid var(--brand-border); }
+  .home-fallback a { color: var(--brand-accent); }
+  .home-container { width: calc(100% - 2.5rem); max-width: 77.5rem; margin-inline: auto; }
+  #hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--brand-border); padding-bottom: 2rem; }
+  .hero-content { position: relative; padding-top: 5.5rem; padding-bottom: 3.75rem; text-align: center; }
+  .home-page h1 { margin: 1.5rem 0 1.375rem; color: var(--brand-foreground); font-family: inherit; font-size: clamp(2.0625rem, 7.2vw, 3.0625rem); font-weight: 400; line-height: 1.25; letter-spacing: -.06em; text-wrap: balance; }
+  h1 br { display: none; }
+  .abundance { display: block; color: var(--brand-accent); }
+  .hero-cursor { position: relative; left: .03em; display: inline-block; width: 0; animation: cursor-blink 1.4s steps(1) infinite; }
+  @keyframes cursor-blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .hero-cursor { animation: none; } }
+  .features { background: #141511; padding-block: 1.75rem; }
+  .feature-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+  .feature-card { display: flex; flex-direction: column; min-width: 0; gap: 1rem; padding: 1.5rem; border: 1px solid var(--brand-border); border-radius: .375rem; background: var(--brand-surface); scroll-margin-top: 1.5rem; color: inherit; text-decoration: none; transition: border-color 180ms ease; }
+  .feature-header { display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
+  .feature-header svg { flex-shrink: 0; width: 3rem; height: 3rem; color: var(--brand-accent); }
+  .feature-header span { padding-top: .375rem; font-size: .5625rem; line-height: 1.5; letter-spacing: .05em; color: var(--brand-muted); }
+  .home-page h2 { margin: 0; color: var(--brand-foreground); font-family: inherit; font-size: 1.25rem; line-height: 1.5; font-weight: 500; letter-spacing: -.025em; text-wrap: balance; }
+  .feature-card p { margin: 0; font-size: 1rem; line-height: 1.625; color: var(--brand-muted); text-wrap: pretty; }
+  .learn-more { align-self: flex-start; margin-top: auto; padding-top: .5rem; color: var(--brand-accent); font-size: .875rem; text-decoration: none; }
+  .feature-card:hover { border-color: var(--brand-accent); }
+  @media (prefers-reduced-motion: reduce) { .feature-card { transition: none; } }
+  @media (min-width: 701px) {
+    .home-container { width: calc(100% - 4rem); }
+    .hero-content { padding-top: 6.5rem; padding-bottom: 4.25rem; }
+    .home-page h1 { font-size: clamp(2.5rem, 4.45vw, 4.5rem); line-height: 1.2; }
+    h1 br { display: block; }
+    .abundance { display: inline; }
+    .features { padding-block: 3.25rem; }
+    .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 768px) {
+    .home-page h2 { font-size: 1.125rem; }
+    .feature-card p { font-size: .875rem; line-height: 2; }
+  }
+  @media (min-width: 1100px) {
+    .hero-content { padding-top: 7.5rem; }
+    .feature-grid { gap: 1.5rem; }
+  }
+  @media (min-width: 1101px) { .home-container { width: calc(100% - 6rem); } }
+  @media (min-width: 1700px) {
+    .home-container { max-width: 88.75rem; }
+    .hero-content { padding-top: 9.5rem; padding-bottom: 5.5rem; }
+    .home-page h1 { font-size: 5rem; }
+    .features { padding-top: 4rem; }
+    .home-page h2 { font-size: 1.25rem; }
+  }
+</style>
