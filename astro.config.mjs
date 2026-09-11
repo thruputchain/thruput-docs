@@ -43,6 +43,7 @@ export default defineConfig({
             "tools/typescript-bindings",
             "tools/block-explorer",
             "tools/wallet-integration",
+            "tools/wallet-provider",
             "tools/faucet",
           ],
         },

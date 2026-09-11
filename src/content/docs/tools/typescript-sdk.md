@@ -348,6 +348,17 @@ JSON-RPC error responses throw `JsonRpcError`. HTTP failures, timeouts, invalid 
 | `@groundhogchain/client/signers`     | Signer interface and private-key signer                                   |
 | `@groundhogchain/client/actions`     | Standalone typed actions                                                  |
 
+### Upcoming Provider Entry Points
+
+The unpublished [`feat/wallet-provider` implementation branch](https://github.com/groundhogchain/client-ts/tree/feat/wallet-provider) adds the provider APIs below. Use a build of that branch until release; its package version does not establish availability. These APIs are not part of the published `0.5.1` table above. Provider contract `1.0.0` is a wire version, not an npm release.
+
+| Import | Provider APIs |
+| --- | --- |
+| `@groundhogchain/client/provider` | Wire account/session types, request and result validation, errors, and multiple-provider discovery |
+| `@groundhogchain/client/wallet` | `createProviderWalletClient()` and its explicit prepare/sign/submit lifecycle |
+
+Follow [Wallet Integration](/tools/wallet-integration/) to connect a dapp and save signed transactions before broadcast. Wallet and bridge authors should use the [Wallet Provider contract](/tools/wallet-provider/).
+
 ## Maintained Examples
 
 - [Chain tip](https://github.com/groundhogchain/client-ts/blob/main/examples/chain-tip.ts) connects to Devnet.
@@ -355,4 +366,4 @@ JSON-RPC error responses throw `JsonRpcError`. HTTP failures, timeouts, invalid 
 - [HOG balance](https://github.com/groundhogchain/client-ts/blob/main/examples/view-hog-balance.ts) loads `dev-1` and reads Localnet.
 - [Counter deployment](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts) deploys and calls through DevWallet on Localnet.
 
-See [TypeScript Bindings](/tools/typescript-bindings/) for generated descriptor APIs and [Wallet Integration](/tools/wallet-integration/) for signer and browser-wallet boundaries.
+See [TypeScript Bindings](/tools/typescript-bindings/) for generated descriptor APIs and [Wallet Integration](/tools/wallet-integration/) for the upcoming external-wallet workflow.
