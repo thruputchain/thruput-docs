@@ -323,7 +323,7 @@ For additional implementation references, see the maintained client examples:
 - [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts).
 - [Deploy and call a counter](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts)
 
-For the upcoming external-wallet flow, see [Wallet Integration](/tools/wallet-integration/). Its provider APIs require the unpublished implementation branch; this tutorial's published SDK baseline uses local signers.
+For the external-wallet flow, see [Wallet Integration](/tools/wallet-integration/). This tutorial uses local signers.
 
 ## 7. Decode Receipts and Events
 
@@ -450,5 +450,5 @@ Use this rule of thumb:
 - [TypeScript Bindings](/tools/typescript-bindings/) for generated method, exception, and event APIs
 - [Build a Token](/tutorials/build-a-token/) for the Rust implementation behind the standard token interface
 - [Add Events to a Contract](/tutorials/add-events-to-a-contract/) for typed event generation and queries
-- [Wallet Integration](/tools/wallet-integration/) for the upcoming external-wallet workflow and its release requirements
+- [Wallet Integration](/tools/wallet-integration/) for connecting an external wallet
 - [Understand a Swap Contract](/tutorials/build-a-swap/) for a larger application built from token and cross-contract calls

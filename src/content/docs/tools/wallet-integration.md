@@ -5,15 +5,11 @@ description: Discover a Groundhog wallet, connect an account, and prepare, sign,
 
 Use a wallet provider to request account access and transaction approval without exposing a raw signer to your application. The SDK adapter separates signing from broadcasting so you can save a recovery record first. Wallet and extension authors should implement the [Wallet Provider contract](/tools/wallet-provider/).
 
-:::caution[Upcoming release]
-The provider APIs below are implemented on the SDK's [`feat/wallet-provider` branch](https://github.com/groundhogchain/client-ts/tree/feat/wallet-provider) and are unpublished. Use a build of that implementation branch until they are released. The branch's package version does not establish release availability; these imports are not available in the published `0.5.1` baseline documented on the [TypeScript SDK page](/tools/typescript-sdk/). Provider contract `1.0.0` is a wire version, not an npm version.
-:::
-
 ## Choose the Integration
 
 | Application | API |
 | --- | --- |
-| Dapp using an external wallet | Upcoming `/provider` discovery and `/wallet` `createProviderWalletClient()` |
+| Dapp using an external wallet | `/provider` discovery and `/wallet` `createProviderWalletClient()` |
 | Script or service managing its own keys | `Signer`, `createPubkeyAccount()`, and `createWalletClient()` in the [SDK wallet workflow](/tools/typescript-sdk/#bind-a-wallet-client) |
 | Existing source-address wallet such as DevWallet | Local-signer wallet client with an explicit [invocation adapter](/tools/typescript-sdk/) |
 

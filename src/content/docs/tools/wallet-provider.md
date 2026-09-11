@@ -5,10 +5,6 @@ description: The Groundhog Wallet Provider 1.0.0 contract for wallet, extension,
 
 Groundhog Wallet Provider `1.0.0` defines origin-scoped account access, transaction approval, and explicit submission. This page is the normative contract for wallet and bridge implementers. **MUST**, **MUST NOT**, and **SHOULD** describe conformance requirements. Dapp authors should start with [Wallet Integration](/tools/wallet-integration/).
 
-:::caution[Upcoming release]
-The SDK implementation is on [`feat/wallet-provider`](https://github.com/groundhogchain/client-ts/tree/feat/wallet-provider) and is unpublished. Use a build of that branch until release. Its package version is not evidence that these exports have shipped. The site's published SDK `0.5.1` baseline does not include these APIs. `1.0.0` below identifies the provider wire contract, not an npm release.
-:::
-
 ## Interface and Methods
 
 Wire types, validators, and discovery belong to `@groundhogchain/client/provider`. The SDK adapter and wallet builders belong to `@groundhogchain/client/wallet`. No framework, extension runtime, or global singleton is required.
