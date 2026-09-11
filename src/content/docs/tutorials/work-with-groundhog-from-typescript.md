@@ -323,7 +323,7 @@ For additional implementation references, see the maintained client examples:
 - [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts).
 - [Deploy and call a counter](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts)
 
-For the external-wallet flow, see [Wallet Integration](/tools/wallet-integration/). This tutorial uses local signers.
+To use an installed browser wallet, follow [Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/). This tutorial uses local signers.
 
 ## 7. Decode Receipts and Events
 

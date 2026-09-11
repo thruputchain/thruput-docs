@@ -7,6 +7,8 @@ Use a wallet provider to request account access and transaction approval without
 
 ## Choose the Integration
 
+For a runnable browser app, start with [Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/).
+
 | Application | API |
 | --- | --- |
 | Dapp using an external wallet | `/provider` discovery and `/wallet` `createProviderWalletClient()` |

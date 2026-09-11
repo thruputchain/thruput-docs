@@ -54,6 +54,7 @@ export default defineConfig({
             "tutorials/develop-locally",
             "tutorials/develop-on-devnet",
             "tutorials/work-with-groundhog-from-typescript",
+            "tutorials/connect-a-wallet-to-your-app",
             "tutorials/build-a-counter",
             "tutorials/build-a-token",
             "tutorials/add-events-to-a-contract",
