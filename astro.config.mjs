@@ -59,7 +59,7 @@ export default defineConfig({
             "tutorials/build-a-counter",
             "tutorials/build-a-token",
             "tutorials/add-events-to-a-contract",
-            "tutorials/build-a-swap",
+            "tutorials/design-a-swap",
           ],
         },
         {

@@ -1,7 +1,6 @@
 ---
 title: Design a Swap
 description: How a constant-product AMM is built on Groundhog, and why the execution model shapes it.
-draft: true
 ---
 
 This page walks through the design of a suite of contracts implementing the
@@ -47,7 +46,7 @@ That is neither a bug nor a failure. (See [Execution
 Model](/how-it-works/execution-model/) for what exclusion means.) But follow it
 through and the consequence is severe:
 
-> A directly-ported pair implementation would execute **one operation per
+> A directly ported pair implementation would execute **one operation per
 > block, for the whole network**, no matter how many users want to trade.
 
 The design decisions below are largely about fixing that.
@@ -99,7 +98,7 @@ doesn't require a transaction to be deferred.
 ## Batch the serial work
 
 We call processing the request-queue *cranking*, and anyone may do it.
-`Queue::crank` in the `batch-driver` helper-crate takes requests off the queue
+`Queue::crank` in the `batch-driver` helper crate takes requests off the queue
 one at a time and hands each to a closure that knows how to perform it. The
 swap application provides that closure:
 
@@ -131,7 +130,7 @@ cross-contract call, and the loop continues with more requests.
 Although a root transaction (the one signed by a sender) declares a gas limit,
 executing it on Groundhog does not *consume* any tokens; rather, tokens are
 temporarily reserved while the transaction occupies a portion of the chain's
-scheduling capacity. (See [Execution](/programming-model/execution/).
+scheduling capacity. (See [Execution](/programming-model/execution/).)
 
 A crank runs until the queue is empty or the frame's remaining gas is no longer
 sufficient to run another request, so **the caller chooses the batch size by
@@ -193,7 +192,7 @@ self.slots.consume_capacity(1);   // take this request's room
 
 The constraint mechanism allows transactions to consume capacity (corresponding
 to slots in the finite-sized queue) without conflict, but prevents exhaustion
-in any particular block.  The ceiling is built into the `Queue` datatype in the
+in any particular block. The ceiling is built into the `Queue` datatype in the
 `batch-driver` helper crate.
 
 ### Early is not the same as failed
@@ -201,7 +200,7 @@ in any particular block.  The ceiling is built into the `Queue` datatype in the
 Note that a transaction that submits a request and thus consumes a unit of
 queue capacity (as in the line of code above) does not explicitly check whether
 any capacity is available. If it did (if the capacity constraint were checked
-at runtime), a request arriving at a full queue would have to fail
+at call time), a request arriving at a full queue would have to fail
 deterministically. The transaction would be committed with the block, have no
 effect due to the failure, and not be retried. The user would have to submit a
 new transaction.
@@ -255,7 +254,7 @@ this pattern reports on its queue in the same way.
 ## Each link takes work only from its predecessor
 
 A request names the account whose tokens it will spend. Nothing downstream from
-the directly-called contract can check that claim, because it is the only one
+the directly called contract can check that claim, because it is the only one
 that can see (via [`get_caller`](/how-it-works/invocation-frames/)) who is
 submitting the request.
 
