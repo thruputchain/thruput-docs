@@ -3,6 +3,12 @@ import starlight from "@astrojs/starlight";
 
 export default defineConfig({
   site: "https://docs.groundhog.dev",
+
+  // "Build a Swap" was replaced by "Design a Swap". Keep the old URL working
+  // for anything already linking to it.
+  redirects: {
+    "/tutorials/build-a-swap": "/tutorials/design-a-swap",
+  },
   integrations: [
     starlight({
       title: "Groundhog",
