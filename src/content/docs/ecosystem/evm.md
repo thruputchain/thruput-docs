@@ -231,6 +231,22 @@ contract Token {
 **Groundhog:**
 
 ```rust
+use sdk::*;
+use sdk::storage::{Balance, Map, Value};
+use groundhog_erc20_if::{Amount, MintEvent, log_mint_event};
+
+#[contract_exception]
+pub enum Error {
+    AlreadyInitialized = 1,
+}
+
+#[sdk::storage]
+pub struct Token {
+    contract_owner: Value<ContractAddress>,
+    total_supply: Balance,
+    balances: Map<ContractAddress, Balance>,
+}
+
 #[contract(throws = Error, emits(MintEvent))]
 impl Token {
     pub fn initialize(&mut self, initial_supply: Amount) {
@@ -247,7 +263,9 @@ impl Token {
 }
 ```
 
-**What changes:** Groundhog has no special constructor syntax. Call `initialize` after deployment, or have an application-specific deployer invoke it in the same parent transaction. The runtime does not provide once-only constructor semantics. This example uses the owner field as its initialization marker and requires an `AlreadyInitialized` error variant. The exclusive write prevents concurrent initializations from both landing, even for the same caller. State initialization uses the same storage operations as everything else.
+The `groundhog_erc20_if` dependency provides the amount type and mint event helpers. See [Build a Token](/tutorials/build-a-token/) for dependency setup and a complete token contract.
+
+**What changes:** Groundhog has no special constructor syntax. Call `initialize` after deployment, or have an application-specific deployer invoke it in the same parent transaction. The runtime does not provide once-only constructor semantics. This example uses the owner field as its initialization marker. The exclusive write prevents concurrent initializations from both landing, even for the same caller. State initialization uses the same storage operations as everything else.
 
 ### Events
 
