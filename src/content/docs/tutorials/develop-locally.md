@@ -51,15 +51,15 @@ groundhog new my-counter
 cd my-counter
 ```
 
+The generated `groundhog.toml` sets `default_profile = "local"`, so commands run from this project use the local profile automatically. Only `config set` requires an explicit `--profile local`; the other commands below use the project default. If you previously set `GROUNDHOG_PROFILE`, unset it first because it overrides that default.
+
 The generated project defines the private registry in `.cargo/config.toml`. Complete [Cargo access setup](/start/getting-started/#configure-cargo-access) from this project directory before the first build. The SDK downloads its test executor from public storage without FFI credentials.
 
 Check the stored key and select it explicitly for this project's local profile:
 
 ```bash
 groundhog keys ls
-groundhog config set default-key default \
-  --profile local \
-  --project
+groundhog config set default-key default --profile local --project
 ```
 
 You should see `default` in the key list. If you skipped key generation during init, run `groundhog keys generate default` first. If you already use a differently named key, substitute its name in the key-selection command above and in `--key default` in step 5. The wallet created in step 5 will still be named `default`.
@@ -70,8 +70,8 @@ Run the fast native tests, then the executor-backed RV32 test:
 
 ```bash
 cargo test
-groundhog build --profile local
-groundhog test --profile local
+groundhog build
+groundhog test
 ```
 
 These commands do not require a running JSON-RPC node:
@@ -114,7 +114,7 @@ The node is ephemeral. Deployments and calls share state while this process runs
 Return to the project terminal and check the active node:
 
 ```bash
-groundhog status --profile local
+groundhog status
 ```
 
 The profile should show `default` as the key and `http://127.0.0.1:9545` as the RPC URL. If no endpoint appears, confirm that `groundhog node` is still running and both terminals use the same user configuration.
@@ -122,9 +122,9 @@ The profile should show `default` as the key and `http://127.0.0.1:9545` as the 
 Create a wallet owned by your stored key, then select it for this project:
 
 ```bash
-groundhog wallet create --key default --name default --profile local
-groundhog wallet use default --profile local
-groundhog wallet ls --profile local
+groundhog wallet create --key default --name default
+groundhog wallet use default
+groundhog wallet ls
 ```
 
 Confirm wallet creation when prompted. The key signs transactions; the wallet has the on-chain address and holds HOG. `wallet ls` should show `default` as selected. Its address differs from the address printed by `keys ls`.
@@ -132,8 +132,8 @@ Confirm wallet creation when prompted. The key signs transactions; the wallet ha
 Wallet creation prefunds the creation transaction. Request 100 local HOG to cover deployment and the subsequent calls:
 
 ```bash
-groundhog airdrop default --amount 100 --profile local
-groundhog balance default --profile local
+groundhog airdrop default --amount 100
+groundhog balance default
 ```
 
 Confirm the airdrop when prompted. The CLI uses the node's local faucet automatically. Keep this node running for the remaining steps.
@@ -143,13 +143,13 @@ Confirm the airdrop when prompted. The CLI uses the node's local faucet automati
 Prepare a signed deployment without broadcasting it:
 
 ```bash
-groundhog deploy --profile local --dry-run
+groundhog deploy --dry-run
 ```
 
 Then deploy the RV32 artifact and confirm when prompted:
 
 ```bash
-groundhog deploy --profile local
+groundhog deploy
 ```
 
 The CLI prints the contract address and saves `my-counter` as an alias under `[profile.local.contracts]` in `groundhog.toml`.
@@ -159,8 +159,8 @@ The CLI prints the contract address and saves `my-counter` as an alias under `[p
 Deployment and initialization are separate operations. Initialize the counter once, confirming the call when prompted:
 
 ```bash
-groundhog call my-counter initialize 10 --profile local
-groundhog view my-counter get --profile local
+groundhog call my-counter initialize 10
+groundhog view my-counter get
 ```
 
 The first view should return `10`.
@@ -168,8 +168,8 @@ The first view should return `10`.
 Submit another state change:
 
 ```bash
-groundhog call my-counter increment 5 --profile local
-groundhog view my-counter get --profile local
+groundhog call my-counter increment 5
+groundhog view my-counter get
 ```
 
 The counter should now return `15`.
@@ -177,7 +177,7 @@ The counter should now return `15`.
 Use JSON mode when testing scripts or automation:
 
 ```bash
-groundhog --json view my-counter get --profile local \
+groundhog --json view my-counter get \
   | jq -e '.ok == true and .data.schemaVersion == 1 and .data.returnValue == 15'
 ```
 
@@ -186,8 +186,8 @@ groundhog --json view my-counter get --profile local \
 Prepare a call without broadcasting it:
 
 ```bash
-groundhog call my-counter increment 100 --profile local --dry-run
-groundhog view my-counter get --profile local
+groundhog call my-counter increment 100 --dry-run
+groundhog view my-counter get
 ```
 
 The value should remain `15`.
@@ -226,7 +226,7 @@ From the project directory, repeat the explicit selections:
 
 ```bash
 groundhog config set default-key default --profile local --project
-groundhog wallet use default --profile local
+groundhog wallet use default
 ```
 
 If the wallet has not been created yet, complete step 5 first. Use your actual key name if it differs from `default`.
