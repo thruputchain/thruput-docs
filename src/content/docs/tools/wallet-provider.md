@@ -21,6 +21,7 @@ interface WalletSession {
 }
 interface WalletProvider {
   info: { id: string; name: string; version: "1.0.0" };
+  supportedMethods?: readonly string[];
   request(request: ProviderRequest): Promise<unknown>;
   on(event: "change", listener: (session: WalletSession) => void): () => void;
 }
@@ -28,6 +29,10 @@ type ProviderRequest =
   | { method: "connect" }
   | { method: "getSession" }
   | { method: "disconnect" }
+  | {
+      method: "getCapabilities";
+      params: { account: string; networkHash: string };
+    }
   | {
       method: "signTransaction";
       params: { account: string; networkHash: string; transaction: string };
@@ -49,6 +54,7 @@ Requests MUST contain exactly the fields shown, including within `params`. Accou
 | `connect` | `WalletSession` | Request origin-scoped permission through wallet UI; reject refusal. Success includes at least one authorized account. |
 | `getSession` | `WalletSession` | Return a non-interactive snapshot. MUST NOT prompt or grant access. |
 | `disconnect` | `null` | Idempotently revoke this origin's permission and pending approvals. |
+| `getCapabilities` (optional) | `WalletCapabilities` | Return execution capabilities for the authorized account and network without prompting or granting access. |
 | `signTransaction` | `{ signedTransaction: string; hash: string }` (`SignTransactionResult`) | Approve and sign the exact unsigned transaction. MUST NOT broadcast. |
 | `submitTransaction` | `{ hash: string }` (`SubmitTransactionResult`) | Broadcast only exact previously approved signed bytes. Return their canonical transaction hash, not an execution receipt. |
 
@@ -65,6 +71,7 @@ Parsers MUST reject malformed values rather than normalize them. Data parsers re
 | Provider `id` | 1–64 ASCII letters, digits, dots, underscores, or hyphens |
 | Provider `name` | 1–80 characters, no control characters or surrounding whitespace. Render as text, never HTML |
 | Provider `version` | Exactly `"1.0.0"` |
+| Provider `supportedMethods` | Optional array of at most 32 method names, each matching `[a-zA-Z][a-zA-Z0-9]{0,63}` |
 | Error `message` | Human-readable string of at most 1,024 characters |
 | Unsigned `transaction` | Canonical classic XDR `Transaction`, at most **1,048,500 decoded bytes** (1 MiB minus 76) |
 | `signedTransaction` | Canonical classic XDR `SignedTransaction`, at most **1,048,576 decoded bytes** (1 MiB) |
@@ -82,6 +89,28 @@ A disconnected or unauthorized origin MUST see `accounts: []`, retaining the wal
 Any change caused by `connect` or `disconnect` MUST reach registered page-facing listeners **before the corresponding request promise resolves**. Bridges MUST preserve this ordering even with separate response and event delivery paths. Sending the event first in a background process is insufficient if the page resolves the request before delivering that event.
 
 Pending operations MUST recheck authorization before signing or broadcasting. A session change clears prior approvals; approval cannot survive a disconnect, account change, or network change.
+
+## Optional Atomic Batch Capabilities
+
+A provider implementing `getCapabilities` MUST advertise it in the optional top-level `supportedMethods` array. This field is separate from `info` and `WalletSession`, whose wire shapes remain unchanged. Clients that do not recognize a listed method ignore that method.
+
+Clients MUST NOT probe an unadvertised capability method. An absent advertisement selects the legacy single-call path, including for older bridges that do not preserve the unsupported-method error code.
+
+```ts
+interface WalletCapabilities {
+  account: string;
+  networkHash: string;
+  atomicBatch: { maxCalls: number } | null;
+}
+```
+
+The request and response MUST use the same canonical account and network scope. Providers MUST verify current origin/account authorization and the network before returning capabilities. The method MUST NOT open an approval window, sign, or broadcast.
+
+`atomicBatch: null` means unsupported. Otherwise, `maxCalls` MUST be an integer from 1 to 16 for the current DefaultWallet implementation. It promises ordered, all-or-nothing execution of the calls inside one `DefaultWallet.execute` transaction, not the ability to sign multiple independent transactions. An inner abort or fault rolls back the batch. Work enqueued by a successful batch has a separate later execution outcome.
+
+An advertised method returning `4200` also selects legacy execution. Permission failures, transport errors, mismatched scope, and malformed responses MUST NOT be treated as unsupported. Capability state MUST be discarded when the account/network session changes and checked before preparing a batch.
+
+Use existing `signTransaction` and `submitTransaction` requests for the prepared batch. One approval authorizes that exact transaction only. Applications MUST save its hash before submission and recover uncertain outcomes by that hash. They MUST NOT fall back to individual transactions after a rejected or uncertain batch submission.
 
 ## Signing and Transaction Identity
 
@@ -143,6 +172,7 @@ These exports belong to `/provider`. Structural validation does not establish or
 | `parseWalletAccount`, `parseWalletSession`, `parseWalletProviderInfo` | Strict data boundaries and frozen snapshots; the session parser allows empty accounts, so callers must separately check successful `connect` is nonempty |
 | `parseWalletProvider` | Versioned metadata and callable methods; returns the live provider, without verifying its behavior or trustworthiness |
 | `parseWalletHex32`, `parseWalletNetworkHash` | The two distinct hex formats |
+| `parseWalletCapabilities` | Exact scoped response and DefaultWallet call-count bounds; authorization and expected-scope comparison remain separate |
 | `parseProviderRequest` | Exact request union and bounded canonical XDR; returns a new request object |
 | `parseTransactionHex`, `parseSignedTransactionHex` | Protocol objects decoded from bounded canonical XDR; no signature verification |
 | `parseSignTransactionResult`, `parseSubmitTransactionResult` | Result structure and encoding; no check of signature, hash correctness, prior approval, broadcast, or execution |
@@ -158,6 +188,7 @@ Malformed parser inputs fail with `-32602`, except unknown request methods (`420
 | `MAX_UNSIGNED_TRANSACTION_BYTES` | `MAX_TRANSACTION_BYTES - 76` (`1_048_500`) |
 | `MAX_WALLET_ACCOUNTS` | `32` |
 | `MAX_DISCOVERED_PROVIDERS` | `32` |
+| `MAX_DEFAULT_WALLET_CALLS` | `16` |
 | `REQUEST_PROVIDER_EVENT` | `"groundhog:requestProvider"` |
 | `ANNOUNCE_PROVIDER_EVENT` | `"groundhog:announceProvider"` |
 
@@ -168,6 +199,8 @@ Malformed parser inputs fail with `-32602`, except unknown request methods (`420
 | Method | Result and behavior |
 | --- | --- |
 | `prepareExecution(PrepareExecutionRequest)` | `Promise<Transaction>` using the default-wallet wrapper, random transaction nonce when omitted, expiry handling, and unsigned size bound |
+| `getCapabilities()` | `Promise<WalletCapabilities>` with fresh session/scope validation; returns unsupported without probing an unadvertised method |
+| `prepareBatchExecution(PrepareBatchExecutionRequest)` | `Promise<Transaction>` containing ordered `invocations` in one root DefaultWallet call; validates capability limits and snapshots inputs before asynchronous work |
 | `signTransaction(Transaction)` | `Promise<SignTransactionResult>` after exact-byte, account-claim, strict signature, and hash verification; never broadcasts |
 | `submitTransaction(SignTransactionResult)` | `Promise<SubmitTransactionResult>`; only the latest successfully verified approval is accepted, and the response hash is checked |
 | `dispose()` | `void`; idempotently unsubscribe and permanently invalidate the adapter, clearing its approval without revoking provider permission |
