@@ -71,7 +71,7 @@ Parsers MUST reject malformed values rather than normalize them. Data parsers re
 | Provider `id` | 1–64 ASCII letters, digits, dots, underscores, or hyphens |
 | Provider `name` | 1–80 characters, no control characters or surrounding whitespace. Render as text, never HTML |
 | Provider `version` | Exactly `"1.0.0"` |
-| Provider `supportedMethods` | Optional array of at most 32 method names, each matching `[a-zA-Z][a-zA-Z0-9]{0,63}` |
+| Provider `supportedMethods` | Optional array of at most 32 strings. Treat unrecognized names as opaque; punctuation or a namespace does not invalidate the provider. |
 | Error `message` | Human-readable string of at most 1,024 characters |
 | Unsigned `transaction` | Canonical classic XDR `Transaction`, at most **1,048,500 decoded bytes** (1 MiB minus 76) |
 | `signedTransaction` | Canonical classic XDR `SignedTransaction`, at most **1,048,576 decoded bytes** (1 MiB) |
