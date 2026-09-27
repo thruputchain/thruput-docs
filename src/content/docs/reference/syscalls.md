@@ -7,10 +7,6 @@ These are the host functions available to Groundhog guest contracts. Most develo
 
 The tables below describe the protocol's logical typed interface. The generated low-level bindings map it to each guest target's ABI. User contracts in `0.1.27` use RV32. Variable-length buffers are passed as spans.
 
-:::note[Changed after 0.1.27]
-[Protocol #190](https://github.com/groundhogchain/protocol/pull/190) removed the `flags` argument from `BytestringSet`, `NonnegativeIntSetAdd`, and `DeleteObject`, and added [`SetStorageFlags`, `GetStorageFlags`, and `ClearStorageFlags`](#storage-flags) (36 to 38). Nodes in bundle `0.1.27` still take `flags` on each write, and each write replaces the key's flags. This page describes the new interface.
-:::
-
 The return value is a `SyscallErrorCode`. Any syscall can return `Fault` (1) if a pointer argument is out of guest memory bounds, or `NoSyscall` (2) if the syscall number is not supported. Per-syscall error codes are listed with each entry below, and the full enum is at the bottom of this page.
 
 ## Hashing
