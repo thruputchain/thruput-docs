@@ -34,3 +34,21 @@ self.counters.at_mut_exclusive(&owner).set(v);    // Map<_, NNInt>
 ```
 
 Use exclusive writes only when an operation genuinely needs sole access to a storage location for the duration of a block. Mixing exclusive and non-exclusive writes to the same key in the same block excludes the non-exclusive writers.
+
+### Lock Lifetime
+
+A lock lasts for the rest of the transaction. An exclusive write requests `ExclusiveLock` for its key after the write succeeds. Later writes to the same key keep that lock, whether they come from an ordinary handle, another call frame, or a later call into the same contract in the transaction. Only `clear_flags` removes it.
+
+```rust
+use sdk::storage::Flaggable;
+
+self.counters.at_mut_exclusive(&owner).set(0);  // write, then lock
+self.counters.at_mut(&owner).inc(1);            // still locked
+self.counters.at_mut(&owner).clear_flags();     // lock released
+```
+
+Leaf handles (`Value`, `NNInt`, `Balance`, `Bytestring`) implement the `Flaggable` trait: `flags()` reads the key's flags, `set_flags(flags)` adds flags, and `clear_flags()` removes them. The free functions `storage_flags`, `set_storage_flags`, and `clear_storage_flags` do the same for a raw `StorageKey`. Setting flags requires a pending write to the key in the current call frame, so write first, then lock.
+
+Flag changes follow call frames. A reverted frame or a failed `try_invoke` discards its flag changes along with its writes.
+
+See [Syscalls: Storage Flags](/reference/syscalls/#storage-flags) for the host interface.

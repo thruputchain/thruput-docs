@@ -52,7 +52,7 @@ self.balances.at_mut(&alice).lazy_increase(20);  // Tx B -- commutes
 
 Maps can nest: `Map<K, Map<K2, Balance>>` gives you composite keys with independent conflict domains at each level.
 
-Maps do not enumerate keys and do not implement `Deletable`. Use `at` for read access, `at_mut` for normal writes, and `at_mut_exclusive` only when you need mutex-like behavior on a specific entry.
+Maps do not enumerate keys and do not implement `Deletable`. Use `at` for read access, `at_mut` for normal writes, and `at_mut_exclusive` only when you need mutex-like behavior on a specific entry. An exclusive write's lock lasts for the rest of the transaction, through later ordinary writes, until `clear_flags`.
 
 ## Value<T>
 

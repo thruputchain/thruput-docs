@@ -241,6 +241,8 @@ If you need mutex-like semantics (only one transaction can write to a storage lo
 - `Map::at_mut_exclusive(&key)`: exclusive mutator on a Map entry.
 - `NNInt` and `Bytestring` honour the **exclusive keypath flag** set on the field at storage-derivation time, or via the lower-level free functions `non_negative_int_set_exclusive` / `bytestring_set_exclusive`.
 
+The lock lasts for the rest of the transaction, through later ordinary writes, until `clear_flags` removes it. See [Advanced Patterns: Lock Lifetime](/programming-model/advanced/#lock-lifetime).
+
 This is a blunt instrument. Prefer `Balance` or `NNInt` deltas on hot paths. Reserve exclusive writes for operations that genuinely cannot tolerate concurrent access.
 :::
 
