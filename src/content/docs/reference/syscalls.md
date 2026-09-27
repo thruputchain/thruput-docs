@@ -7,6 +7,10 @@ These are the host functions available to Groundhog guest contracts. Most develo
 
 The tables below describe the protocol's logical typed interface. The generated low-level bindings map it to each guest target's ABI. User contracts in `0.1.27` use RV32. Variable-length buffers are passed as spans.
 
+:::note[Changed after 0.1.27]
+[Protocol #190](https://github.com/groundhogchain/protocol/pull/190) removed the `flags` argument from `BytestringSet`, `NonnegativeIntSetAdd`, and `DeleteObject`, and added [`SetStorageFlags`, `GetStorageFlags`, and `ClearStorageFlags`](#storage-flags) (36 to 38). Nodes in bundle `0.1.27` still take `flags` on each write, and each write replaces the key's flags. This page describes the new interface.
+:::
+
 The return value is a `SyscallErrorCode`. Any syscall can return `Fault` (1) if a pointer argument is out of guest memory bounds, or `NoSyscall` (2) if the syscall number is not supported. Per-syscall error codes are listed with each entry below, and the full enum is at the bottom of this page.
 
 ## Hashing
@@ -294,12 +298,11 @@ Retrieves the bytestring stored at `key`.
 |-----------|------|------|
 | in | `key` | `StorageKeyContractData` |
 | in | `bytestring` | `[u8]` (span) |
-| in | `flags` | `StorageDeltaFlagSet` |
 
 Errors:
-- `InvalidSyscallInput` if the bytestring is too long or the storage flags are invalid.
+- `InvalidSyscallInput` if the bytestring is too long.
 
-Writes the bytestring value at `key`. Overwrites any existing value, even if that value has a different storage type.
+Writes the bytestring value at `key`. Overwrites any existing value, even if that value has a different storage type. Leaves the key's [storage flags](#storage-flags) unchanged.
 
 ### NonnegativeIntGet
 
@@ -336,12 +339,11 @@ If `force_load_from_snapshot` is false, the prior snapshot state is ignored unle
 | in | `key` | `StorageKeyContractData` |
 | in | `set_value` | `Option<i128>` |
 | in | `add_value` | `i128` |
-| in | `flags` | `StorageDeltaFlagSet` |
 
 Errors:
-- `InvalidSyscallInput` if the operation would always violate the NNInt floor (for example `set_add(1, -2)` or `set_add(-1, -1)`) or the storage flags are invalid.
+- `InvalidSyscallInput` if the operation would always violate the NNInt floor (for example `set_add(1, -2)` or `set_add(-1, -1)`).
 
-Sets or modifies the NNInt at `key`. `set_value` (if `Some`) supplies the base, and `add_value` is added as a delta. The resolved value must satisfy `value >= min(set, 0)`. Overwrites any existing value, even if that value has a different storage type. See [Programming Model: NNInt](/programming-model/nnint/) for commutativity rules.
+Sets or modifies the NNInt at `key`. `set_value` (if `Some`) supplies the base, and `add_value` is added as a delta. The resolved value must satisfy `value >= min(set, 0)`. Overwrites any existing value, even if that value has a different storage type. Leaves the key's [storage flags](#storage-flags) unchanged. See [Programming Model: NNInt](/programming-model/nnint/) for commutativity rules.
 
 ### DeleteObject
 
@@ -352,12 +354,63 @@ Sets or modifies the NNInt at `key`. `set_value` (if `Some`) supplies the base, 
 | Direction | Name | Type |
 |-----------|------|------|
 | in | `key` | `StorageKeyContractData` |
-| in | `flags` | `StorageDeltaFlagSet` |
+
+Errors: none beyond the universal `Fault` / `NoSyscall`.
+
+Deletes the object at `key`. Leaves the key's [storage flags](#storage-flags) unchanged.
+
+## Storage Flags
+
+A transaction keeps one `StorageDeltaFlagSet` per storage key, separate from its writes. Every change the transaction commits on a key carries that key's flags. `ExclusiveLock` (`0x1`) is the only flag: it gives the key's change an exclusive lock, so no concurrent transaction's change to the key merges with it.
+
+Writes never change a key's flags. A lock requested after one write stays through later writes to the key in the same transaction, including writes from other call frames, until `ClearStorageFlags`. Flag changes follow call frames like writes do: a successful frame passes them to its caller, and a reverted frame or failed `try_invoke` discards them.
+
+Each flag syscall costs the same storage access gas as a write and does not read the ledger.
+
+### SetStorageFlags
+
+| | |
+|---|---|
+| **Number** | 36 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| in | `key` | `StorageKeyContractData` |
+| in | `flags` | `StorageDeltaFlagSet` (`u32`, by value) |
 
 Errors:
-- `InvalidSyscallInput` if the storage flags are invalid or incompatible with the current storage state.
+- `InvalidSyscallInput` if `flags` contains an unknown flag, or no write to `key` is pending in the current call frame's view of the transaction.
 
-Deletes the object at `key`.
+Adds `flags` (bitwise OR) to the flags the transaction requests for `key`. A pending write is one made earlier in this frame, or inherited from a caller or a successful callee. A pending deletion counts. A value that exists only in the block snapshot does not.
+
+### GetStorageFlags
+
+| | |
+|---|---|
+| **Number** | 37 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| in | `key` | `StorageKeyContractData` |
+| out | `flags` | `StorageDeltaFlagSet` |
+
+Errors: none beyond the universal `Fault` / `NoSyscall`.
+
+Returns the flags the transaction requests for `key`, as visible in the current call frame. A key with no pending write returns `None` (`0`). Allowed in read-only frames.
+
+### ClearStorageFlags
+
+| | |
+|---|---|
+| **Number** | 38 |
+
+| Direction | Name | Type |
+|-----------|------|------|
+| in | `key` | `StorageKeyContractData` |
+
+Errors: none beyond the universal `Fault` / `NoSyscall`.
+
+Removes every flag the transaction requests for `key`, as visible in the current call frame. Does nothing if no write to `key` is pending.
 
 ## Retrocausal Queue
 
@@ -652,7 +705,7 @@ The full `SyscallErrorCode` enum, from `protocol/syscall_error.x`:
 | 4 | `Reentrance` | Reentrance guard violation: the invoked address is already on the call stack. |
 | 5 | `ContractAlreadyDeployed` | Attempt to deploy a contract twice (same nonce, contract hash, and deployer). |
 | 6 | `NoReturnBufferAvailable` | No return buffer from a child call frame. Either the most recent subcall failed or no subcall has been made in this frame. |
-| 7 | `InvalidSyscallInput` | Invalid input to a syscall (type mismatch, value out of range, data too long, bad flags, etc.). |
+| 7 | `InvalidSyscallInput` | Invalid input to a syscall (type mismatch, value out of range, data too long, unknown storage flag, etc.). |
 | 8 | `StorageKeyNotExist` | The storage key does not exist in the current view. |
 | 9 | `NoRetrocausalQueueEntry` | The retrocausal queue is empty. |
 | 10 | `RetrocausalQueueReadLimitReached` | The transaction reached its concurrent RCQ read limit. The contract may use this as a stop condition. |
