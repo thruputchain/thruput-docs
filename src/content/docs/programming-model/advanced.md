@@ -35,16 +35,16 @@ self.counters.at_mut_exclusive(&owner).set(v);    // Map<_, NNInt>
 
 Use exclusive writes only when an operation genuinely needs sole access to a storage location for the duration of a block. Mixing exclusive and non-exclusive writes to the same key in the same block excludes the non-exclusive writers.
 
-### Lock Lifetime
+### Lock Requests
 
-A lock lasts for the rest of the transaction. An exclusive write requests `ExclusiveLock` for its key after the write succeeds. Later writes to the same key keep that lock, whether they come from an ordinary handle, another call frame, or a later call into the same contract in the transaction. Only `clear_flags` removes it.
+An exclusive write requests `ExclusiveLock` on its key after the write succeeds. The request belongs to the key, not to the write: later writes to the key in the same transaction keep it, whether they come from an ordinary handle, another call frame, or a later call into the same contract. The transaction's change to the key then holds the exclusive lock for the whole block, so no concurrent transaction in the block can modify that key. `clear_flags` withdraws the request.
 
 ```rust
 use sdk::storage::Flaggable;
 
-self.counters.at_mut_exclusive(&owner).set(0);  // write, then lock
-self.counters.at_mut(&owner).inc(1);            // still locked
-self.counters.at_mut(&owner).clear_flags();     // lock released
+self.counters.at_mut_exclusive(&owner).set(0);  // write, then request the lock
+self.counters.at_mut(&owner).inc(1);            // request kept
+self.counters.at_mut(&owner).clear_flags();     // request withdrawn
 ```
 
 Leaf handles (`Value`, `NNInt`, `Balance`, `Bytestring`) implement the `Flaggable` trait: `flags()` reads the key's flags, `set_flags(flags)` adds flags, and `clear_flags()` removes them. The free functions `storage_flags`, `set_storage_flags`, and `clear_storage_flags` do the same for a raw `StorageKey`. Setting flags requires a pending write to the key in the current call frame, so write first, then lock.
