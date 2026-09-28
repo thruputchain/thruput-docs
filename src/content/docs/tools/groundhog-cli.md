@@ -83,7 +83,7 @@ For complete command sequences, follow [Develop Locally with the CLI](/tutorials
 
 ## First-Run Setup
 
-Early-access Cargo registry credentials are handled by Cargo, not the CLI. Follow [Cargo access setup](/start/getting-started/#configure-cargo-access) to select a credential provider before using an environment token or interactive login. The client-bundle instructions also cover [Linux system prerequisites](/start/getting-started/#choose-and-install-a-client-bundle).
+Cargo registry credentials are handled by Cargo, not the CLI. Follow [Cargo access setup](/start/getting-started/#configure-cargo-access) to select a credential provider before using an environment token or interactive login. The client-bundle instructions also cover [Linux system prerequisites](/start/getting-started/#choose-and-install-a-client-bundle).
 
 Install `groundhog` and `hog-devnode` together from the same [Groundhog client bundle](https://github.com/groundhogchain/packaging/releases). Keep the extracted directory layout intact; the macOS bundle includes runtime libraries beside the binaries. `groundhog node` accepts `--hog-devnode-binary`; both it and `groundhog test --integration` also discover `GROUNDHOG_DEVNODE_BINARY`, a sibling executable beside `groundhog`, or `hog-devnode` on `PATH`. Integration mode does not accept the command-line flag.
 
@@ -104,7 +104,7 @@ groundhog docs
 groundhog docs --port 0
 ```
 
-This serves the bundled documentation on loopback, using port `4321` by default or an available port with `--port 0`. Keep the command running while reading. It does not require the hosted site's login.
+This serves the bundled documentation on loopback, using port `4321` by default or an available port with `--port 0`. Keep the command running while reading. It works offline.
 
 The snapshot is fixed when the CLI is built. CLI `0.17.0` bundles an earlier docs snapshot with the `0.16.0-rc.1` agent guide; it does not include subsequent website corrections. Use `groundhog --skill` for the installed CLI's own guidance. `groundhog docs --json` reports the snapshot identity and `guideMatchesCli` at startup.
 
@@ -207,9 +207,10 @@ Scripts should check `ok` and the command-specific `data.schemaVersion` before r
 | `wallet.create` |                    4 |
 | `new`           |                    1 |
 | `build`         |                    1 |
-| `status`        |                    1 |
+| `status`        |                    2 |
 | `balance`       |                    1 |
 | `storage`       |                    1 |
+| `view`          |                    1 |
 | `keys.export`   |                    1 |
 
 ## Build and Test

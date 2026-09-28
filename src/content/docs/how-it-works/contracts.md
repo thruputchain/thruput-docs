@@ -4,6 +4,7 @@ description: Contract artifacts, deployment, and address derivation in Groundhog
 ---
 
 An address normally needs deployed code to receive a contract call. An undeployed pubkey account can use the configured DefaultWallet fallback for its root invocation. See [Authorization](/how-it-works/authorization/#pubkey-accounts).
+
 The root invocation of a transaction is specified by a contract address, an 8-byte entrypoint ID, and method arguments. Each invocation creates an [invocation frame](/how-it-works/invocation-frames/) that tracks execution state and storage modifications.
 
 The normal user-deployed contract path is RV32, Groundhog's 32-bit RISC-V contract target. The protocol also supports legacy WASM contracts, native precompiled contracts, and local test mocks.
@@ -25,7 +26,7 @@ target/groundhog/counter.spec.json
 
 The `.rv32a` file is the executable contract artifact. `groundhog deploy` wraps those bytes in the protocol's `Contract::kRv32` variant before signing and submitting the deploy transaction.
 
-The executor accepts contract code blobs up to 256 KiB. The complete signed transaction also has a 2 MB encoded-size bound, so a deployment transaction must satisfy both limits.
+The executor accepts contract code blobs up to the network's `max_contract_size_bytes` parameter, whose protocol default (`kDefaultMaxContractSizeBytes`) is 256 KiB in release 0.1.27. The complete signed transaction also has a 2 MB encoded-size bound, so a deployment transaction must satisfy both limits.
 
 #### Entrypoints
 

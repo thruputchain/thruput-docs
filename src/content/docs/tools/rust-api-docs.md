@@ -5,7 +5,7 @@ description: Where to find generated Rustdoc for the Groundhog SDK crates.
 
 Groundhog's guide docs live on this site. Generated Rustdoc for the Rust crates lives at [crates.thruput.network](https://crates.thruput.network).
 
-During early access, Rustdoc may require the credentials from your onboarding instructions. Use the [`sdk` crate root](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/index.html) first for SDK overview sections on storage, macros, calling and errors, events, and testing. Use item pages when you need exact signatures, trait bounds, re-exports, source links, or crate-level API details. Use this site for workflows, tutorials, and programming model guidance.
+Rustdoc on that host may require your Groundhog registry credentials. Use the [`sdk` crate root](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/index.html) first for SDK overview sections on storage, macros, calling and errors, events, and testing. Use item pages when you need exact signatures, trait bounds, re-exports, source links, or crate-level API details. Use this site for workflows, tutorials, and programming model guidance.
 
 :::note[Version checked]
 This page's API inventory was source-checked against SDK `0.34.3`. The links point to that version’s Rustdoc.
