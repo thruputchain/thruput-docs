@@ -95,7 +95,7 @@ Transactions in a block share a starting snapshot. Ordinary storage reads can re
 | Sequential execution | Parallel by default | Transactions execute concurrently against the same block snapshot. |
 | `require(condition, "message")` | `ensure(condition, Error::Variant)` | Typed errors instead of string messages. |
 | `revert()` / `require()` | `throw(error)` | Aborts the transaction. Cannot be caught within the same contract. |
-| Solidity + EVM bytecode | Rust + RV32 artifact | Different VM and artifact format. Attached Groundhog contract blobs are capped by the network's `max_contract_size_bytes` (256 KiB by default). |
+| Solidity + EVM bytecode | Rust + RV32 artifact | Different VM and artifact format. Attached Groundhog contract blobs are capped at 256 KiB. |
 | `constructor()` | Ordinary initialization method | Deployment does not invoke it automatically; guard one-time initialization in storage. |
 | `msg.sender` | `get_caller()` | Same concept. |
 | `view` / `pure` | `&self` / no self | Read-only methods don't produce state changes. |
@@ -395,7 +395,7 @@ These EVM features have no Groundhog equivalent. Set your expectations:
 | `block.timestamp` / `block.number` | `get_block_timepoint()` / `get_block_height()` | The timepoint is coarse consensus time chosen by the proposer, not a per-transaction clock |
 | `gasleft()` | `stats::gas_remaining()` | Available for execution control, but gas costs zero tokens |
 | Contract inheritance | Does not exist | Use Rust traits and composition |
-| 24KB EVM runtime-code limit | Different limit | Attached Groundhog contract blobs are capped by the network's `max_contract_size_bytes` (256 KiB by default) |
+| 24KB EVM runtime-code limit | Different limit | Attached Groundhog contract blobs are capped at 256 KiB |
 | Storage slot packing | Does not exist | Each storage field is independent |
 
 ## Next Steps

@@ -311,7 +311,7 @@ Query transactions whose root invocation targets an address.
 
 **Returns:** `TransactionRefPage` with transaction hashes and heights, the next cursor, latest indexed block, and oldest retained block. Hydrate a reference with `groundhog_getTransactionReceipt`.
 
-The initial cursor is `"0x"`. A limit of `0` lets the backend choose its default; the CLI requests 50. Limits above the gateway's configured maximum are rejected with `-32602`. Nested calls to the address do not match.
+The initial cursor is `"0x"`. A limit of `0` selects the server default of 50. Values above the configured cap, normally 200, are rejected. Nested calls to the address do not match.
 
 ## Error Codes
 

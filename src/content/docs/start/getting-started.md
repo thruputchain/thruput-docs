@@ -32,7 +32,7 @@ The node's RC version is the artifact selected by the final bundle. The [release
 
 These docs are checked against those sources. Source review does not establish that every tutorial has been run against the hosted network. Before creating a Devnet wallet or submitting transactions, follow [Devnet version discovery](/tutorials/develop-on-devnet/#2-configure-devnet-identity) and select the bundle matching the serving release.
 
-Before starting, install Rust and Cargo through [rustup](https://rustup.rs/) if needed. Client bundles are published under [packaging releases](https://github.com/groundhogchain/packaging/releases). Building generated projects needs credentials for the Groundhog Cargo registry; see [Configure Cargo Access](#configure-cargo-access) below. Keep tokens and passwords out of agent conversations.
+Before starting, obtain access to the [packaging releases](https://github.com/groundhogchain/packaging/releases) and the private Groundhog Cargo registry. Install Rust and Cargo through [rustup](https://rustup.rs/) if needed. Keep tokens and passwords out of agent conversations.
 
 Download the selected release's client archive for your platform. The Apple Silicon archive is `groundhog-client-macos-arm64.tar.gz`; the Linux x86-64 archive is `groundhog-client-linux-x86_64.tar.gz`. Extract the complete archive and keep its directory layout intact.
 
@@ -65,7 +65,7 @@ The local tutorial includes a [runtime selection check](/tutorials/develop-local
 groundhog docs
 ```
 
-Keep this terminal running and open the printed URL. You and a coding agent on the same machine can read the bundled site offline. In another terminal, run `groundhog --skill` for the installed release's agent instructions. See [Build with an Agent](/start/build-with-an-agent/) for snapshot version notes and agents running on another machine.
+Keep this terminal running and open the printed URL. You and a coding agent on the same machine can read the bundled site without the hosted site's login. In another terminal, run `groundhog --skill` for the installed release's agent instructions. See [Build with an Agent](/start/build-with-an-agent/) for snapshot version notes and agents running on another machine.
 
 ## Initialize the CLI
 
@@ -111,7 +111,7 @@ cd my-counter
 
 Generated projects define the Groundhog registry in `.cargo/config.toml`. Cargo also needs a credential provider to use your registry token. A token alone does not resolve `authenticated registries require a credential-provider to be configured`.
 
-For an agent or automation session, supply `CARGO_REGISTRIES_GROUNDHOG_TOKEN` in the task's environment from your credential manager. Then select Cargo's environment-token provider in that shell:
+For an agent or automation session, have your onboarding contact or credential manager supply `CARGO_REGISTRIES_GROUNDHOG_TOKEN` in the task's environment. Then select Cargo's environment-token provider in that shell:
 
 ```bash
 export CARGO_REGISTRIES_GROUNDHOG_CREDENTIAL_PROVIDER=cargo:token

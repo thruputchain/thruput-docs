@@ -15,7 +15,7 @@ For a runnable browser app, start with [Connect a Wallet to Your App](/tutorials
 | Script or service managing its own keys | `Signer`, `createPubkeyAccount()`, and `createWalletClient()` in the [SDK wallet workflow](/tools/typescript-sdk/#bind-a-wallet-client) |
 | Existing source-address wallet such as DevWallet | Local-signer wallet client with an explicit [invocation adapter](/tools/typescript-sdk/) |
 
-Provider contract `1.0.0` supports protocol pubkey accounts only. A wire `WalletAccount` from `/provider` contains `address`, `publicKey`, and an account-derivation `nonce`. It is distinct from the local-signer account type exported by `/wallet`. This flow is framework-neutral. The example applications in `groundhog-examples` use `@groundhogchain/react` for hooks over the same client.
+Provider contract `1.0.0` supports protocol pubkey accounts only. A wire `WalletAccount` from `/provider` contains `address`, `publicKey`, and an account-derivation `nonce`. It is distinct from the local-signer account type exported by `/wallet`. There are no official React bindings in this implementation; this flow is framework-neutral.
 
 ## Discover and Connect
 
