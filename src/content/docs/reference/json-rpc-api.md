@@ -354,7 +354,8 @@ The initial cursor is `"0x"`. A limit of `0` selects the server default of 50. V
 | `oldestBlock` | Retained-history lower bound; detect/report a gap if a checkpoint is older |
 | Event identity | Transaction hash plus event sequence number, scoped to the network/query |
 | Transaction-ref identity | Transaction hash; address history matches only root invocation targets |
-| Later scan | Start inclusively at the last stored row height and deduplicate the reread block |
+| Later ascending scan | Start a new ascending walk with an empty cursor at the last stored row height from ascending ingestion; deduplicate that block |
+| Descending refresh | Start a new descending walk with an empty cursor and `atEnd` anchor; the last (oldest) row is not a forward-ingestion checkpoint |
 | Persistence | Save rows and progress together; never advance past a partially processed block |
 | Invalid filters | Empty filter lists or empty contract-address lists return invalid params, not all-contract results |
 | Cursor validity | Opaque backend format; current malformed-cursor handling can report false exhaustion, so explicit rejection is not guaranteed |

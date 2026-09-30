@@ -336,9 +336,11 @@ When omitted, the target resolves to the effective wallet from the selected prof
 The inspection commands return one page at a time. Cursors are opaque and must be reused with the same target and filters.
 
 An empty returned cursor (`"0x"`) ends one historical walk, not a subscription.
-Continue through empty pages with non-empty cursors. For later indexing, reread
-the last stored row's height and deduplicate, saving rows and progress together.
-`latestBlock` is not an application checkpoint. See the
+Continue through empty pages with non-empty cursors. These commands scan newest
+first; omit `--cursor` to refresh from the head. For forward indexing through RPC
+or the client, use a new ascending walk with an empty cursor at the last stored
+row height from ascending ingestion, then deduplicate that block. Save rows and
+progress together; `latestBlock` is not an application checkpoint. See the
 [restart example](/tutorials/add-events-to-a-contract/#resume-without-missing-events).
 
 ```bash
