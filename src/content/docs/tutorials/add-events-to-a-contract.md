@@ -302,10 +302,9 @@ async function scanEventHistory(
 }
 ```
 
-The [client repository's application example](https://github.com/groundhogchain/client-ts/blob/main/examples/event-history.ts)
-includes in-memory tests for this loop. An in-memory store is test evidence, not
-durable production storage. Supply database transactions and unique constraints
-in the application. Keep checkpoints serialized exactly, including bigint heights
+This loop belongs to the application, not the SDK. Supply durable database
+transactions and unique constraints in `EventStore`. Test interruption and replay
+against that store, and serialize checkpoints exactly, including bigint heights
 and cursor bytes.
 
 For example, block 100 contains events A and B on different pages:
