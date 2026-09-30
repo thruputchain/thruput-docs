@@ -85,7 +85,27 @@ For complete command sequences, follow [Develop Locally with the CLI](/tutorials
 
 Cargo handles early-access registry credentials. Follow [Cargo access setup](/start/getting-started/#configure-cargo-access) before using a token or interactive login. The [installation instructions](/start/getting-started/#choose-and-install-the-cli) also cover Linux runtime prerequisites.
 
-Install `groundhog` and `hog-devnode` together from the same [Groundhog client bundle](https://github.com/groundhogchain/packaging/releases). Keep the extracted directory layout intact; the macOS bundle includes runtime libraries beside the binaries. `groundhog node` accepts `--hog-devnode-binary`; both it and `groundhog test --integration` also discover `GROUNDHOG_DEVNODE_BINARY`, a sibling executable beside `groundhog`, or `hog-devnode` on `PATH`. Integration mode does not accept the command-line flag.
+For CLI 0.19.0, use the [installation steps](/start/getting-started/#choose-and-install-the-cli)
+to install the CLI through Cargo or its release archive. Use `groundhog toolchain`
+to select its checksum-verified managed node:
+
+```bash
+groundhog toolchain list
+groundhog toolchain install 0.1.29-rc.4
+groundhog toolchain which
+```
+
+`groundhog node` and `groundhog test --integration` can acquire the selected
+catalog runtime when needed. Explicit source builds and older client bundles are
+alternative setups, not required for this managed path. Check
+`groundhog status --json` for the selected runtime; an inherited
+`GROUNDHOG_DEVNODE_BINARY` can override it. If intentionally using a bundle, keep
+its binaries, runtime libraries, and contract artifacts together.
+
+`groundhog node` accepts `--hog-devnode-binary` for an explicit runtime. For an
+explicit integration-test runtime, use `GROUNDHOG_DEVNODE_BINARY`; integration
+mode does not accept that command-line flag. See
+[runtime selection](/tutorials/develop-locally/#verify-the-selected-runtime).
 
 Run interactive setup before creating your first project:
 
