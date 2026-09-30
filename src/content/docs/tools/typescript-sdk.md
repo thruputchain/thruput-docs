@@ -5,6 +5,9 @@ description: Connect to Groundhog, read typed contract data, and execute and obs
 
 `@groundhogchain/client` provides RPC actions, accounts, wallet execution, and the runtime used by generated contract bindings.
 
+This page shows individual operations. For a complete runnable app, follow
+[Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/).
+
 ## Install
 
 Use Node.js 22.12.0 or newer. The packages are hosted on GitHub Packages; configure a token with `read:packages`:
@@ -60,7 +63,7 @@ const client = await createGroundhogClient({
 Common types and constructors such as `ContractAddress`, `gasAmount`, hashes, and entrypoint IDs are exported by the client. Protocol-only symbols such as `HOG_ADDRESS`, `bitMap`, and `weight` remain in `@groundhogchain/protocol`.
 
 ```ts
-import { parseUnits, formatUnits, ParseUnitsError } from "@groundhogchain/client";
+import { parseUnits, formatUnits } from "@groundhogchain/client";
 
 const amount = parseUnits("12.05", 2); // 1205n
 console.log(formatUnits(amount, 2)); // "12.05"
@@ -138,6 +141,8 @@ External-wallet helpers require an `onSigned` callback that durably saves signed
 
 ## Use a Local DevWallet
 
+Use a client connected to the same local node as the account's runtime manifest:
+
 ```ts
 import { bitMap, weight } from "@groundhogchain/protocol";
 import { createSourceAddressAccount, createWalletClient, devWalletAdapter } from "@groundhogchain/client";
@@ -153,7 +158,7 @@ const account = createSourceAddressAccount({
 const wallet = createWalletClient({ client, account, invocationAdapter: devWalletAdapter });
 ```
 
-Use a client connected to that same local runtime. The loader selects the first `local_user`, normally `dev-1`, from `GROUNDHOG_RUNTIME_MANIFEST` or active config. A Localnet URL override must identify the same node as the manifest. These deterministic keys are for local testing only.
+The loader selects the first `local_user`, normally `dev-1`, from `GROUNDHOG_RUNTIME_MANIFEST` or active config. A Localnet URL override must identify the same node as the manifest. These deterministic keys are for local testing only.
 
 ### Deploy Through a Wallet
 
@@ -167,7 +172,14 @@ console.log(deployed.address, deployed.txHash);
 
 `artifact` is the RV32 file's bytes or a protocol `Contract`. Preparation predicts the address without creating an expiring transaction. The wallet attaches code, executes its deploy method, waits for success, and verifies the returned address.
 
-DefaultWallet accepts `funding` and an optional `initializer` targeting the predicted address. It funds, deploys, and initializes in one transaction; failure rolls back the group. The initializer's caller is the wallet and the root gas budget must cover it. The selected local DevWallet instead transfers 10 HOG during deploy as its own policy, accepts neither option, and requires a separate initialization call. That policy is not a universal storage price. See the [deployment example](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/deploy-counter.ts).
+- **DefaultWallet** accepts `funding` and an optional `initializer` targeting the
+  predicted address. These steps share one transaction; failure rolls them back.
+  The initializer's caller is the wallet, and root gas must cover its execution.
+- **Local DevWallet** transfers 10 HOG during deploy as wallet policy. It accepts
+  neither option and requires a separate initialization call. That amount is not
+  a universal storage price.
+
+See the [deployment example](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/deploy-counter.ts).
 
 ## Typed Views
 
@@ -177,12 +189,12 @@ import { ERC20 } from "@groundhogchain/client/contracts";
 
 const token = getContract({ binding: ERC20.v0_1, address: tokenAddress, client });
 const balance = await token.getBalanceOf.view({ args: { addr: owner }, signal });
-const args = ERC20.v0_1.transfer.decodeArgs(invocation.calldata);
 ```
 
 Views return `value`, `height`, and `events`. Independent views can use different committed snapshots or lag a recent receipt. `view()` throws `ContractViewError` on abort/fault; `viewOutcome()` returns `return`, `abort`, or `fault`. Malformed contract data throws `ContractDecodeError`.
 
-`decodeArgs()` uses public argument names, consumes the complete buffer, and returns `undefined` for a no-argument method. Select the known method first. Decoding bytes does not verify the deployed contract's behavior. See [TypeScript Bindings](/tools/typescript-bindings/).
+For argument inspection and output decoding with a known method, see
+[method descriptors](/tools/typescript-bindings/#method-descriptors).
 
 ## Cancellation and Read Errors
 
@@ -215,9 +227,18 @@ const client = await createGroundhogClient({
 const [tip, version] = await Promise.all([client.getChainTip(), client.getVersion()]);
 ```
 
-Batching is off by default; `batch: true` uses the defaults shown. It groups concurrent requests and splits at `maxSize`. Both supported public servers cap arrays at 1,000 entries, independently of their byte/concurrency limits. Responses are matched by ID, not array position. Per-call RPC errors stay separate; shared network/HTTP or malformed-batch failures reject affected calls. No automatic retry or deduplication occurs.
+Batching is off by default; `batch: true` uses the defaults shown. Concurrent
+requests are grouped and split at `maxSize`.
 
-Timeout covers the dispatched HTTP exchange, including its response body. One caller's cancellation leaves neighbors running; canceling all dispatched callers cancels shared network work. HTTP batching guarantees neither shared state, execution order, nor atomicity. Await dependent calls separately.
+- Responses match by ID, not array position. Per-call RPC errors stay separate;
+  shared network, HTTP, or malformed-batch failures reject affected calls.
+- Timeout covers the dispatched exchange, including its response body.
+- Canceling one caller leaves neighbors running. Canceling all dispatched callers
+  cancels shared network work.
+- There is no automatic retry or deduplication, and no shared-state, execution-order,
+  or atomicity guarantee. Await dependent calls separately.
+
+The server's [array and byte limits](/reference/json-rpc-api/#json-rpc-arrays) still apply.
 
 ## Event Pages
 
@@ -282,4 +303,4 @@ signature preimage and signed wrapper. Preserve the original hash for recovery.
 - [Local HOG view](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/view-hog-balance.ts)
 - [Counter deployment](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/deploy-counter.ts)
 
-For a complete app, follow [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/). For raw requests, see [JSON-RPC API](/reference/json-rpc-api/).
+For raw requests, see [JSON-RPC API](/reference/json-rpc-api/).

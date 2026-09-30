@@ -252,60 +252,36 @@ of `(txHash, sequenceNumber)` within the network/query's store. Transaction-refe
 pages can use `txHash`; their query matches root invocation targets, not every
 address touched by a transaction.
 
-This application-owned loop completes one walk. `initialQuery` is used only when
-the store is empty. The store must be scoped to a specific network and query; a
-changed filter needs a separate store or an explicit rebuild.
+Continue the ascending `query` above with application-owned storage. Use one store
+per network and query; changing filters needs a separate store or an explicit rebuild.
+
+| Application method | Responsibility |
+| --- | --- |
+| `store.loadProgress()` | Return the saved `{ height, cursor }`, or `undefined` for a new scan. Heights are bigint and cursors are `Uint8Array`. |
+| `store.savePage(rows, progress)` | Upsert rows by their stable identity and save progress in the **same database transaction**. |
 
 ```ts
-import type { CoreGroundhogClient, EventQuery, IdentifiedEvent } from "@groundhogchain/client";
+const saved = await store.loadProgress();
+let height = saved?.height ?? 0n;
 
-interface EventProgress {
-  query: EventQuery;
-  resumeHeight: bigint;
-  complete: boolean;
-}
-interface EventStore {
-  load(): Promise<EventProgress | undefined>;
-  // Atomically upsert rows by (txHash, sequenceNumber) AND save progress.
-  savePage(rows: readonly IdentifiedEvent[], progress: EventProgress): Promise<void>;
-}
-
-async function scanEventHistory(
-  client: Pick<CoreGroundhogClient, "iterateEventPages">,
-  store: EventStore,
-  initialQuery: EventQuery,
-  signal?: AbortSignal,
-) {
-  const saved = await store.load();
-  const query = structuredClone(saved?.query ?? initialQuery);
-  if (query.order !== "ascending" || query.anchor === "end") {
-    throw new Error("Use an ascending history query starting at beginning or a height");
+for await (const page of client.iterateEventPages({
+  ...query,
+  anchor: { height },
+  cursor: saved?.cursor ?? new Uint8Array(),
+}, { signal })) {
+  if (page.oldestBlock > height) {
+    throw new Error("History gap: required blocks are no longer retained");
   }
-  let resumeHeight = saved?.resumeHeight ??
-    (typeof query.anchor === "object" ? query.anchor.height : 0n);
-  if (saved?.complete) {
-    query.anchor = { height: resumeHeight };
-    query.cursor = new Uint8Array();
-  }
-  for await (const page of client.iterateEventPages(query, { signal })) {
-    if (page.oldestBlock > resumeHeight) {
-      throw new Error("History gap: the indexer no longer covers the saved starting height");
-    }
-    const last = page.events.at(-1);
-    if (last) resumeHeight = last.blockHeight;
-    await store.savePage(page.events, structuredClone({
-      query: { ...query, cursor: page.cursor.slice() },
-      resumeHeight,
-      complete: page.cursor.length === 0,
-    }));
-  }
+  const last = page.events.at(-1);
+  if (last) height = last.blockHeight;
+  await store.savePage(page.events, { height, cursor: page.cursor.slice() });
 }
 ```
 
-This loop belongs to the application, not the SDK. Supply durable database
-transactions and unique constraints in `EventStore`. Test interruption and replay
-against that store, and serialize checkpoints exactly, including bigint heights
-and cursor bytes.
+The store methods are application code, not SDK APIs. A non-empty saved cursor
+resumes the old walk. An empty one starts a fresh scan at the saved height.
+Serialize heights and cursor bytes exactly, and test interruption and replay
+against your database implementation.
 
 For example, block 100 contains events A and B on different pages:
 
