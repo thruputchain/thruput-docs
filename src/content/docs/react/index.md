@@ -1,17 +1,17 @@
 ---
 title: React
-description: Use Groundhog's React provider and hooks for wallet connection and balance queries.
+description: Use Groundhog's React provider and hooks for wallets and contract data.
 sidebar:
   label: Overview
 ---
 
-`@groundhogchain/react` provides wallet connection state and balance queries for React applications. It uses the [TypeScript client](/typescript/) for network interactions.
+`@groundhogchain/react` provides wallet connection state, balance queries, and typed contract reads for React applications. It uses the [TypeScript client](/typescript/) for network interactions.
 
 ## Set up your application
 
-Follow the package's [installation and provider setup](https://github.com/groundhogchain/react#readme). Check its current publication status and compatible dependency versions before installing it.
+Follow the [React quickstart](/get-started/react/) to display live Devnet contract data. [Package setup](/typescript/setup/) covers registry access.
 
-The package exports `WalletProvider`, `useWallet`, `useClient`, `useWalletClient`, `useBalance`, and `useTokenBalance`. See the [package source](https://github.com/groundhogchain/react/blob/main/src/index.ts) for its public exports.
+The package provides a wallet provider, wallet and balance hooks, and typed contract queries. See the [package reference](https://github.com/groundhogchain/react#readme) for its public API.
 
 ## Choose the right layer
 

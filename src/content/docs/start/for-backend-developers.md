@@ -51,4 +51,4 @@ The balance constraint works the same way. If two concurrent withdrawals togethe
 
 For storage type details (`Balance`, `NNInt`, `Map`, `Vector`, `Value`, `Bytestring`, `CapacityConstraint`, and `RetrocausalQueue`) and their conflict semantics, see [Programming Model: Storage Types](/programming-model/storage-types/). For the contract-level execution model, see [Merged Deltas](/programming-model/execution/#merged-deltas).
 
-Ready to write code? [Getting Started](/start/getting-started/) walks you through the SDK setup and your first contract.
+Ready to write code? The [contract quickstart](/get-started/contract/) walks you through building and deploying your first contract.

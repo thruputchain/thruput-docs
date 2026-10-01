@@ -9,7 +9,7 @@ Site header: **About · Get Started · Documentation · Community**, followed by
 
 Documentation sidebar sections:
 
-**Get Started → Understand Groundhog → CLI → Smart Contracts → TypeScript → React → Guides**
+**Get Started → Understand Groundhog → CLI → Smart Contracts → TypeScript → React → Guides → Tools**
 
 All sections remain available in one sidebar. Clicking a section heading expands its pages without navigating away. A deep link opens its containing section and highlights the current page. Search covers the whole site.
 
@@ -17,13 +17,13 @@ Keep each section one level deep by default. Add a subgroup only when it helps d
 
 Restructure content around the reader's task. Moving an overloaded page or creating another directory of links does not complete a section. Rewrite its introduction, extract focused tasks, move complete walkthroughs into Guides, and remove repeated explanations.
 
-The homepage introduces the project and links into this structure. Community, security, roadmap, contact, and social links belong in secondary navigation and the footer.
+The homepage introduces the project and links into this structure. Community, contact, and social destinations belong in the site navigation and footer. Remove the empty Contributing, Security, and Roadmap placeholder pages rather than maintaining a Project section. The Community header link goes to the Groundhog GitHub organization.
 ### Reviewed direction
-1. Use the seven sections above in the expandable documentation sidebar, not in the header. Keep Understand Groundhog as the label and use `/architecture/` as its URL root.
+1. Use the eight sections above in the expandable documentation sidebar, not in the header. Keep Understand Groundhog as the label and use `/architecture/` as its URL root.
 
 2. Keep framework-neutral wallet integration in TypeScript. Give React its own implementation guidance.
 
-3. Keep cross-cutting protocol reference at `/reference/`, available as an auxiliary sidebar group and through contextual links. Keep project pages in a Project group and the footer.
+3. Use one auxiliary Reference group for the existing protocol reference pages and external generated TypeScript API docs. Do not include a Project group.
 
 4. Keep Guides as the canonical home for complete projects, including the counter app, token tutorial, wallet app tutorial, and swap design. Get Started links prominently to the counter app. TypeScript keeps reusable wallet integration instructions and provider reference.
 
@@ -60,11 +60,13 @@ These are structural findings, not confirmation that the examples run against cu
 | Build a first contract | Get Started → Contract quickstart | Passing tests and a verified contract interaction | Build a Counter App |
 | Use Groundhog from TypeScript | Get Started → TypeScript quickstart | Read data and complete a small supported interaction | TypeScript tasks or the client chapter of the counter guide |
 | Use Groundhog from React | Get Started → React quickstart | A connected interface with a visible result | React tasks or the UI chapter of the counter guide |
-| Work with a coding agent | Get Started → Coding Agents | Give the agent the skill, correct docs, and a verifiable task | The same quickstart or guide as a human reader |
+| Work with a coding agent | Get Started → Build with an Agent | Give the agent the skill, docs, and one end-to-end prompt | A counter application on Devnet, or an individual quickstart |
 | Complete a specific task | CLI, Smart Contracts, TypeScript, or React | Solve that task without reading an entire course | Related API reference |
 | Learn the full stack | Guides → Build a Counter App | A working contract, client, UI, and wallet interaction | Devnet deployment and deeper examples |
 
-Quickstarts choose one supported setup and one result. They show mandatory prerequisites before the first command. Links to optional detail do not interrupt the main sequence.
+Quickstarts use Devnet and the latest release installation commands. CLI and contract paths do not require a local node. Application paths begin with a read from an existing contract, without requiring Rust, deployment, or wallet access. Each path has one result and shows its mandatory prerequisites before the first command.
+
+Do not make readers select component versions or navigate a compatibility matrix. Let the CLI scaffold and package manager resolve dependencies, and preserve generated lockfiles. Exact verification versions belong in internal audit notes. Track release or Devnet mismatches as validation follow-ups; they do not change the documented Devnet-first path.
 
 The counter guide adds explanation and connects the stack. Application developers can enter from tested contract and deployment checkpoints.
 ## 4. Section structure
@@ -82,28 +84,12 @@ The lists below are the content inventory for each sidebar section. A line with 
 
   - React application: `/get-started/react/`
 
-- Shared setup
-
-  - Networks: `/get-started/networks/`
-
-  - Supported versions and access: `/get-started/versions/`
-
-  - Get test funds: `/get-started/faucet/`
-
-  - Inspect transactions: `/get-started/explorer/`
-
-- Coding Agents
-
-  - Start with an agent: `/get-started/agents/`
-
-  - Install the skill: `/get-started/agents/skill/`
-
-  - Use local docs: `/get-started/agents/local-docs/`
-
-  - Give an agent useful context: `/get-started/agents/context/`
+- Build with an Agent: `/get-started/agents/` (currently `/start/build-with-an-agent/`). Keep this as a short setup and one end-to-end prompt, not a second onboarding manual.
 
 
-The overview offers guided and agent-assisted entry. Feature the counter app as the complete learning path, linking to its canonical guide. Installation details live with each product; the versions page owns the compatibility matrix and access overview.
+The overview offers guided and agent-assisted entry. Feature the counter app as the complete learning path, linking to its canonical guide. Installation details live with each product. Keep compatibility evidence in internal verification notes rather than a reader-facing version matrix. Quickstarts link to the relevant tool when needed, but Faucet, Block Explorer, and Wallet Extension live in Tools.
+
+The agent handoff is `groundhog --skill`, `groundhog docs`, and one prompt to build a counter application on Devnet with a Rust contract, typed bindings, and a React wallet interface. Describe the commands' current behavior. GH-459 separately tracks installing the skill through `npx skills` and improving direct Markdown access through the CLI.
 
 The CLI quickstart is the shortest terminal-based introduction: install the CLI, run `groundhog init`, select the supported Devnet configuration, create a wallet, request an airdrop, and inspect its transaction and resulting balance. Verify the exact commands and success states before publishing. It does not require compiling or deploying a contract. Include a matching agent prompt. The CLI section links to this same quickstart rather than maintaining another copy.
 
@@ -272,7 +258,17 @@ Verify the current library before finalizing these pages. Distinguish library-pr
 
 
 Each guide states its type, scope, prerequisites, and result. Link to runnable code when available. A design walkthrough must not imply a verified application. Start with this collection and add projects when their code and maintenance are ready.
-### Shared reference and project pages
+### Tools
+
+Place Tools after Guides, with a flat list:
+
+- Faucet: `/tools/faucet/`
+- Block Explorer: `/tools/block-explorer/`
+- Wallet Extension: `/tools/wallet-extension/` (pending verified installation and distribution instructions in GH-458)
+
+Each page explains its purpose, launch or installation steps, supported networks, and its main workflow. Keep wallet integration APIs in TypeScript and React. Preserve the existing Faucet and Block Explorer URLs. Do not publish an empty Wallet Extension page before the instructions are ready.
+
+### Reference
 Retain these stable paths:
 
 - `/reference/json-rpc-api/`
@@ -281,19 +277,18 @@ Retain these stable paths:
 
 - `/reference/xdr-protocol/`
 
-- `/community/contributing/`
+Add these external links beneath the internal reference pages:
 
-- `/community/security/`
+- TypeScript Client API: `https://client-ts.thruput.network/`
+- TypeScript Protocol API: `https://protocol-ts.thruput.network/`
 
-- `/community/roadmap/`
-
-
-Protocol pages live in a Protocol Reference group within the shared sidebar. Community pages live in its Project group and have footer entry points. The seven documentation sections remain visible alongside both groups.
+The group label is Reference. The eight documentation sections remain visible alongside it. External API sites keep their own documentation and access controls; do not copy their generated content into this site.
 ## 5. Canonical ownership
 | Topic | Canonical home | Other sections do this |
 | --- | --- | --- |
-| Network names, endpoints, and explorer/faucet entry points | Get Started → Shared setup | Link to these facts; document their own connection commands |
-| Release compatibility and access requirements | Get Started → Supported versions and access | State relevant prerequisites and link to the shared matrix |
+| Network configuration | CLI configuration and TypeScript client setup | Quickstarts use the Devnet defaults and link to configuration when needed |
+| Faucet, explorer, and wallet extension | Tools | Quickstarts link to the tool at the step that needs it; application sections keep integration APIs |
+| Package and tool access | CLI installation and TypeScript package setup | Link to the relevant setup; keep exact tested versions in internal audit notes |
 | CLI profiles, keys, and local-node operation | CLI | Use the required steps, then link for configuration detail |
 | Accounts, wallets, and transaction concepts | Understand Groundhog | Explain only the API usage needed for the current task |
 | Contract-level authorization | Smart Contracts | Link to the contract rules rather than repeat them |
@@ -302,7 +297,7 @@ Protocol pages live in a Protocol Reference group within the shared sidebar. Com
 | Storage API choice and concurrent contract design | Smart Contracts | Understand Groundhog introduces the model without teaching every API |
 | Execution, resource economics, and engine architecture | Understand Groundhog | Summarize the relevant consequence and link to the explanation |
 | RPC wire API and serialized formats | Shared reference | CLI and TypeScript link from related tasks and reference indexes |
-| Agent setup and local-docs access | Get Started → Coding Agents | Context menus and task prompts link back to this setup |
+| Agent handoff | Get Started → Build with an Agent | Context menus and task prompts link to the concise setup and end-to-end prompt |
 | End-to-end example explanations | Guides | Quickstarts and product pages link to useful entry chapters |
 | Runnable example code | Existing examples repository | Docs use verified snippets and link to the matching revision |
 
@@ -314,8 +309,8 @@ Paths below are relative to the site root. A directory ending in `/` denotes its
 | --- | --- | --- |
 | `/` | Rewrite in place, GH-455 | Header branding: GH-457 |
 | `/start/` | Consolidate → `/architecture/` | Redirect to the single Introduction; remove Start Here from the sidebar |
-| `/start/getting-started/` | Split → `/get-started/contract/` | `/cli/install/`, `/cli/build-and-test/`, `/contracts/project-structure/`, `/get-started/versions/` |
-| `/start/build-with-an-agent/` | Split → `/get-started/agents/` | Skill, local-docs, and context pages under that path |
+| `/start/getting-started/` | Split → `/get-started/contract/` | `/cli/install/`, `/contracts/project-structure/`, and the existing Testing page |
+| `/start/build-with-an-agent/` | Rewrite → `/get-started/agents/` | Short skill/docs setup and one end-to-end prompt; preserve current URL during implementation |
 | `/start/for-blockchain-developers/` | Review → `/architecture/coming-from/blockchain/` | Place under platform comparisons; merge repeated introductory content into `/architecture/` |
 | `/start/for-backend-developers/` | Rewrite → `/architecture/coming-from/backend/` | Link to canonical execution explanation |
 | `/start/for-distributed-systems-developers/` | Rewrite → `/architecture/coming-from/distributed-systems/` | Link to architecture and consensus |
@@ -326,16 +321,16 @@ Paths below are relative to the site root. A directory ending in `/` denotes its
 | `/tools/rust-api-docs/` | Move → `/contracts/reference/` | Keep links to generated Rustdoc |
 | `/tools/typescript-sdk/` | Split → `/typescript/` | Setup, networks, reads, transactions, events, tokens, errors, reference |
 | `/tools/typescript-bindings/` | Split → `/typescript/bindings/` | `/cli/codegen/` for command usage |
-| `/tools/block-explorer/` | Rewrite → `/get-started/explorer/` | Link to CLI inspection fallback |
+| `/tools/block-explorer/` | Retain URL; place in Tools | Link to CLI inspection fallback |
 | `/tools/wallet-integration/` | Merge → `/typescript/wallets/` | `/typescript/errors/` for recovery details |
 | `/tools/wallet-provider/` | Split → `/typescript/reference/wallet-provider/` | Usage and explanatory details to wallet tasks |
-| `/tools/faucet/` | Rewrite → `/get-started/faucet/` | Preserve CLI and TypeScript entry points |
+| `/tools/faucet/` | Retain URL; place in Tools | Preserve CLI and TypeScript entry points |
 ### Tutorials
 | Current route | Disposition and primary destination | Additional destinations |
 | --- | --- | --- |
 | `/tutorials/build-a-counter/` | Rewrite → `/guides/counter/contract/` | Link to whole-guide overview |
 | `/tutorials/develop-locally/` | Split → `/guides/counter/local-deployment/` | `/cli/local-node/`, `/cli/troubleshooting/`, `/contracts/testing/` |
-| `/tutorials/develop-on-devnet/` | Split → `/guides/counter/devnet/` | `/get-started/networks/`, `/cli/configuration/`, `/cli/wallets/`, `/cli/troubleshooting/` |
+| `/tutorials/develop-on-devnet/` | Split → `/guides/counter/devnet/` | `/cli/configuration/`, `/cli/wallets/`, `/cli/troubleshooting/` |
 | `/tutorials/work-with-groundhog-from-typescript/` | Split → `/guides/counter/typescript/` | `/typescript/tokens/`, `/typescript/events/`, `/typescript/transactions/` |
 | `/tutorials/connect-a-wallet-to-your-app/` | Rewrite → `/guides/wallet-app/` | Keep the complete application in Guides; reusable integration details belong in TypeScript |
 | `/tutorials/add-events-to-a-contract/` | Split → `/contracts/events/` | `/typescript/events/` for querying and resuming |
@@ -382,9 +377,9 @@ Some current reference pages contain teaching material. Their new home reflects 
 | `/ecosystem/evm/` | Rewrite → `/architecture/coming-from/evm/` |
 | `/ecosystem/solana/` | Rewrite → `/architecture/coming-from/solana/` |
 | `/ecosystem/stellar/` | Rewrite → `/architecture/coming-from/stellar/` |
-| `/community/contributing/` | Retain; expose through footer and Project sidebar |
-| `/community/security/` | Retain; expose through footer and Project sidebar |
-| `/community/roadmap/` | Retain; expose through footer and Project sidebar |
+| `/community/contributing/` | Retire the coming-soon placeholder; Community navigation links to GitHub |
+| `/community/security/` | Retire the coming-soon placeholder |
+| `/community/roadmap/` | Retire the coming-soon placeholder |
 ## 7. Page conventions
 | Page type | Opening | Body | Finish |
 | --- | --- | --- | --- |
@@ -403,7 +398,7 @@ For AI handoff, a task prompt includes the goal, source/version context, prerequ
 ## 8. Navigation behavior
 - Desktop: retain the single-row project header with About, Get Started, Documentation, Community, search, and Start Building. No second row of documentation sections.
 
-- Within docs: show all seven sections as expandable sidebar headings. Each opens its submenu in place. Start with the active section expanded and highlight the current page. Preserve native keyboard and disclosure behavior. Do not repeat the section name above an identical page heading.
+- Within docs: show all eight sections as expandable sidebar headings. Each opens its submenu in place. Start with the active section expanded and highlight the current page. Preserve native keyboard and disclosure behavior. Do not repeat the section name above an identical page heading.
 
 - Mobile: show the original site navigation and the same expandable docs sidebar in the menu. Section toggles keep the menu open; following a page link closes it. Avoid unnecessary nested disclosure levels.
 
@@ -445,13 +440,13 @@ Ask a developer unfamiliar with this structure where they would go for each task
 | Connect a wallet in React | React → Connect a wallet |
 | Connect a wallet without React | TypeScript → Connect a browser wallet |
 | Explain Groundhog's execution differences | Understand Groundhog → Introduction, then Execution Model |
-| Give a coding agent the right setup | Get Started → Coding Agents |
+| Give a coding agent the right setup | Get Started → Build with an Agent |
 | Build a complete counter application | Guides → Build a Counter App |
 | Look up an RPC method | TypeScript or CLI reference link → JSON-RPC API; also available through search |
 ### Completion evidence
 - [x] Architecture reviewed; URL-root and CLI-quickstart feedback incorporated.
 - [x] Existing content assigned to sections; automated inventory check confirms one sidebar owner per page.
-- [x] Original header restored; seven documentation sections placed in one expandable sidebar.
+- [x] Original header restored; eight documentation sections placed in one expandable sidebar, including Tools.
 - [x] Desktop, mobile, and keyboard section-navigation behavior verified.
 - [x] Current legacy routes preserved; new overview links and their fragments checked.
 - [x] Local snapshot smoke test and agent-artifact checks pass.
@@ -463,7 +458,9 @@ Ask a developer unfamiliar with this structure where they would go for each task
 
 `src/navigation.ts` owns section definitions and current page membership. Starlight renders all sidebar groups, with the active page's ancestors open. Route middleware keeps automatic pagination within the page's section. The earlier header section-switcher and filtered sidebars were rejected during visual review and have been removed.
 
-The platform Introduction and CLI Introduction have been rewritten rather than left as link directories. The old Start Here page now redirects to the platform Introduction. The general blockchain comparison is optional, under platform comparisons. The wallet app tutorial is in Guides; framework-neutral wallet integration remains in TypeScript. Other entry pages and their underlying content still need the planned task-focused rewrites. The CLI quickstart and complete counter app guide remain follow-up work.
+The platform Introduction and CLI Introduction have been rewritten rather than left as link directories. The old Start Here page now redirects to the platform Introduction. The general blockchain comparison is optional, under platform comparisons. The wallet app tutorial is in Guides; framework-neutral wallet integration remains in TypeScript.
+
+GH-451 adds four Devnet quickstarts, canonical CLI/package installation, and task-specific agent prompts. The old overloaded getting-started page redirects to the contract quickstart; its generated-project detail is preserved in Project structure and Testing. The complete counter app guide and deeper product-section rewrites remain separate work. See `docs/audits/2026-10-01-getting-started.md` for verification and hosted-network follow-ups.
 
 The Introduction's integer-update example was checked against `groundhog-protocol/storage_item.x` and `groundhog-hogd/hogd/hog_db/item_lock/nnint128_lock.cc`. CLI workflow descriptions were checked against the CLI repository documentation and the existing command guide. React surface descriptions use the React package's public exports.
 

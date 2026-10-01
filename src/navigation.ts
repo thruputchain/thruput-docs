@@ -4,11 +4,16 @@ interface NavigationGroup {
   collapsed?: boolean;
 }
 
+interface NavigationLink {
+  label: string;
+  link: string;
+}
+
 interface DocumentationSection {
   id: string;
   label: string;
   href: string;
-  items: (string | NavigationGroup)[];
+  items: (string | NavigationGroup | NavigationLink)[];
 }
 
 // Keep current content routes here until each page is migrated. A page has one
@@ -18,7 +23,8 @@ export const sections: DocumentationSection[] = [
     id: 'get-started', label: 'Get Started', href: '/get-started/',
     items: [
       'get-started',
-      'start/getting-started', 'start/build-with-an-agent', 'tools/faucet', 'tools/block-explorer',
+      'get-started/cli', 'get-started/contract', 'get-started/typescript', 'get-started/react',
+      'start/build-with-an-agent',
     ],
   },
   {
@@ -39,6 +45,7 @@ export const sections: DocumentationSection[] = [
     id: 'cli', label: 'CLI', href: '/cli/',
     items: [
       'cli',
+      'cli/install',
       'tools/groundhog-cli', 'tutorials/develop-locally', 'tutorials/develop-on-devnet',
     ],
   },
@@ -46,6 +53,7 @@ export const sections: DocumentationSection[] = [
     id: 'contracts', label: 'Smart Contracts', href: '/contracts/',
     items: [
       'contracts',
+      'contracts/project-structure',
       'programming-model/storage-types', 'reference/error-handling',
       'how-it-works/authorization', 'tutorials/add-events-to-a-contract',
       'reference/cross-contract-calls', 'programming-model/testing',
@@ -60,6 +68,7 @@ export const sections: DocumentationSection[] = [
     id: 'typescript', label: 'TypeScript', href: '/typescript/',
     items: [
       'typescript',
+      'typescript/setup',
       'tools/typescript-sdk', 'tools/typescript-bindings',
       'tools/wallet-integration', 'tools/wallet-provider',
     ],
@@ -77,12 +86,16 @@ export const sections: DocumentationSection[] = [
     ],
   },
   {
-    id: 'reference', label: 'Protocol Reference', href: '/reference/json-rpc-api/',
-    items: ['reference/json-rpc-api', 'reference/contract-spec', 'reference/xdr-protocol'],
+    id: 'tools', label: 'Tools', href: '/tools/faucet/',
+    items: ['tools/faucet', 'tools/block-explorer'],
   },
   {
-    id: 'community', label: 'Project', href: '/community/contributing/',
-    items: ['community/contributing', 'community/security', 'community/roadmap'],
+    id: 'reference', label: 'Reference', href: '/reference/json-rpc-api/',
+    items: [
+      'reference/json-rpc-api', 'reference/contract-spec', 'reference/xdr-protocol',
+      { label: 'TypeScript Client API', link: 'https://client-ts.thruput.network/' },
+      { label: 'TypeScript Protocol API', link: 'https://protocol-ts.thruput.network/' },
+    ],
   },
 ];
 
@@ -92,6 +105,6 @@ export function sectionForPath(pathname: string): DocumentationSection | undefin
   const slug = pathname.replace(/^\/+|\/+$/g, '');
   // Exact ownership takes precedence over the root while legacy routes remain.
   return sections.find(section => section.items.some(item =>
-    typeof item === 'string' ? item === slug : item.items.includes(slug)
+    typeof item === 'string' ? item === slug : 'items' in item && item.items.includes(slug)
   )) ?? sections.find(section => slug === section.id || slug.startsWith(`${section.id}/`));
 }

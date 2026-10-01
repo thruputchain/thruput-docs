@@ -1,0 +1,75 @@
+---
+title: TypeScript quickstart
+description: Connect to Devnet and read the native HOG contract with a typed TypeScript client.
+---
+
+Read the HOG token's total supply from Devnet with a typed contract call. This path needs Node.js and package access, but no CLI, signing key, or contract deployment.
+
+## 1. Create a project
+
+```bash
+mkdir my-groundhog-app
+cd my-groundhog-app
+npm init -y
+npm pkg set type=module
+```
+
+Complete [package setup](/typescript/setup/) in this directory, then install the latest SDK and a TypeScript runner:
+
+```bash
+npm install @groundhogchain/client @groundhogchain/protocol
+npm install --save-dev typescript tsx @types/node
+```
+
+## 2. Read a contract
+
+Create `index.ts`:
+
+```ts
+import { createGroundhogClient, devnet, formatUnits, getContract } from "@groundhogchain/client";
+import { ERC20 } from "@groundhogchain/client/contracts";
+import { HOG_ADDRESS } from "@groundhogchain/protocol";
+
+async function main() {
+  const client = await createGroundhogClient({ cluster: devnet() });
+  const hog = getContract({ binding: ERC20.v0_1, address: HOG_ADDRESS, client });
+  const supply = await hog.totalSupply.view({ args: undefined });
+
+  console.log("HOG supply:", formatUnits(supply.value, 7));
+  console.log("Read at block:", supply.height.toString());
+}
+
+main().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});
+```
+
+`devnet()` selects the hosted network. The SDK includes the HOG contract's standard binding, so you do not need to generate one. `supply.value` is a typed integer; formatting it displays HOG rather than base units.
+
+## 3. Run it
+
+```bash
+npx tsx index.ts
+```
+
+You should see **HOG supply** and **Read at block**, each followed by a value. Run the command again to make another read. The values come from Devnet and can change; there is no fixed expected block number.
+
+This is a read-only call. It does not request wallet permission or submit a transaction.
+
+## Next
+
+Use [Wallet Integration](/tools/wallet-integration/) to add signing and transaction submission, or continue with the [React quickstart](/get-started/react/) to display contract data in an interface.
+
+## Use a coding agent
+
+```text
+Build the Groundhog TypeScript quickstart:
+https://docs.groundhog.dev/get-started/typescript/
+Use the latest published SDK packages and the hosted Devnet.
+Configure package access through my environment. Create the typed HOG
+total-supply read shown in the guide and run it. Show the actual supply
+and block height, or report the exact error if the request fails.
+Do not install the Rust toolchain, deploy a contract, or create a wallet
+for this read-only example. Keep the generated package lockfile.
+```

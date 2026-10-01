@@ -93,4 +93,4 @@ HOG is implemented by a native precompiled token contract exposing the standard 
 - [Execution Model](/how-it-works/execution-model/): How the capital model fits into the execution pipeline
 - [Architecture](/how-it-works/architecture/): The big-picture design
 - [Storage Types Reference](/reference/storage-types/): API for the typed primitives that storage deposits back
-- [Getting Started](/start/getting-started/): Write your first contract
+- [Contract quickstart](/get-started/contract/): Deploy your first contract

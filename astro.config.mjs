@@ -8,6 +8,7 @@ export default defineConfig({
   // Keep legacy entry points working as their content is consolidated.
   redirects: {
     "/start": "/architecture/",
+    "/start/getting-started": "/get-started/contract/",
     "/tutorials/build-a-swap": "/tutorials/design-a-swap",
   },
   integrations: [

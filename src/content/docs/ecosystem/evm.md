@@ -400,7 +400,7 @@ These EVM features have no Groundhog equivalent. Set your expectations:
 
 ## Next Steps
 
-- [Getting Started](/start/getting-started/) for SDK setup and project structure
+- [Contract quickstart](/get-started/contract/) for a first deployment, and [Project structure](/contracts/project-structure/) for the generated files
 - [Build a Counter](/tutorials/build-a-counter/) for a step-by-step first contract
 - [Build a Token](/tutorials/build-a-token/) for the full ERC-20 implementation
 - [Merged Deltas](/programming-model/execution/#merged-deltas) for the contract-level merge model

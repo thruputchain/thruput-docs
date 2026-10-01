@@ -13,21 +13,32 @@ const sections = [
 
 function sectionGroup(page: Page, label: string) {
   return page.locator('.sidebar .top-level > li > details').filter({
-    has: page.locator('summary').getByText(label, { exact: true }),
+    has: page.locator(':scope > summary').getByText(label, { exact: true }),
   });
 }
 
 test('entry pages keep site navigation separate from expandable documentation sections', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const checked = new Set<string>();
-  for (const [label, path, title] of sections) {
+  for (const [label, path, title] of [
+    ...sections,
+    ['Get Started', '/get-started/cli/', 'CLI quickstart'],
+    ['Get Started', '/get-started/contract/', 'Contract quickstart'],
+    ['Get Started', '/get-started/typescript/', 'TypeScript quickstart'],
+    ['Get Started', '/get-started/react/', 'React quickstart'],
+    ['CLI', '/cli/install/', 'Install the CLI'],
+    ['TypeScript', '/typescript/setup/', 'Package setup'],
+    ['Smart Contracts', '/contracts/project-structure/', 'Project structure'],
+    ['Tools', '/tools/faucet/', 'Faucet'],
+    ['Tools', '/tools/block-explorer/', 'Block Explorer'],
+  ]) {
     const response = await page.goto(origin + path);
     expect(response?.status()).toBe(200);
     await expect(page.locator('main h1')).toHaveText(title);
     const navigation = page.locator('header .site-navigation');
     await expect(navigation.getByRole('link')).toHaveText(['About', 'Get Started', 'Documentation', 'Community']);
     await expect(page.locator('.sidebar .top-level > li > details > summary .large')).toHaveText([
-      ...sections.map(([name]) => name), 'Protocol Reference', 'Project',
+      ...sections.map(([name]) => name), 'Tools', 'Reference',
     ]);
     await expect(sectionGroup(page, label)).toHaveAttribute('open', '');
     await expect(sectionGroup(page, label).locator('a[aria-current="page"]')).toHaveAttribute('href', path);
@@ -56,6 +67,8 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
     ['/start/build-with-an-agent/', 'Get Started'],
     ['/tutorials/connect-a-wallet-to-your-app/', 'Guides'],
     ['/start/for-blockchain-developers/', 'Understand Groundhog'],
+    ['/tools/faucet/', 'Tools'],
+    ['/tools/block-explorer/', 'Tools'],
   ]) {
     await page.goto(origin + path);
     await expect(sectionGroup(page, label)).toHaveAttribute('open', '');
@@ -66,16 +79,20 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
   const typescript = sectionGroup(page, 'TypeScript');
   await expect(typescript.locator('a[href="/tutorials/connect-a-wallet-to-your-app/"]')).toHaveCount(0);
   await expect(sectionGroup(page, 'CLI').locator('details')).toHaveCount(0);
-  await expect(sectionGroup(page, 'Understand Groundhog').getByRole('link', { name: 'Introduction', exact: true })).toHaveCount(1);
+  await expect(sectionGroup(page, 'Get Started').locator('a[href="/tools/faucet/"], a[href="/tools/block-explorer/"]')).toHaveCount(0);
+  await expect(sectionGroup(page, 'Understand Groundhog').getByRole('link', { name: 'Introduction', exact: true, includeHidden: true })).toHaveCount(1);
   await expect(page.locator('.sidebar .top-level a[href="/start/"]')).toHaveCount(0);
 
   await page.goto(origin + '/react/');
   await expect(page.locator('.pagination-links a')).toHaveCount(0);
-  for (const path of ['/reference/json-rpc-api/', '/community/security/']) {
-    await page.goto(origin + path);
-    await expect(page.locator('.sidebar a[aria-current="page"]')).toHaveAttribute('href', path);
-    await expect(page.locator('.sidebar a[aria-current="page"]')).toBeVisible();
-  }
+  await page.goto(origin + '/reference/json-rpc-api/');
+  await expect(page.locator('.sidebar a[aria-current="page"]')).toHaveAttribute('href', '/reference/json-rpc-api/');
+  await expect(page.locator('.sidebar a[aria-current="page"]')).toBeVisible();
+  const reference = sectionGroup(page, 'Reference');
+  await expect(reference.getByRole('link', { name: 'TypeScript Client API', exact: true }))
+    .toHaveAttribute('href', 'https://client-ts.thruput.network/');
+  await expect(reference.getByRole('link', { name: 'TypeScript Protocol API', exact: true }))
+    .toHaveAttribute('href', 'https://protocol-ts.thruput.network/');
 });
 
 test('sidebar disclosures work with keyboard and mobile links close the menu', async ({ page }, testInfo) => {
@@ -111,6 +128,12 @@ test('the old Start Here URL reaches the single introduction', async ({ page }) 
   await page.goto(origin + '/start/');
   await expect(page).toHaveURL(origin + '/architecture/');
   await expect(page.locator('main h1')).toHaveText('Introduction');
+});
+
+test('the old getting-started URL reaches the contract quickstart', async ({ page }) => {
+  await page.goto(origin + '/start/getting-started/');
+  await expect(page).toHaveURL(origin + '/get-started/contract/');
+  await expect(page.locator('main h1')).toHaveText('Contract quickstart');
 });
 
 test('a deep link reveals its active page after another section was collapsed', async ({ page }) => {

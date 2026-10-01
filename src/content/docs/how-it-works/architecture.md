@@ -18,7 +18,7 @@ Groundhog starts with a storage question: which concurrent changes can safely co
 
 Two compatible balance increases can merge. Different writes to the same bytestring cannot both land; excluded transactions return to the mempool for possible inclusion in a later block. These rules enforce storage invariants. Contracts still need authorization checks and application-specific constraints.
 
-The SDK provides storage abstractions and macros over the raw syscall interface. You can also build your own abstractions using syscalls. See [SDK Surfaces](/start/getting-started/#sdk-surfaces).
+The SDK provides storage abstractions and macros over the raw syscall interface. You can also build your own abstractions using syscalls. See [SDK layers](/contracts/project-structure/#sdk-layers).
 
 ## Parallelism and Capacity
 
