@@ -12,13 +12,13 @@ import ThemeSelect from './ThemeSelect.astro';
   <SiteNavigation />
   <div class="header-actions">
     <Search />
-    <a class="build-link" href="/start/build-with-an-agent/">Start Building</a>
+    <a class="build-link" href="/get-started/">Start Building</a>
     {Astro.url.pathname !== '/' && <div class="desktop-theme"><ThemeSelect /></div>}
   </div>
 </div>
 
 <style>
-  .site-header { display: flex; align-items: center; gap: 1.5rem; height: 100%; font-family: var(--sl-font-mono); }
+  .site-header { display: flex; align-items: center; gap: 1.5rem; height: 100%; min-width: 0; font-family: var(--sl-font-mono); }
   .home-header { max-width: 77.5rem; margin-inline: auto; }
   .site-brand { display: flex; align-items: center; flex-shrink: 0; gap: .5rem; min-height: 3rem; font: 500 1.125rem/1.2 var(--sl-font); letter-spacing: -.04em; text-decoration: none; color: var(--brand-foreground); }
   .site-brand svg { width: 1.5rem; height: 1.5rem; flex-shrink: 0; color: var(--brand-accent); }

@@ -1,6 +1,8 @@
 ---
 title: Getting Started
 description: Set up the Groundhog CLI and build your first RV32 contract.
+sidebar:
+  label: Contract setup
 ---
 
 Working with a coding agent? Once the CLI is installed, run `groundhog docs`, give the agent its localhost URL, and have it read `groundhog --skill`. See [Build with an Agent](/start/build-with-an-agent/) for the handoff and access setup.

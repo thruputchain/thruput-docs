@@ -1,5 +1,7 @@
 ---
 title: Groundhog CLI
+sidebar:
+  label: Command guide
 description: How Groundhog CLI commands fit into RV32 builds, local nodes, tests, deployment, and TypeScript bindings.
 ---
 

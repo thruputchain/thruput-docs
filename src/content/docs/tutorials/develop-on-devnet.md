@@ -1,5 +1,7 @@
 ---
 title: Develop on Devnet with the CLI
+sidebar:
+  label: Devnet
 description: Create a persistent key-owned wallet, deploy a counter to Devnet, and exercise the Groundhog CLI end to end.
 ---
 
