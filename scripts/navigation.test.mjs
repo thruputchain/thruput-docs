@@ -10,7 +10,7 @@ test('every published documentation page has exactly one sidebar owner', () => {
     .filter(path => /\.mdx?$/.test(path))
     .map(path => path.replace(/\.mdx?$/, '').replace(/\/index$/, ''));
   const entries = sections.flatMap(section => section.items.flatMap(item =>
-    typeof item === 'string' ? [item] : item.items
+    typeof item === 'string' ? [item] : 'items' in item ? item.items : []
   ));
 
   assert.equal(new Set(entries).size, entries.length, 'A page cannot belong to multiple sidebars');
@@ -25,6 +25,9 @@ test('legacy deep links resolve to their task area before matching URL roots', (
   assert.equal(sectionForPath('/reference/json-rpc-api/')?.id, 'reference');
   assert.equal(sectionForPath('/tutorials/connect-a-wallet-to-your-app/')?.id, 'guides');
   assert.equal(sectionForPath('/start/build-with-an-agent/')?.id, 'get-started');
+  assert.equal(sectionForPath('/tools/faucet/')?.id, 'tools');
+  assert.equal(sectionForPath('/tools/block-explorer/')?.id, 'tools');
+  assert.equal(sectionForPath('/tools/groundhog-cli/')?.id, 'cli');
   assert.equal(sectionForPath('/react')?.id, 'react');
   assert.equal(sectionForPath('/react/wallets/')?.id, 'react');
   assert.equal(sectionForPath('/reactive/'), undefined);

@@ -300,7 +300,7 @@ That depends on the venue design. A synchronous venue looks like an ordinary con
 
 ## References
 
-- [Getting Started](/start/getting-started/): Set up the Rust SDK and write your first Groundhog contract
+- [Contract quickstart](/get-started/contract/): Build, test, and deploy a Groundhog contract
 - [Build a Token](/tutorials/build-a-token/): Full ERC-20 token walkthrough
 - [Merged Deltas](/programming-model/execution/#merged-deltas): How concurrent state changes combine
 - [Storage Types](/reference/storage-types/): Balance, NNInt, Map, Vector, Value, Bytestring, RetrocausalQueue API reference

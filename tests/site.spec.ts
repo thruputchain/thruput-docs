@@ -2,7 +2,7 @@ import { test as base, expect, type Page } from '@playwright/test';
 
 const origin = 'http://127.0.0.1:4322';
 const docs = '/start/build-with-an-agent/';
-const prompt = 'Help me build my first Groundhog app. Check whether groundhog is installed and verify the CLI and runtime versions. If installed, read groundhog --skill, start groundhog docs, and use its localhost URL for the documentation. Keep that server running while you work. If the CLI is missing, follow https://docs.groundhog.dev/start/getting-started/; if authentication blocks access, ask me for a saved copy. Never ask me to paste credentials or signing keys. Start with a small contract, run its tests, deploy it, and verify the receipt and state.';
+const prompt = 'Help me deploy my first Groundhog contract to Devnet. Follow https://docs.groundhog.dev/get-started/contract/ using the latest CLI. Read groundhog --skill and preserve the project settings it generates. If documentation access is blocked, ask me for a saved copy or use groundhog docs. Keep credentials and signing keys out of this conversation. Set up a funded Devnet wallet, create and test a counter, deploy it, initialize it to 10, increment by 5, and verify that its view returns 15. Do not start a local node. Report actual results and any setup or network errors.';
 const test = base.extend({
   page: async ({ page }, use) => {
     const errors: string[] = [];
@@ -109,7 +109,6 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
     ['About', '/architecture/'],
     ['Get Started', '/get-started/'],
     ['Documentation', '/architecture/'],
-    ['Community', '/community/contributing/'],
   ];
   for (const [name, href] of links) {
     await page.goto(origin);
@@ -123,6 +122,8 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
   }
   await page.goto(origin);
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await expect(page.locator('.sidebar .site-navigation').getByRole('link', { name: 'Community', exact: true }))
+    .toHaveAttribute('href', 'https://github.com/groundhogchain');
   await page.locator('.sidebar').getByRole('link', { name: 'Start Building', exact: true }).click();
   await expect(page).toHaveURL(origin + '/get-started/');
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
@@ -130,8 +131,8 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
   await expect(sidebar.getByRole('link', { name: 'Build with an Agent', exact: true })).toBeVisible();
   await sidebar.getByRole('button', { name: 'Switch to light mode', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await sidebar.getByRole('link', { name: 'Contract setup', exact: true }).click();
-  await expect(page).toHaveURL(origin + '/start/getting-started/');
+  await sidebar.getByRole('link', { name: 'Contract quickstart', exact: true }).click();
+  await expect(page).toHaveURL(origin + '/get-started/contract/');
   await expect(page.locator('body')).not.toHaveAttribute('data-mobile-menu-expanded', '');
 });
 

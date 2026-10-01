@@ -8,7 +8,7 @@ description: How Groundhog CLI commands fit into RV32 builds, local nodes, tests
 Run normal Rust loops with `cargo`. Run Groundhog-specific work with `groundhog`: scaffolds, RV32 artifacts, local nodes, deployments, RPC calls, state inspection, keys, wallets, and generated bindings. RV32 is Groundhog's 32-bit RISC-V contract target.
 
 :::note[Version checked]
-This page targets CLI `0.19.0`, SDK `0.41.1`, and Rust RPC client `0.19.0`. Its managed node catalog selects `0.1.29-rc.4`. See [installation](/start/getting-started/#choose-and-install-the-cli) for the component versions.
+This page targets CLI `0.19.0`, SDK `0.41.1`, and Rust RPC client `0.19.0`. Its managed node catalog selects `0.1.29-rc.4`. For latest-release onboarding, follow the [CLI quickstart](/get-started/cli/).
 :::
 
 ## Foundry Mental Model
@@ -27,7 +27,7 @@ Groundhog is not EVM-compatible. The analogy is about local workflow, not byteco
 
 ## Common Workflow
 
-Complete [Cargo access setup](/start/getting-started/#configure-cargo-access), then start with native tests and the default RV32 build:
+Complete [Cargo access setup](/cli/install/#configure-cargo-access), then start with native tests and the default RV32 build:
 
 ```bash
 groundhog new my-counter     # create the project
@@ -85,10 +85,10 @@ For complete command sequences, follow [Develop Locally with the CLI](/tutorials
 
 ## First-Run Setup
 
-Cargo handles early-access registry credentials. Follow [Cargo access setup](/start/getting-started/#configure-cargo-access) before using a token or interactive login. The [installation instructions](/start/getting-started/#choose-and-install-the-cli) also cover Linux runtime prerequisites.
+Cargo handles early-access registry credentials. Follow [Cargo access setup](/cli/install/#configure-cargo-access) before using a token or interactive login.
 
-For CLI 0.19.0, use the [installation steps](/start/getting-started/#choose-and-install-the-cli)
-to install the CLI through Cargo or its release archive. Use `groundhog toolchain`
+For CLI 0.19.0, use its [release archive](https://github.com/groundhogchain/groundhog-rpc/releases/tag/v0.19.0).
+Use `groundhog toolchain`
 to select its checksum-verified managed node:
 
 ```bash

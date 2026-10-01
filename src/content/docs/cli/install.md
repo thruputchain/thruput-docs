@@ -1,0 +1,60 @@
+---
+title: Install the CLI
+description: Install the latest Groundhog CLI and prepare Cargo access for contract development.
+---
+
+Install the latest `groundhog` release. The CLI selects the dependencies and compiler settings for projects it creates; you do not need to choose SDK or node versions.
+
+## Before you start
+
+- Install the current stable Rust toolchain with [rustup](https://rustup.rs/).
+- Obtain access to the Groundhog Cargo registry from your onboarding contact. Repository access alone does not grant package access.
+
+Check that Cargo is available:
+
+```bash
+cargo --version
+```
+
+## Configure Cargo access
+
+Set the registry address and credential provider in your shell:
+
+```bash
+export CARGO_REGISTRIES_GROUNDHOG_INDEX="sparse+https://crates.thruput.network/api/v1/crates/"
+export CARGO_REGISTRIES_GROUNDHOG_CREDENTIAL_PROVIDER=cargo:token
+```
+
+Supply `CARGO_REGISTRIES_GROUNDHOG_TOKEN` through your credential manager or onboarding environment. Keep the token out of project files and agent prompts. If you already use a Cargo credential manager for this registry, keep its provider instead.
+
+Use the same registry access in terminals where you build contracts. The generated project includes the registry address, but it does not include your credentials.
+
+## Install
+
+```bash
+cargo install groundhog-cli --registry groundhog --locked
+groundhog --version
+```
+
+The first command installs the latest CLI with its release's dependency lockfile. The second should print the installed CLI version.
+
+Cargo installs executables in `~/.cargo/bin`. If `groundhog` is not found, add that directory to your shell's `PATH` and open a new terminal.
+
+Prebuilt archives for supported macOS and Linux systems are also available on the [latest release page](https://github.com/groundhogchain/groundhog-rpc/releases/latest). Contract builds still require Rust and Cargo registry access.
+
+On Linux, tests or a local node may also require your distribution's jemalloc and Snappy runtime libraries. If an error names `libjemalloc.so.2` or `libsnappy.so.1`, install the corresponding system package. These are separate from the CLI archive.
+
+## Update an existing installation
+
+Run the same `cargo install` command to install the latest release. Keep the `Cargo.toml`, `Cargo.lock`, and `rust-toolchain.toml` generated for each project rather than replacing them with files from another example.
+
+If an older executable is still selected, check its location:
+
+```bash
+command -v groundhog
+groundhog --version
+```
+
+## Next
+
+Follow the [CLI quickstart](/get-started/cli/) to create a Devnet wallet, request test funds, and inspect a transaction.

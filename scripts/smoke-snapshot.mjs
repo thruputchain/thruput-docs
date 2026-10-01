@@ -37,7 +37,7 @@ try {
   await page.goto(origin);
   await page.getByRole('complementary', { name: 'Local documentation snapshot' }).waitFor();
   const prompt = await page.locator('textarea[name="agent-prompt"]').inputValue();
-  assert.ok(prompt.includes(`${origin}/start/getting-started/`));
+  assert.ok(prompt.includes(`${origin}/get-started/contract/`));
   assert.ok(!prompt.includes('https://docs.groundhog.dev'));
   await page.goto(`${origin}/start/`);
   await page.waitForURL(`${origin}/architecture/`);

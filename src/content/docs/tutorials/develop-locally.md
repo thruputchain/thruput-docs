@@ -11,7 +11,7 @@ Local development is the fastest way to exercise deployment and RPC behavior. Th
 
 ## Prerequisites
 
-Install CLI 0.19.0 and its managed node using [Getting Started](/start/getting-started/#choose-and-install-the-cli). You also need `jq`. Keep the generated SDK dependencies and compiler toolchain.
+This detailed walkthrough targets [CLI 0.19.0](https://github.com/groundhogchain/groundhog-rpc/releases/tag/v0.19.0) and its managed node. You also need `jq` and [Cargo access](/cli/install/#configure-cargo-access). For latest-release onboarding, use the [contract quickstart](/get-started/contract/). Keep the generated SDK dependencies and compiler toolchain.
 
 ### Verify the Selected Runtime
 
@@ -57,7 +57,7 @@ cd my-counter
 
 The generated `groundhog.toml` sets `default_profile = "local"`, so commands run from this project use the local profile automatically. Only `config set` requires an explicit `--profile local`; the other commands below use the project default. If you previously set `GROUNDHOG_PROFILE`, unset it first because it overrides that default.
 
-The generated project defines the private registry in `.cargo/config.toml`. Complete [Cargo access setup](/start/getting-started/#configure-cargo-access) from this project directory before the first build. The SDK downloads its test executor from public storage without FFI credentials.
+The generated project defines the private registry in `.cargo/config.toml`. Complete [Cargo access setup](/cli/install/#configure-cargo-access) before the first build. The SDK downloads its test executor from public storage without FFI credentials.
 
 Check the stored key and select it explicitly for this project's local profile:
 

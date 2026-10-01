@@ -9,7 +9,7 @@ Use `@groundhogchain/client` to connect an application or service to Groundhog. 
 
 ## Connect a client
 
-Follow [installation](/tools/typescript-sdk/#install), then [connect to a cluster](/tools/typescript-sdk/#connect-to-a-cluster). The SDK guide explains the packages, access requirements, and network configuration.
+Follow the [TypeScript quickstart](/get-started/typescript/) to read an existing Devnet contract. [Package setup](/typescript/setup/) covers registry access; the [SDK guide](/tools/typescript-sdk/#connect-to-a-cluster) covers additional client configuration.
 
 ## Work with a contract
 

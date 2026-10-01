@@ -42,4 +42,4 @@ That's fine. Groundhog doesn't require distributed systems knowledge. Use `Balan
 
 For the contract-level model, see [Merged Deltas](/programming-model/execution/#merged-deltas). For the storage type API, see [Storage Types](/programming-model/storage-types/). For concurrent delta reservation and the engine's actual conflict timing, see [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved).
 
-Ready to write code? [Getting Started](/start/getting-started/) walks you through the SDK setup and your first contract.
+Ready to write code? The [contract quickstart](/get-started/contract/) walks you through building and deploying your first contract.

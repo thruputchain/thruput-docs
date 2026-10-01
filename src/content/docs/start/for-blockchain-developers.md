@@ -120,7 +120,7 @@ Storage types define which concurrent changes can safely coexist, so the three-l
 
 Continue in layers:
 
-1. [Getting Started](/start/getting-started/) sets up the SDK and builds your first contract.
+1. [Contract quickstart](/get-started/contract/) builds and deploys your first contract.
 2. [Build a Token](/tutorials/build-a-token/) applies checked and lazy balance operations in a complete ERC-20-style contract.
 3. [Merged Deltas](/programming-model/execution/#merged-deltas) and [Storage Types](/programming-model/storage-types/) give the full contract-author model.
 4. [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) explains the engine's reservation machinery.

@@ -27,9 +27,9 @@ This lets you build a contract once and use profiles to target a local node or D
 | Deploy a contract | `groundhog deploy` |
 | Call a deployed contract | `groundhog call` |
 
-These are command names, not a setup script. Start with [installation and access setup](/start/getting-started/#choose-and-install-the-cli), then follow [local development](/tutorials/develop-locally/) for the required arguments and order.
+These are command names, not a setup script. Start with [installation](/cli/install/), then follow the [CLI quickstart](/get-started/cli/) for a first Devnet interaction.
 
-Use [Devnet](/tutorials/develop-on-devnet/) when you need a hosted deployment. Its setup includes a wallet and test funds.
+The [contract quickstart](/get-started/contract/) adds deployment and calls. Use [local development](/tutorials/develop-locally/) when you want a disposable node on your machine.
 
 ## Look up an option
 

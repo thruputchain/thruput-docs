@@ -9,6 +9,8 @@ Build a project or work through a design. Choose a guide by the result you want,
 
 ## Start with a counter
 
+Start with the [contract quickstart](/get-started/contract/) for a working Devnet deployment, then continue with the detailed guides:
+
 1. [Build a Counter](/tutorials/build-a-counter/) explains a small Rust contract, storage, errors, and tests.
 2. [Develop Locally](/tutorials/develop-locally/) walks through deploying and calling the counter on a local node.
 3. [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/) connects a typed client to a contract.

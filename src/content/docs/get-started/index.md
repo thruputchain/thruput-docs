@@ -5,17 +5,23 @@ sidebar:
   label: Choose a path
 ---
 
-Choose what you want to do first. You can use the network from a terminal, write a contract, or connect an application to an existing contract.
+Get a working result on Devnet. Choose the tools you want to use; you do not need to follow every path.
 
 ## Choose your path
 
-- **[Use the CLI](/cli/):** install the tools, configure a network, and interact with Groundhog from your terminal.
-- **[Build a contract](/start/getting-started/):** create a Rust project, run its tests, and build a contract artifact.
-- **[Build a TypeScript application](/typescript/):** connect a client, use typed contract bindings, and send transactions.
-- **[Build with React](/react/):** connect a wallet and use the React library in your application.
+- **[CLI quickstart](/get-started/cli/):** create a wallet, request test funds, and inspect a transaction.
+- **[Contract quickstart](/get-started/contract/):** build and test a counter, deploy it to Devnet, and read its updated value.
+- **[TypeScript quickstart](/get-started/typescript/):** read an existing contract from a small script. No Rust or wallet required.
+- **[React quickstart](/get-started/react/):** display contract data and refresh it from an interface. No contract deployment required.
 
 ## Work with a coding agent
 
-[Set up your agent](/start/build-with-an-agent/) with the CLI's instructions and local documentation. The guide covers access requirements, release selection, and how to verify the result.
+[Build with an Agent](/start/build-with-an-agent/) gives you two setup commands and one prompt for a complete counter application on Devnet. For a smaller task, use the prompt in an individual quickstart.
+
+## What you need
+
+CLI and contract work use the [Groundhog CLI and Cargo registry](/cli/install/). TypeScript and React applications use [Node.js and GitHub Packages](/typescript/setup/). Install the latest releases; the quickstarts link to the setup they need.
+
+Devnet is a shared test network and can be reset. Keep your development keys, but expect to request new test funds or redeploy after a reset.
 
 For a worked project, go to [Guides](/guides/). New to the platform? Read the [Introduction](/architecture/) before choosing a path.
