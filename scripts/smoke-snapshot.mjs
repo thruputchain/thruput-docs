@@ -39,6 +39,9 @@ try {
   const prompt = await page.locator('textarea[name="agent-prompt"]').inputValue();
   assert.ok(prompt.includes(`${origin}/start/getting-started/`));
   assert.ok(!prompt.includes('https://docs.groundhog.dev'));
+  await page.goto(`${origin}/start/`);
+  await page.waitForURL(`${origin}/architecture/`);
+  assert.equal(await page.locator('main h1').textContent(), 'Introduction');
   await page.goto(`${origin}/tutorials/build-a-counter/`);
   await page.locator('main h1').waitFor();
   await page.locator('site-search > button').click();

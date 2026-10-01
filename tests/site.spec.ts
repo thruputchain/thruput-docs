@@ -106,9 +106,9 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
   await page.setViewportSize({ width: 375, height: 812 });
   await page.emulateMedia({ colorScheme: 'dark' });
   const links = [
-    ['About', '/how-it-works/architecture/'],
-    ['Get Started', docs],
-    ['Documentation', '/start/'],
+    ['About', '/architecture/'],
+    ['Get Started', '/get-started/'],
+    ['Documentation', '/architecture/'],
     ['Community', '/community/contributing/'],
   ];
   for (const [name, href] of links) {
@@ -118,19 +118,19 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
     await expect(link).toBeVisible();
     await link.click();
     await expect(page).toHaveURL(origin + href);
-    if (name === 'About') await page.screenshot({ path: testInfo.outputPath('about-menu.png') });
+    if (name === 'About') await page.screenshot({ path: testInfo.outputPath('architecture-menu.png') });
     await expect.soft(page.locator('body'), `${name}: navigation closes the menu`).not.toHaveAttribute('data-mobile-menu-expanded', '');
   }
   await page.goto(origin);
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await page.locator('.sidebar').getByRole('link', { name: 'Start Building', exact: true }).click();
-  await expect(page).toHaveURL(origin + docs);
+  await expect(page).toHaveURL(origin + '/get-started/');
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
   const sidebar = page.locator('.sidebar');
   await expect(sidebar.getByRole('link', { name: 'Build with an Agent', exact: true })).toBeVisible();
   await sidebar.getByRole('button', { name: 'Switch to light mode', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await sidebar.getByRole('link', { name: 'Getting Started', exact: true }).click();
+  await sidebar.getByRole('link', { name: 'Contract setup', exact: true }).click();
   await expect(page).toHaveURL(origin + '/start/getting-started/');
   await expect(page.locator('body')).not.toHaveAttribute('data-mobile-menu-expanded', '');
 });
@@ -270,7 +270,7 @@ test('header rebrand retains Groundhog page identity and the exact install promp
     await expect(brand).toHaveAttribute('href', '/');
     await expect(page).toHaveTitle(/Groundhog/);
     await expect(page.locator('header').getByRole('link', { name: 'About', exact: true }))
-      .toHaveAttribute('href', '/how-it-works/architecture/');
+      .toHaveAttribute('href', '/architecture/');
     if (route === '/') {
       await expect(page.locator('#install-label')).toHaveText('Paste into your coding agent to get started');
       await expect(page.locator('.prompt-preview')).toHaveText(prompt);
@@ -402,7 +402,7 @@ test('no JavaScript homepage is dark and offers manual copying', async ({ browse
     await expect(page.getByRole('textbox', { name: 'Full agent prompt' })).toBeVisible();
     await expect(page.locator('[id="_top"]')).toHaveCount(1);
     await page.getByRole('navigation', { name: 'Site navigation', exact: true }).getByRole('link', { name: 'Documentation' }).click();
-    await expect(page).toHaveURL(origin + '/start/');
+    await expect(page).toHaveURL(origin + '/get-started/');
   } finally {
     await context.close();
   }

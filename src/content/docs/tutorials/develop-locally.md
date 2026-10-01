@@ -1,5 +1,7 @@
 ---
 title: Develop Locally with the CLI
+sidebar:
+  label: Local development
 description: Build, deploy, call, and inspect a Groundhog contract against a local hog-devnode.
 ---
 

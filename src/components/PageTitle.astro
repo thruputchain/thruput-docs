@@ -1,5 +1,9 @@
 ---
 import DefaultPageTitle from '@astrojs/starlight/components/PageTitle.astro';
+import { sectionForPath } from '../navigation';
+const section = sectionForPath(Astro.url.pathname);
 ---
 
-{Astro.url.pathname !== '/' && <DefaultPageTitle />}
+{Astro.url.pathname !== '/' && <div data-section={section?.label} data-pagefind-meta="section[data-section]">
+  <DefaultPageTitle />
+</div>}
