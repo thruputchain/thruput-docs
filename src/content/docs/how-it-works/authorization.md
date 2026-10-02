@@ -12,6 +12,18 @@ Authorization has two layers:
 
 These layers are related but separate. Transaction admission decides whether the root transaction may enter the block. Runtime authorization decides what authority a contract gives to a caller or token it receives.
 
+## Authorize an application operation
+
+For an owner-controlled method, store the owner in `Value<ContractAddress>` and check it before changing state:
+
+```rust
+ensure(get_caller() == self.owner.get(), AccessError::NotOwner);
+```
+
+Define `AccessError` with [a contract exception](/contracts/errors/#defining-errors). Initialize the owner through a guarded method and [deploy and initialize atomically](/cli/deploy-and-call/#include-initialization) if the first caller becomes the owner.
+
+`get_caller()` identifies the immediate caller. A forwarded call identifies the forwarding contract, not the original user. For authority passed through several frames, use the [typed auth-token model](#auth-tokens-and-signedt) below and validate its minter and payload.
+
 ## Transaction Admission
 
 A `SignedTransaction` contains an inner transaction plus decorated signatures:

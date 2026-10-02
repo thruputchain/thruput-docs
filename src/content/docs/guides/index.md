@@ -14,6 +14,7 @@ Start with the [contract quickstart](/get-started/contract/) for a working Devne
 1. [Build a Counter](/tutorials/build-a-counter/) explains a small Rust contract, storage, errors, and tests.
 2. [Develop Locally](/tutorials/develop-locally/) walks through deploying and calling the counter on a local node.
 3. [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/) connects a typed client to a contract.
+4. [Add Events to a Contract](/tutorials/add-events-to-a-contract/) follows an event from its Rust definition through application queries.
 
 For a hosted deployment, follow [Develop on Devnet](/tutorials/develop-on-devnet/).
 

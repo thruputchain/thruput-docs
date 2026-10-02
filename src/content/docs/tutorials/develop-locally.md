@@ -247,4 +247,4 @@ First repeat the [runtime selection check](#verify-the-selected-runtime), includ
 
 - [Develop on Devnet with the CLI](/tutorials/develop-on-devnet/) to create a persistent key-owned wallet and deploy to the hosted network
 - [Build a Counter](/tutorials/build-a-counter/) for a line-by-line walkthrough of the generated contract
-- [Groundhog CLI](/tools/groundhog-cli/) for command and flag reference
+- [Command reference](/cli/reference/) for commands and flags

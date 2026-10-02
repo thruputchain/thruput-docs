@@ -27,7 +27,9 @@ test('legacy deep links resolve to their task area before matching URL roots', (
   assert.equal(sectionForPath('/start/build-with-an-agent/')?.id, 'get-started');
   assert.equal(sectionForPath('/tools/faucet/')?.id, 'tools');
   assert.equal(sectionForPath('/tools/block-explorer/')?.id, 'tools');
-  assert.equal(sectionForPath('/tools/groundhog-cli/')?.id, 'cli');
+  assert.equal(sectionForPath('/cli/reference/')?.id, 'cli');
+  assert.equal(sectionForPath('/contracts/errors/')?.id, 'contracts');
+  assert.equal(sectionForPath('/tutorials/develop-locally/')?.id, 'guides');
   assert.equal(sectionForPath('/react')?.id, 'react');
   assert.equal(sectionForPath('/react/wallets/')?.id, 'react');
   assert.equal(sectionForPath('/reactive/'), undefined);

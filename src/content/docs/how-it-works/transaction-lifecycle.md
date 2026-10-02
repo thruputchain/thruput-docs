@@ -81,4 +81,4 @@ Transactions excluded during delta reservation (Stage 4) are returned to the mem
 
 - [Invocation Frames](/how-it-works/invocation-frames/): Execution context
 - [Authorization](/how-it-works/authorization/): How signatures are verified
-- [Contracts](/how-it-works/contracts/): Contract types and deployment
+- [Contract artifacts and addresses](/how-it-works/contracts/): Code hashes and deployment identities

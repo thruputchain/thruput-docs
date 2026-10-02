@@ -44,6 +44,22 @@ Prebuilt archives for supported macOS and Linux systems are also available on th
 
 On Linux, tests or a local node may also require your distribution's jemalloc and Snappy runtime libraries. If an error names `libjemalloc.so.2` or `libsnappy.so.1`, install the corresponding system package. These are separate from the CLI archive.
 
+## Set up the local runtime
+
+Local nodes and RPC integration tests use `hog-devnode`. The CLI selects a compatible runtime from its bundled catalog and can download it when needed. To inspect available versions and install the selected runtime in advance:
+
+```bash
+groundhog toolchain list
+groundhog toolchain install
+groundhog toolchain which
+```
+
+`list` shows the runtime catalog and installed versions. `install` downloads and verifies the selected runtime bundle. `which` shows the selected binary's path.
+
+These commands manage the local-node runtime. Rust is managed through `rustup`, and the CLI is installed separately as shown above. You do not need a local node to use Devnet.
+
+See [runtime selection](/cli/local-node/#runtime-selection) for version and binary overrides.
+
 ## Update an existing installation
 
 Run the same `cargo install` command to install the latest release. Keep the `Cargo.toml`, `Cargo.lock`, and `rust-toolchain.toml` generated for each project rather than replacing them with files from another example.
@@ -54,7 +70,3 @@ If an older executable is still selected, check its location:
 command -v groundhog
 groundhog --version
 ```
-
-## Next
-
-Follow the [CLI quickstart](/get-started/cli/) to create a Devnet wallet, request test funds, and inspect a transaction.

@@ -1,21 +1,17 @@
 ---
-title: Error Handling
+title: Handle errors
 description: How errors work in Groundhog contracts.
 ---
 
 Exported Groundhog contract methods return their declared values and signal failure by throwing an exception. The frame aborts, all state changes in that frame are discarded, and control returns to the caller. Private helpers may use `Result` when they translate failures into a contract or library exception.
 
-You cannot catch an exception within the same contract. To handle errors from another contract, use `try_*` client methods (see [Cross-Contract Calls](/reference/cross-contract-calls/)).
+You cannot catch a thrown exception within the same frame. Use `Result`-returning helpers for local fallible work and generated `try_*` client methods for another contract. See [Cross-Contract Calls](/contracts/cross-contract-calls/).
 
-:::note[Version checked]
-This page was source-checked against SDK `0.34.3`.
-:::
-
-For exact SDK item docs, see [`#[contract_exception]`](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/attr.contract_exception.html), [`throw`](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/fn.throw.html), [`ensure`](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/fn.ensure.html), [`OrThrow`](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/trait.OrThrow.html), and [Rust API Docs](/tools/rust-api-docs/).
+For exact SDK signatures, see [Rust API Docs](/tools/rust-api-docs/).
 
 ## Defining Errors
 
-Use `#[contract_exception]` to define error types. The macro generates all required derives (`Debug`, `Clone`, `PartialEq`, `ReadXDR`, `WriteXDR`) and the `Exn` trait implementation automatically.
+Use `#[contract_exception]` to define error types. It generates `Debug`, `PartialEq`, serialization and spec traits, and the `Exn` implementation. Add `Clone` yourself if the type needs it.
 
 ### `thiserror` and `anyhow`
 
@@ -32,7 +28,7 @@ pub enum CounterError {
 }
 ```
 
-Do not copy the usual `#[derive(Error, Debug)]` pattern from generic Rust examples. `#[contract_exception]` already generates `Debug`, `Clone`, and `PartialEq`; deriving them again creates duplicate implementations.
+Do not copy the usual `#[derive(Error, Debug)]` pattern from generic Rust examples. `#[contract_exception]` already generates `Debug` and `PartialEq`; deriving them again creates duplicate implementations.
 
 For contract crates, configure `thiserror` without the default `std` feature:
 
@@ -286,6 +282,6 @@ assert_eq!(
 );
 ```
 
-`None` covers all three ways this can miss: no exception, a different type, or a payload that failed to decode. Use `try_decode` when the last of those must be distinguished from the other two. See [Cross-Contract Calls](/reference/cross-contract-calls/#telling-a-corrupt-error-from-an-unknown-one), which also explains why it is reachable through ordinary semver-compatible evolution rather than only through forgery.
+`None` covers all three ways this can miss: no exception, a different type, or a payload that failed to decode. Use `try_decode` when the last of those must be distinguished from the other two. See [Cross-Contract Calls](/contracts/cross-contract-calls/#telling-a-corrupt-error-from-an-unknown-one), which also explains how this can occur through semver-compatible evolution.
 
-See [Cross-Contract Calls](/reference/cross-contract-calls/) for the full calling patterns.
+See [Cross-Contract Calls](/contracts/cross-contract-calls/) for the full calling patterns.

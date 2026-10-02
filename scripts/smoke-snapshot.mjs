@@ -42,6 +42,17 @@ try {
   await page.goto(`${origin}/start/`);
   await page.waitForURL(`${origin}/architecture/`);
   assert.equal(await page.locator('main h1').textContent(), 'Introduction');
+  for (const [legacy, destination, fragment] of [
+    ['tools/groundhog-cli', 'cli/reference', 'configuration'],
+    ['reference/error-handling', 'contracts/errors', 'defining-errors'],
+    ['reference/cross-contract-calls', 'contracts/cross-contract-calls', 'gas-limits'],
+    ['programming-model/advanced', 'programming-model/storage-types', 'lock-requests'],
+    ['programming-model/advanced', 'programming-model/nnint', 'negative-set-values'],
+  ]) {
+    await page.goto(`${origin}/${legacy}/#${fragment}`);
+    await page.waitForURL(`${origin}/${destination}/#${fragment}`);
+    assert.equal(await page.locator(`[id="${fragment}"]`).count(), 1);
+  }
   await page.goto(`${origin}/tutorials/build-a-counter/`);
   await page.locator('main h1').waitFor();
   await page.locator('site-search > button').click();

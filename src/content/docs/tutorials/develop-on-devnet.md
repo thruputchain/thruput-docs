@@ -27,7 +27,7 @@ This tutorial writes a signing key to your normal Groundhog configuration. Use a
 :::
 
 :::note[Fresh setup]
-The commands below assume a fresh Groundhog configuration with no stored keys. If you are reusing an installation, follow the [Groundhog CLI configuration and wallet guidance](/tools/groundhog-cli/) to align the Devnet key and wallet selections before adapting this tutorial.
+The commands below assume a fresh Groundhog configuration with no stored keys. If you are reusing an installation, follow [Profiles and networks](/cli/configuration/) and [Keys and wallets](/cli/wallets/) to align selections before adapting this tutorial.
 :::
 
 :::caution[Devnet resets]
@@ -306,6 +306,6 @@ Do not run those commands as routine tutorial cleanup. Keep the key if you inten
 ## Next Steps
 
 - [Build a Counter](/tutorials/build-a-counter/) for the generated contract's implementation details
-- [Groundhog CLI](/tools/groundhog-cli/) for command and flag reference
+- [Command reference](/cli/reference/) for commands and flags
 - [Faucet](/tools/faucet/) for wallet funding behavior and retries
 - [TypeScript SDK](/tools/typescript-sdk/) for the cluster-aware Devnet client flow

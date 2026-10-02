@@ -98,7 +98,7 @@ fn batch_payment_and_trust(
 
 **What This Highlights:**
 - No operation bundling. You write a contract method that does everything you need
-- For cross-contract operations, use [cross-contract calls](/reference/cross-contract-calls/): your method invokes other contracts
+- For cross-contract operations, use [cross-contract calls](/contracts/cross-contract-calls/): your method invokes other contracts
 - Groundhog does not require you to declare which state you'll touch upfront. Ordinary storage conflicts are checked during delta reservation after execution
 - Each contract invocation is atomic: if your method aborts, all state changes are discarded
 
@@ -286,7 +286,7 @@ Despite the differences, many concepts translate directly:
 
 ### Q: Do I lose atomicity for multi-op transactions?
 
-No. Each Groundhog contract invocation is atomic. If your method aborts, all state changes are discarded. For multi-step workflows that span multiple contracts, use [cross-contract calls](/reference/cross-contract-calls/): a parent contract calls child contracts, and if the parent aborts, all child changes are reverted too.
+No. Each Groundhog contract invocation is atomic. If your method aborts, all state changes are discarded. For multi-step workflows that span multiple contracts, use [cross-contract calls](/contracts/cross-contract-calls/): a parent contract calls child contracts, and if the parent aborts, all child changes are reverted too.
 
 ### Q: When should I use a queued DEX model?
 

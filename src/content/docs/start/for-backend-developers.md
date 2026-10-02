@@ -23,7 +23,7 @@ fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
 
 [`Balance`](/programming-model/storage-types/#balance) is the SDK type for this pattern. Both calls record deltas that can merge with concurrent transactions. `decrease()` loads the sender's balance so an insufficient debit fails during execution. `lazy_increase()` skips the receiver load and defers its bound check until the delta batch is reserved. If two transactions debit 20 and 30 from a balance of 100, both can land and the next balance is 50. Applying the changes in either order gives the same result, so the operations **commute**.
 
-That is enough of the model for most contract code. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how storage types decide which concurrent changes can land together. [NNInt In Depth](/programming-model/nnint/) covers the lower-level `set_add` representation behind `Balance`, including base matching and the difference between `strict_inc`, `inc`, and `set`.
+That is enough of the model for most contract code. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how storage types decide which concurrent changes can land together. [NNInt and concurrent updates](/programming-model/nnint/) covers the lower-level `set_add` representation behind `Balance`, including base matching and the difference between `strict_inc`, `inc`, and `set`.
 
 **Relative updates such as `SET col = col + ?` map naturally to mergeable integer operations.** Compatibility still depends on bounds and the transaction's other changes. Absolute replacements can conflict when they assign different values.
 

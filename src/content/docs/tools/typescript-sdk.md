@@ -255,7 +255,7 @@ const page = await client.getContractEvents({
 
 One request returns typed topics/fields, emitter, transaction hash, block height, event sequence number, cursor, and indexer bounds. `iterateEventPages(query, { signal })` yields raw pages on demand. It follows empty pages with continuation cursors, rejects repeated cursors, and propagates errors. It does not prefetch, retry, poll, subscribe, or persist.
 
-An empty returned cursor ends one historical walk. New blocks require a new walk. Applications own checkpoints, deduplication, and retention checks; `latestBlock` is not proof of consumed history. Follow [Resume Without Missing Events](/tutorials/add-events-to-a-contract/#resume-without-missing-events).
+An empty returned cursor ends one historical walk. New blocks require a new walk. Applications own checkpoints, deduplication, and retention checks; `latestBlock` is not proof of consumed history. See [Query events](/tools/typescript-bindings/#query-events) for generated filters, decoding, and iteration, and [Resume Without Missing Events](/tutorials/add-events-to-a-contract/#resume-without-missing-events) for a persistence example.
 
 ## Receipt Decoding
 

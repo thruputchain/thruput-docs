@@ -3,11 +3,13 @@ title: Cross-Contract Calls
 description: Calling other contracts from your contract.
 ---
 
+Use a generated Rust client to call another contract through its interface. Direct calls propagate failures; `try_*` calls let your contract inspect them. These are onchain clients, separate from the TypeScript clients used by applications.
+
 ## Client Generation
 
 On a trait definition or inherent impl, `#[contract]` generates a client struct, named `{Interface}Client` unless you override it with `client = CustomName`. The client mirrors every public method on the trait or impl block.
 
-For exact macro behavior, see [`#[contract]` Rustdoc](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/attr.contract.html) or [SDK Macros](/reference/sdk-macros/#contract).
+For interface design, see [Methods and interfaces](/contracts/methods/). For macro parameters, see [SDK Macros](/reference/sdk-macros/#contract).
 
 Single error type:
 
@@ -59,7 +61,7 @@ let capped = token.with_gas_limit(500_000);
 capped.transfer(&recipient, 100);
 ```
 
-The default gas limit is `u64::MAX` (no effective cap). Gas is metered but free. Limits prevent runaway computation. See [Contract Execution](/programming-model/execution/#gas) for details.
+The default request is `u64::MAX`; the child is still bounded by the caller's remaining gas. Use an explicit cap when the callee should receive less. See [Contract Execution](/programming-model/execution/#gas) for details.
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
@@ -257,4 +259,4 @@ impl Caller {
 }
 ```
 
-See [Error Handling](/reference/error-handling/) for defining error types with `#[contract_exception]`.
+See [Handle errors](/contracts/errors/) for defining error types with `#[contract_exception]`.

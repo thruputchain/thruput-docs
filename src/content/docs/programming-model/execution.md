@@ -44,7 +44,7 @@ Merge rules depend on the storage type:
 - Changes to different `Map` keys are independent.
 - Two `Value` writes to the same key can coexist only when they store the same value.
 
-In these docs, **compatible deltas** means the storage type allows both changes to land. See [`Balance`](/programming-model/storage-types/#balance) for the ordinary balance API and [NNInt In Depth](/programming-model/nnint/) for the underlying `set_add` rules.
+In these docs, **compatible deltas** means the storage type allows both changes to land. See [`Balance`](/programming-model/storage-types/#balance) for the ordinary balance API and [NNInt and concurrent updates](/programming-model/nnint/) for the underlying `set_add` rules.
 
 ## Block Lifecycle
 

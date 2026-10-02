@@ -402,6 +402,6 @@ This is the [merged-delta model](/programming-model/execution/#merged-deltas): t
 - [Add Events to a Contract](/tutorials/add-events-to-a-contract/) for event testing and queries
 - [Merged Deltas](/programming-model/execution/#merged-deltas) for the snapshot, execution, and exclusion model behind this contract
 - [Storage Types](/programming-model/storage-types/) for checked and lazy `Balance` operations and other state choices
-- [NNInt In Depth](/programming-model/nnint/) for the lower-level `set_add` representation behind `Balance`
+- [NNInt and concurrent updates](/programming-model/nnint/) for the lower-level `set_add` representation behind `Balance`
 - [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) for the engine's concurrent reservation machinery
-- [Error Handling](/reference/error-handling/) for domain and library exception behavior
+- [Handle errors](/contracts/errors/) for domain and library exception behavior

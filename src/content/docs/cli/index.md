@@ -29,10 +29,10 @@ This lets you build a contract once and use profiles to target a local node or D
 
 These are command names, not a setup script. Start with [installation](/cli/install/), then follow the [CLI quickstart](/get-started/cli/) for a first Devnet interaction.
 
-The [contract quickstart](/get-started/contract/) adds deployment and calls. Use [local development](/tutorials/develop-locally/) when you want a disposable node on your machine.
+The [contract quickstart](/get-started/contract/) adds deployment and calls. Use [Run a local node](/cli/local-node/) when you want a disposable node on your machine.
 
 ## Look up an option
 
-Run `groundhog <command> --help` for the installed version's options, or use the [command guide](/tools/groundhog-cli/). The [configuration section](/tools/groundhog-cli/#configuration) explains profile selection and project overrides.
+Run `groundhog <command> --help` for the installed version's options, or use the [command reference](/cli/reference/). [Profiles and networks](/cli/configuration/) explains profile selection and project overrides.
 
 For agent instructions and local documentation, see [Build with an Agent](/start/build-with-an-agent/).

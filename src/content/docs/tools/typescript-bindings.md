@@ -111,7 +111,42 @@ Directly filterable topics include addresses, fixed 32-byte values, `u32`, `u64`
 
 Filters require one to five contract addresses. Named topic constraints accept one value or `{ oneOf: [...] }` with 1–16 values. Empty filters are not all-contract scans. `decodeEvent` decodes events known to a generated module; standard modules expose named aliases such as `decodeERC20Event`.
 
-Use [typed event pages and durable restart](/tutorials/add-events-to-a-contract/#step-5-query-it-on-chain) for historical queries.
+### Query events
+
+After selecting a generated event descriptor, request one typed page:
+
+```ts
+const page = await client.getContractEvents({
+  event: TransferEvent,
+  contractAddresses: [token],
+  topics: { to: owner },
+  order: "ascending",
+  limit: 20,
+}, { signal });
+```
+
+Here, `client` is the configured Groundhog client, `token` is the deployed token address, `owner` is the recipient to filter on, and `signal` is an application cancellation signal. Each row includes decoded topics and fields, its emitting contract, transaction hash, block height, and event sequence number.
+
+To walk raw pages and decode matching events:
+
+```ts
+const query = {
+  filters: [TransferEvent.filter({ contractAddresses: [token] })],
+  order: "ascending" as const,
+  anchor: "beginning" as const,
+  limit: 20,
+};
+for await (const page of client.iterateEventPages(query, { signal })) {
+  for (const row of page.events) {
+    const decoded = TransferEvent.decode(row.event);
+    console.log(row.blockHeight, decoded);
+  }
+}
+```
+
+The iterator follows empty pages with continuation cursors and stops when the cursor is an empty `Uint8Array`. Breaking stops future requests; `signal` can cancel an in-flight request. Repeated cursors, RPC errors, and malformed matching events produce errors. The iterator does not retry, poll, subscribe, or save progress.
+
+A cursor continues one historical walk. Start a new walk to discover later blocks. Keep the network, target, and filters fixed within a walk. For a worked example that saves rows and progress together, see [Resume Without Missing Events](/tutorials/add-events-to-a-contract/#resume-without-missing-events).
 
 ## Type Mapping
 
@@ -145,6 +180,6 @@ The ERC-20 interface 0.1.41 uses signed `difference` and `exclusive` for allowan
 ## Related Documentation
 
 - [TypeScript SDK](/tools/typescript-sdk/) for accounts, transport, reads, and execution
-- [Groundhog CLI](/tools/groundhog-cli/) for build and codegen
+- [Generate TypeScript bindings](/cli/codegen/) for build and codegen
 - [Contract Spec](/reference/contract-spec/) for canonical metadata
 - [Wallet Integration](/tools/wallet-integration/) for external wallets and recovery
