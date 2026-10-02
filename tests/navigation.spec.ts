@@ -31,6 +31,15 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Smart Contracts', '/contracts/project-structure/', 'Project structure'],
     ['Tools', '/tools/faucet/', 'Faucet'],
     ['Tools', '/tools/block-explorer/', 'Block Explorer'],
+    ['Understand Groundhog', '/how-it-works/architecture/', 'System Overview'],
+    ['Understand Groundhog', '/how-it-works/execution-model/', 'Parallel Execution'],
+    ['Understand Groundhog', '/how-it-works/transaction-lifecycle/', 'Transaction Lifecycle'],
+    ['Understand Groundhog', '/how-it-works/storage-economics/', 'Compute, Capacity & Storage'],
+    ['Understand Groundhog', '/how-it-works/consensus/', 'Consensus'],
+    ['Understand Groundhog', '/how-it-works/networking/', 'Networking'],
+    ['Understand Groundhog', '/start/for-blockchain-developers/', 'For Blockchain Developers'],
+    ['Understand Groundhog', '/start/for-backend-developers/', 'For Backend Developers'],
+    ['Smart Contracts', '/programming-model/execution/', 'Contract Execution'],
   ]) {
     const response = await page.goto(origin + path);
     expect(response?.status()).toBe(200);

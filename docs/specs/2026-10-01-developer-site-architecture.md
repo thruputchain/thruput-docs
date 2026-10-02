@@ -114,7 +114,7 @@ The CLI quickstart is the shortest terminal-based introduction: install the CLI,
 
   - Networking: `/architecture/networking/`
 
-- Coming from another platform
+- Coming from...
 
   - Blockchain development: `/architecture/coming-from/blockchain/`. Retain only useful comparative material; merge repeated explanations into Introduction.
 
@@ -131,7 +131,9 @@ The CLI quickstart is the shortest terminal-based introduction: install the CLI,
 - Protocol reference: links to the shared `/reference/` pages
 
 
-Use one Introduction page. Consolidate the old Start Here entry into it. Keep the general blockchain-developer comparison under Coming from another platform while its useful content is reviewed; it is not a second required introduction. Detailed storage API usage belongs in Smart Contracts.
+Use one Introduction page. Consolidate the old Start Here entry into it. Keep the general blockchain-developer comparison under Coming from... while its useful content is reviewed; it is not a second required introduction. Detailed storage API usage belongs in Smart Contracts.
+
+The GH-449 pass is a targeted edit, not a replacement of this section. Its current reading order is Introduction, System Overview, Parallel Execution, Transaction Lifecycle, Compute, Capacity & Storage, Consensus, and Networking. Contract Execution remains under Smart Contracts. Existing public URLs are retained; the target paths in this inventory do not require a route migration as part of that editorial pass.
 ### CLI: `/cli/`
 - Overview: `/cli/`
 
@@ -439,7 +441,7 @@ Ask a developer unfamiliar with this structure where they would go for each task
 | Read typed contract data from a service | TypeScript → Read contract data |
 | Connect a wallet in React | React → Connect a wallet |
 | Connect a wallet without React | TypeScript → Connect a browser wallet |
-| Explain Groundhog's execution differences | Understand Groundhog → Introduction, then Execution Model |
+| Explain Groundhog's execution differences | Understand Groundhog → Introduction, then Parallel Execution |
 | Give a coding agent the right setup | Get Started → Build with an Agent |
 | Build a complete counter application | Guides → Build a Counter App |
 | Look up an RPC method | TypeScript or CLI reference link → JSON-RPC API; also available through search |

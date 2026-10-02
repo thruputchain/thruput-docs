@@ -15,7 +15,7 @@ SCP provides finality under its quorum-intersection and fault assumptions. Appli
 
 ## The Coordinator
 
-Consensus is driven by the coordinator (chuckd), which is separate from the execution engine (hogd). The coordinator's job is to get validators to agree on which block to commit. It does not execute transactions or manage storage. That is the mempool's job (see [Networking](/how-it-works/networking/)).
+Consensus is driven by the coordinator (chuckd), which is separate from the execution engine (hogd). The coordinator's job is to get validators to agree on which block to commit. Contract execution and storage belong to the execution layer, orchestrated by the scheduler. See [System Overview](/how-it-works/architecture/) for the component roles.
 
 Each coordinator is configured with its own quorum set: the list of other validators it trusts for consensus. This peer configuration is managed by the coordinator, not the mempool. The mempool handles intra-node component registration (executors, DB shards, etc.); the coordinator handles inter-node consensus topology. This separation keeps execution concerns and agreement concerns independent.
 
@@ -55,7 +55,7 @@ With multiple validators:
 
 The proposer and validators execute transactions differently.
 
-**The proposer runs concurrent execution.** Transactions are fanned across multiple executors and coroutines in parallel. After a root call completes, NNInt capacity locks reserve its delta batch via atomic compare-and-swap (see [Execution Model: How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved)). Which transaction wins a contested lock depends on thread scheduling. This is non-deterministic: two runs of the same transaction set on the same machine can produce different winners.
+**The proposer runs concurrent execution.** Transactions are fanned across multiple executors and coroutines in parallel. After a root call completes, NNInt capacity locks reserve its delta batch via atomic compare-and-swap (see [Parallel Execution: How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved)). Which transaction wins a contested lock depends on thread scheduling. This is non-deterministic: two runs of the same transaction set on the same machine can produce different winners.
 
 **The proposer captures nondeterministic outcomes.** Each transaction produces a `NondeterministicProposalData` payload covering proposal-dependent decisions such as capacity reservation outcomes and retrocausal queue observations. This payload is packaged alongside the transaction hashes in the consensus proposal.
 
@@ -104,5 +104,5 @@ A separate repair agent handles missing data during active consensus: if a valid
 
 - [Networking](/how-it-works/networking/): Node topology and how the coordinator connects to the mempool
 - [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): How a transaction moves from submission to commit
-- [Execution Model](/how-it-works/execution-model/): How transactions execute against snapshots
-- [Architecture](/how-it-works/architecture/): The big-picture design
+- [Parallel Execution](/how-it-works/execution-model/): How transactions execute against snapshots
+- [System Overview](/how-it-works/architecture/): The component map

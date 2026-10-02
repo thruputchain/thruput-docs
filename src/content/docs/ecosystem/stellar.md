@@ -249,7 +249,7 @@ impl TokenContract {
 | Sequence numbers serialize transactions per Stellar account | No sequential nonce; each Groundhog transaction carries a unique `(expiry height, nonce)` pair |
 | Fees per transaction (inclusion + resource fees) | No per-operation fees; available (unlocked) HOG balance determines throughput share |
 
-The important Groundhog concept is commutativity: which storage operations can merge determines how much parallelism your contract gets. See [Execution Model](/how-it-works/execution-model/).
+The important Groundhog concept is commutativity: which storage operations can merge determines how much parallelism your contract gets. See [Parallel Execution](/how-it-works/execution-model/).
 
 ---
 

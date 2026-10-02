@@ -1,6 +1,6 @@
 ---
-title: Execution Model
-description: "How your contract runs: snapshot isolation, deltas, block lifecycle, and gas."
+title: Contract Execution
+description: "The rules your contract relies on: snapshots, compatible state changes, exclusion, and gas limits."
 ---
 
 Your contract reads from a frozen snapshot and produces typed storage changes, called deltas. Ordinary storage reads do not see other transactions' writes. The runtime checks whether each transaction's deltas can coexist with the other changes landing in the block. Deltas that can coexist form the next committed state. Transactions with conflicting deltas are excluded and returned to the mempool.
@@ -48,33 +48,11 @@ In these docs, **compatible deltas** means the storage type allows both changes 
 
 ## Block Lifecycle
 
-```
-Previous block's committed state
-        |
-        v
-   [Frozen Snapshot]
-        |
-        +---> Tx A executes; produces a delta batch
-        +---> Tx B executes; produces a delta batch
-        +---> Tx C executes; produces a delta batch
-        |        (all read same snapshot, all run concurrently)
-        v
-   [Transactions that can land together]
-        |
-        +---> Type-specific deltas form the next state
-        +---> Conflicting transactions have been excluded
-        v
-   [New Committed State]
-        |
-        +---> Excluded transactions returned to mempool
-```
+1. **Read and execute:** your contract reads the block snapshot plus its own changes and successful child calls. It records typed deltas.
+2. **Reserve:** after the root call succeeds, the runtime checks whether the complete delta batch can coexist with the proposal's other changes.
+3. **Commit or exclude:** admissible transactions contribute to the finalized block. Conflicting transactions return to the mempool.
 
-1. **Snapshot**: the block boundary freezes state. All transactions read from this.
-2. **Execute**: transactions run concurrently against the snapshot and produce typed deltas.
-3. **Reserve**: after a root contract call returns, the executor submits that transaction's delta batch for reservation against the in-progress proposal. The runtime applies each storage type's merge rules (see [Storage Types](/programming-model/storage-types/)). Multiple executor workers can reserve compatible batches concurrently.
-4. **Commit or exclude**: compatible transactions form the new state. Conflicting transactions are excluded and returned to the mempool.
-
-This is the contract developer's model. The engine resolves ordinary storage conflicts after each root call returns, while admitting its delta batch, rather than waiting for one serial end-of-block merge phase. See [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) for that machinery.
+Your contract does not control these phases. [Transaction Lifecycle](/how-it-works/transaction-lifecycle/) covers submission through finalization; [Parallel Execution](/how-it-works/execution-model/) explains the reservation machinery.
 
 ## Exclusion
 
@@ -84,11 +62,11 @@ Your contract writes no retry logic. Client-side, the flow is the same as any ot
 
 ## Gas
 
-Transactions and cross-contract calls specify a gas limit. Gas bounds computation (prevents infinite loops, caps cross-contract call depth) but costs zero tokens. No gas is burned.
+Transactions and cross-contract calls specify a gas limit. Gas bounds computation, including work in child calls, but costs zero tokens.
 
-For root transactions, the gas limit is the scheduling quantity. The scheduler accounts for the amount you declare whether execution uses all of it or only part of it. If execution exceeds the limit, the transaction faults and its state changes are discarded.
+For root transactions, the gas limit is the scheduling quantity. The scheduler accounts for the amount you declare whether execution uses all of it or only part of it. If execution exceeds the limit, the transaction faults and its contract changes are discarded.
 
-There is no "pay the maximum, refund the unused gas" path. Actual gas consumed does not write a refund delta, touch the sender's balance, or create a serial hot-account update. Cross-contract calls may return unused child-frame gas to the caller's frame, but that only affects local execution budget. It is not a token refund and it does not change the root transaction's scheduling amount.
+Unused child-call gas can return to the caller's execution budget. That is not a token refund and does not change the root transaction's scheduling amount.
 
 ```rust
 let client = TokenClient::new(&token_address);
@@ -101,19 +79,10 @@ Groundhog needs no gas price estimation because the token price of gas is zero. 
 
 ## Throughput
 
-Your free HOG token balance determines your share of network throughput.
-
-- **Under capacity**: scheduling contention is lower, but admission, propagation, conflicts, and expiry still affect inclusion.
-- **Under congestion**: throughput is allocated proportionally to free HOG balances. Hold 2x the HOG, get roughly 2x the throughput.
-
-HOG transferred between accounts enters the recipient's scheduling queue as newly received capacity. It does not carry the sender's accumulated scheduling age. A transaction can transfer HOG from the same balance that scheduled it without creating refund accounting or extra contention.
-
-Scheduling does not consume tokens.
+Your free HOG balance provides scheduling capacity. Compatible storage changes do not guarantee inclusion in the next block: admission, capacity, propagation, and expiry still matter. See [Balance-Proportional Scheduling](/how-it-works/storage-economics/#balance-proportional-scheduling) for the allocation rules.
 
 ## Storage Costs
 
-Writing data to the ledger locks HOG proportional to bytes stored. Deleting data returns the HOG. This is a refundable deposit, not a burn.
+The address that owns stored data funds its deposit. The runtime accounts for storage changes; your contract does not calculate the deposit itself. See [Storage: Refundable Deposits](/how-it-works/storage-economics/#storage-refundable-deposits) for funding and cost rules.
 
-Every HOG locked for storage is one less HOG contributing to your throughput share. Current source uses a configured storage cost model. Dynamic pricing based on network state size is a target design, not the current implementation. Your contract does not calculate or manage deposits. The runtime handles storage cost accounting at commit.
-
-Next, [Storage Types](/programming-model/storage-types/) turns this model into concrete API choices. Once that model is familiar, [How It Works: Execution Model](/how-it-works/execution-model/) explains how the runtime implements snapshot isolation, reservation, and delta merging.
+Next, [Storage Types](/programming-model/storage-types/) turns this model into concrete API choices.
