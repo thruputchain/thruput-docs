@@ -23,10 +23,10 @@ cd wallet-demo
 npm install
 ```
 
-Configure registry access using [TypeScript SDK installation](/tools/typescript-sdk/#install), then install the SDK packages:
+Configure registry access using [Package setup](/typescript/setup/), then install the SDK packages:
 
 ```bash
-npm install @groundhogchain/client@0.12.0 @groundhogchain/protocol@0.12.0
+npm install @groundhogchain/client @groundhogchain/protocol
 ```
 
 Replace `index.html` with:
@@ -172,7 +172,7 @@ Append this code inside `start()`. `ERC20` is a generated binding shipped with t
     let hash = "";
     try {
       const transaction = await wallet.prepareExecution({
-        invocation: ERC20.transfer.invocation(HOG_ADDRESS, gasAmount(500_000n), {
+        invocation: ERC20.v0_1.transfer.invocation(HOG_ADDRESS, gasAmount(500_000n), {
           receiver, amount: 1_000_000n,
         }),
         gasLimit: gasAmount(10_000_000n),

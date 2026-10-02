@@ -5,7 +5,7 @@ description: Build a contract, generate TypeScript bindings, connect to a local 
 
 This tutorial connects the Groundhog CLI, a Rust contract, generated TypeScript bindings, and `@groundhogchain/client` in one local workflow.
 
-Use CLI `0.19.0`, its managed local node `0.1.29-rc.4`, and the [coordinated client 0.12.0 packages](/tools/typescript-sdk/#install).
+Use the latest [CLI](/cli/install/) and [TypeScript packages](/typescript/setup/), and keep their generated project and dependency lockfiles.
 
 ## How the Pieces Fit
 
@@ -45,7 +45,7 @@ This split is similar to an EVM ABI plus an application client, but Groundhog bi
 
 Complete [Develop Locally with the CLI](/tutorials/develop-locally/) first. You need:
 
-- CLI `0.19.0` and its managed local runtime
+- The Groundhog CLI and its managed local runtime
 - Node.js `22.12.0` or newer
 - Access to the Groundhog Cargo and GitHub Packages registries
 
@@ -89,7 +89,7 @@ Re-run codegen whenever you change an exported method, argument, return type, de
 With the local node running, deploy the contract:
 
 ```bash
-groundhog deploy --profile local
+groundhog deploy --profile local --fund 10
 ```
 
 The CLI prints the deployed address and saves `my-counter` as a project alias. Keep the printed `0x...` address for the TypeScript application.
@@ -118,13 +118,10 @@ npm pkg set scripts.view="tsx src/view.ts"
 npm pkg set scripts.write="tsx src/write.ts"
 ```
 
-Configure GitHub Packages as described in [TypeScript SDK installation](/tools/typescript-sdk/#install), then install the coordinated package versions:
+Configure GitHub Packages as described in [Package setup](/typescript/setup/), then install the application dependencies:
 
 ```bash
-npm install \
-  @groundhogchain/client@0.12.0 \
-  @groundhogchain/protocol@0.12.0 \
-  @groundhogchain/contract-spec@0.12.0
+npm install @groundhogchain/client @groundhogchain/protocol
 
 npm install --save-dev typescript tsx @types/node
 ```
@@ -296,18 +293,18 @@ GROUNDHOG_CONTRACT_ADDRESS="0x..." npm run write
 
 Gas costs zero tokens, but declared root gas reserves scheduling capacity against the sender's free HOG. Storage deposits are separate and belong to the address storing the data. The example checks airdrop execution before submitting. Calibrate gas for other workloads; `gasUsed` is not a token fee.
 
-If observation fails, keep `TransactionObservationError.txHash` and query it on the original network. A timeout or cancellation does not prove the operation failed. Never automatically re-sign or replace the transaction. See [observation recovery](/tools/typescript-sdk/#typed-calls-and-observation-recovery).
+If observation fails, keep `TransactionObservationError.txHash` and query it on the original network. A timeout or cancellation does not prove the operation failed. Never automatically re-sign or replace the transaction. See [Track transaction results](/typescript/transaction-status/).
 
 Do not submit `Counter.increment` directly as the transaction root. `wallet.execute()` wraps it in `DefaultWallet.execute` and then signs and submits the root transaction.
 
 :::note[Local bootstrap accounts]
-Accounts loaded by `loadLocalDevAccount()` are existing source-address accounts created by `groundhog node`. Use `createSourceAddressAccount()` with `devWalletAdapter`. DevWallet discards child return data; use `executeAndWait` and a view or event. The [counter deployment example](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/deploy-counter.ts) shows the setup.
+`loadLocalDevAccount()` returns a manifest-verified native pubkey account. Bind its signer with `createPubkeyAccount({ signer: local.signer, nonce: 0n })` and use the manifest's network hash. See [Local bootstrap accounts](/typescript/accounts/#use-a-local-bootstrap-account).
 :::
 
 For additional implementation references, see the maintained client examples:
 
-- [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/transfer-hog.ts).
-- [Deploy and call a counter](https://github.com/groundhogchain/client-ts/blob/v0.12.0/examples/deploy-counter.ts)
+- [Transfer native HOG through a pubkey account and DefaultWallet](https://github.com/groundhogchain/client-ts/blob/main/examples/transfer-hog.ts).
+- [Deploy and call a counter](https://github.com/groundhogchain/client-ts/blob/main/examples/deploy-counter.ts)
 
 To use an installed browser wallet, follow [Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/). This tutorial uses local signers.
 
@@ -423,7 +420,7 @@ const event = TransferEvent.singleFromReceipt(receipt, {
 console.log(event.topics.from, event.topics.to, event.fields.amount);
 ```
 
-Interface 0.1.41 uses `adjustAllowance` arguments `{ spender, difference, exclusive }`.
+The standard interface uses `adjustAllowance` arguments `{ spender, difference, exclusive }`.
 `difference` is signed, and `AllowanceChangeEvent` records that delta. An exclusive
 change conflicts with concurrent changes to the entry, but cannot make an earlier
 off-chain read current. Read-then-adjust is not a guarantee of an exact target.
@@ -448,7 +445,7 @@ Use this rule of thumb:
 
 ## Next Steps
 
-- [TypeScript SDK](/tools/typescript-sdk/) for transports, transactions, receipts, deployment, and package entrypoints
+- [TypeScript](/typescript/) for client tasks and API reference
 - [TypeScript Bindings](/tools/typescript-bindings/) for generated method, exception, and event APIs
 - [Build a Token](/tutorials/build-a-token/) for the Rust implementation behind the standard token interface
 - [Add Events to a Contract](/tutorials/add-events-to-a-contract/) for typed event generation and queries
