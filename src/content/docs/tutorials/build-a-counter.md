@@ -260,5 +260,5 @@ This counter is small, but the pattern scales. If 1,000 admitted transactions in
 - [Build a Token](/tutorials/build-a-token/) for a full ERC-20 implementation using the same patterns
 - [Add Events to a Contract](/tutorials/add-events-to-a-contract/) to extend this counter with an emitted event
 - [Storage Types](/programming-model/storage-types/) for `Balance`, `NNInt`, `CapacityConstraint`, `Map`, `Vector`, `Value`, `Bytestring`, and `RCQ`
-- [NNInt In Depth](/programming-model/nnint/) for the underlying merge rules
+- [NNInt and concurrent updates](/programming-model/nnint/) for the underlying merge rules
 - [SDK Macros](/reference/sdk-macros/) for details on `#[contract]`, `#[contract_exception]`, `#[storage]`

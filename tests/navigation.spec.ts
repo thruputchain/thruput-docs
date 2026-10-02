@@ -27,6 +27,29 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Get Started', '/get-started/typescript/', 'TypeScript quickstart'],
     ['Get Started', '/get-started/react/', 'React quickstart'],
     ['CLI', '/cli/install/', 'Install the CLI'],
+    ['CLI', '/cli/create-project/', 'Create a project'],
+    ['CLI', '/cli/configuration/', 'Profiles and networks'],
+    ['CLI', '/cli/wallets/', 'Keys and wallets'],
+    ['CLI', '/cli/build-and-test/', 'Build and test'],
+    ['CLI', '/cli/local-node/', 'Run a local node'],
+    ['CLI', '/cli/deploy-and-call/', 'Deploy and call'],
+    ['CLI', '/cli/transactions/', 'Inspect transactions and events'],
+    ['CLI', '/cli/codegen/', 'Generate TypeScript bindings'],
+    ['CLI', '/cli/automation/', 'Use the CLI in scripts'],
+    ['CLI', '/cli/troubleshooting/', 'Troubleshooting'],
+    ['CLI', '/cli/reference/', 'Command reference'],
+    ['Smart Contracts', '/contracts/methods/', 'Methods and interfaces'],
+    ['Smart Contracts', '/contracts/errors/', 'Handle errors'],
+    ['Smart Contracts', '/contracts/cross-contract-calls/', 'Cross-Contract Calls'],
+    ['Smart Contracts', '/contracts/debugging/', 'Debug a contract'],
+    ['Smart Contracts', '/contracts/events/', 'Events'],
+    ['Smart Contracts', '/contracts/client-bindings/', 'Generate client bindings'],
+    ['Smart Contracts', '/programming-model/nnint/', 'NNInt and concurrent updates'],
+    ['Smart Contracts', '/programming-model/storage-types/', 'Storage Types'],
+    ['Smart Contracts', '/how-it-works/contracts/', 'Contract artifacts and addresses'],
+    ['Guides', '/tutorials/add-events-to-a-contract/', 'Add Events to a Contract'],
+    ['TypeScript', '/tools/typescript-bindings/', 'TypeScript Bindings'],
+    ['Smart Contracts', '/reference/sdk-macros/', 'SDK Macros'],
     ['TypeScript', '/typescript/setup/', 'Package setup'],
     ['Smart Contracts', '/contracts/project-structure/', 'Project structure'],
     ['Tools', '/tools/faucet/', 'Faucet'],
@@ -72,7 +95,8 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
   for (const [path, label] of [
     ['/reference/storage-types/', 'Smart Contracts'],
     ['/tools/typescript-bindings/', 'TypeScript'],
-    ['/tutorials/develop-locally/', 'CLI'],
+    ['/tutorials/develop-locally/', 'Guides'],
+    ['/tutorials/add-events-to-a-contract/', 'Guides'],
     ['/start/build-with-an-agent/', 'Get Started'],
     ['/tutorials/connect-a-wallet-to-your-app/', 'Guides'],
     ['/start/for-blockchain-developers/', 'Understand Groundhog'],
@@ -143,6 +167,21 @@ test('the old getting-started URL reaches the contract quickstart', async ({ pag
   await page.goto(origin + '/start/getting-started/');
   await expect(page).toHaveURL(origin + '/get-started/contract/');
   await expect(page.locator('main h1')).toHaveText('Contract quickstart');
+});
+
+test('migrated guides preserve old URLs and fragments', async ({ page }) => {
+  for (const [oldPath, newPath, fragment] of [
+    ['/tools/groundhog-cli/', '/cli/reference/', 'configuration'],
+    ['/reference/error-handling/', '/contracts/errors/', 'defining-errors'],
+    ['/reference/cross-contract-calls/', '/contracts/cross-contract-calls/', 'gas-limits'],
+    ['/programming-model/advanced/', '/programming-model/storage-types/', 'exclusive-writes'],
+    ['/programming-model/advanced/', '/programming-model/storage-types/', 'lock-requests'],
+    ['/programming-model/advanced/', '/programming-model/nnint/', 'negative-set-values'],
+  ]) {
+    await page.goto(origin + oldPath + '#' + fragment);
+    await expect(page).toHaveURL(origin + newPath + '#' + fragment);
+    await expect(page.locator(`[id="${fragment}"]`)).toBeVisible();
+  }
 });
 
 test('a deep link reveals its active page after another section was collapsed', async ({ page }) => {

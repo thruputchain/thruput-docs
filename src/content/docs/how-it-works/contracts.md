@@ -1,19 +1,19 @@
 ---
-title: Contracts
-description: Contract artifacts, deployment, and address derivation in Groundhog.
+title: Contract artifacts and addresses
+description: Understand compiled artifacts, code hashes, deployment addresses, and contract immutability.
 ---
 
-An address normally needs deployed code to receive a contract call. An undeployed pubkey account can use the configured DefaultWallet fallback for its root invocation. See [Authorization](/how-it-works/authorization/#pubkey-accounts).
+An artifact is compiled contract code. Its code hash identifies that code; a deployment address identifies one instance with its own storage. The same artifact can be deployed at multiple addresses.
 
-The root invocation of a transaction is specified by a contract address, an 8-byte entrypoint ID, and method arguments. Each invocation creates an [invocation frame](/how-it-works/invocation-frames/) that tracks execution state and storage modifications.
+This page explains those identities and the rules of deployment. For deployment commands, see [Deploy and call](/cli/deploy-and-call/).
 
-The normal user-deployed contract path is RV32, Groundhog's 32-bit RISC-V contract target. The protocol also supports native precompiled contracts.
+User contracts compile to RV32, Groundhog's 32-bit RISC-V contract target. Native system contracts serve separate purposes, described below.
 
 ## Contract Types
 
 ### RV32 Contracts
 
-RV32 contracts are the default user contract type. `groundhog build` compiles the contract's RV32 entrypoint wrapper for `riscv32im-unknown-none-elf`, lowers that ELF into a deployable `.rv32a` artifact, and finalizes its contract-spec sidecars.
+`groundhog build` compiles the contract's RV32 entrypoint wrapper for `riscv32im-unknown-none-elf`, lowers that ELF into a deployable `.rv32a` artifact, and finalizes its contract-spec sidecars.
 
 For a crate named `counter`, the default build writes:
 
@@ -38,7 +38,7 @@ Entrypoint IDs can be arbitrary 8-byte values at the protocol layer. The SDK pro
 
 #### Artifact Shape
 
-Most developers should let the [Groundhog CLI](/tools/groundhog-cli/) produce RV32 artifacts. Under the hood, the RV32 lowerer:
+Most developers should let the [Groundhog CLI](/cli/build-and-test/) produce RV32 artifacts. Under the hood, the RV32 lowerer:
 
 - Parses the `riscv32im-unknown-none-elf` contract binary.
 - Validates the layout expected by the Groundhog RV32 runtime.
@@ -59,16 +59,7 @@ Contracts are deployed by the DeployContract [system call](/reference/syscalls/)
 
 ### Contract Identification
 
-Contracts are identified by the SHA256 hash of the XDR-encoded `Contract` union:
-
-```rust
-pub enum Contract {
-    kNative { native_contract_id: HogexecPrecompiledNativeContracts },
-    kRv32 { rv32_contract: ContractBlob },
-}
-```
-
-For RV32 contracts, the deploy hash is:
+Contracts are identified by the SHA256 hash of the XDR-encoded `Contract` union. For an RV32 artifact, the deploy hash is:
 
 ```txt
 SHA256(XDR(Contract::kRv32 {
@@ -213,7 +204,7 @@ Once a contract is deployed to an address, that address's `AddressMetadata` cann
 
 ## Related Documentation
 
-- [Groundhog CLI](/tools/groundhog-cli/): RV32 builds, local nodes, deployment, and codegen
+- [Groundhog CLI](/cli/): RV32 builds, local nodes, deployment, and codegen
 - [Invocation Frames](/how-it-works/invocation-frames/): execution context and call stack management
 - [Syscalls](/reference/syscalls/): system calls available to contracts
 - [SDK Macros](/reference/sdk-macros/): SDK entrypoint IDs and generated clients

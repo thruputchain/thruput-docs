@@ -15,16 +15,21 @@ Use the [CLI section](/cli/) for build and deployment commands.
 
 ## Work on a contract
 
+- [Define methods and interfaces](/contracts/methods/).
 - [Choose storage types](/programming-model/storage-types/) for your data.
-- [Define and handle errors](/reference/error-handling/).
 - [Authorize calls](/how-it-works/authorization/).
-- [Emit and test events](/tutorials/add-events-to-a-contract/).
-- [Call another contract](/reference/cross-contract-calls/).
+- [Define and handle errors](/contracts/errors/).
+- [Emit and test events](/contracts/events/).
+- [Call another contract](/contracts/cross-contract-calls/).
 - [Choose a test mode and write tests](/programming-model/testing/).
+- [Debug a contract](/contracts/debugging/).
+- [Generate client bindings](/contracts/client-bindings/) for application developers.
 
 ## Understand the programming model
 
-Read [execution](/programming-model/execution/) for how contract state changes are applied. Continue with [integer storage](/programming-model/nnint/), [advanced storage patterns](/programming-model/advanced/), or [invocation frames](/how-it-works/invocation-frames/) when your design needs that detail.
+Read [execution](/programming-model/execution/) for how contract state changes are applied. Continue with [NNInt and concurrent updates](/programming-model/nnint/), [exclusive writes](/programming-model/storage-types/#exclusive-writes), or [invocation frames](/how-it-works/invocation-frames/) when your design needs that detail.
+
+Read [Contract artifacts and addresses](/how-it-works/contracts/) to understand code hashes, deployment addresses, and immutability.
 
 ## Look up an API
 

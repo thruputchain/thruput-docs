@@ -5,11 +5,9 @@ description: "Tutorial: define an event, emit it from a Groundhog contract, test
 
 We're extending the counter from [Build a Counter](/tutorials/build-a-counter/) with a `CounterIncremented` event: define the event type, declare it as part of the contract's interface, emit it, assert on it in a test, find it in the contract spec, and query it over JSON-RPC.
 
-**Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/).
+**Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/). For the application steps, complete [TypeScript package setup](/typescript/setup/) and read [TypeScript Bindings](/tools/typescript-bindings/) first.
 
-:::note[Version checked]
-This workflow targets CLI `0.19.0`, SDK `0.41.1`, and TypeScript client `0.12.0`.
-:::
+For contract-only guidance, see [Events](/contracts/events/).
 
 ## How Events Work on Groundhog
 
@@ -217,27 +215,7 @@ for (const event of page.events) {
 }
 ```
 
-This fetches exactly one typed page. To walk raw pages on demand:
-
-```ts
-const query = {
-  filters: [CounterIncremented.filter({ contractAddresses: [contract] })],
-  order: "ascending" as const,
-  anchor: "beginning" as const,
-  limit: 20,
-};
-for await (const page of client.iterateEventPages(query, { signal })) {
-  for (const row of page.events) {
-    const decoded = CounterIncremented.decode(row.event);
-    console.log(row.blockHeight, decoded);
-  }
-}
-```
-
-The iterator follows empty pages with continuation cursors and stops on an empty
-cursor. Breaking stops future requests; the signal can cancel an in-flight read.
-There is no prefetch, retry, polling, or persistence. Repeated cursors and RPC
-errors throw. Typed decoding rejects malformed matching events.
+This fetches exactly one typed page. See [Query events](/tools/typescript-bindings/#query-events) for generated filters, typed decoding, and multi-page iteration. The next section adds application-owned persistence to that query.
 
 ## Resume Without Missing Events
 
@@ -252,7 +230,7 @@ of `(txHash, sequenceNumber)` within the network/query's store. Transaction-refe
 pages can use `txHash`; their query matches root invocation targets, not every
 address touched by a transaction.
 
-Continue the ascending `query` above with application-owned storage. Use one store
+Use an ascending query with application-owned storage. Use one store
 per network and query; changing filters needs a separate store or an explicit rebuild.
 
 | Application method | Responsibility |
@@ -261,6 +239,11 @@ per network and query; changing filters needs a separate store or an explicit re
 | `store.savePage(rows, progress)` | Upsert rows by their stable identity and save progress in the **same database transaction**. |
 
 ```ts
+const query = {
+  filters: [CounterIncremented.filter({ contractAddresses: [contract] })],
+  order: "ascending" as const,
+  limit: 20,
+};
 const saved = await store.loadProgress();
 let height = saved?.height ?? 0n;
 

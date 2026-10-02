@@ -1,5 +1,5 @@
 ---
-title: NNInt In Depth
+title: NNInt and concurrent updates
 description: The set_add primitive underneath NNInt and why concurrent transactions merge.
 ---
 
@@ -7,7 +7,7 @@ description: The set_add primitive underneath NNInt and why concurrent transacti
 
 Most contracts should use `Balance` for balances, allowances, and supply. Read this page when you need signed changes, an explicit integer base, or the exact representation that makes checked and lazy balance deltas compatible.
 
-For exact SDK method signatures, see [`NNInt` Rustdoc](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/storage/nnint/struct.NNInt.html) or [Storage Types Reference](/reference/storage-types/#nnint).
+For exact SDK method signatures, see [Rust API Docs](/tools/rust-api-docs/) or [Storage Types Reference](/reference/storage-types/#nnint).
 
 ## The set_add Primitive
 
@@ -71,6 +71,19 @@ Since `None` resolves to the start-of-block value, commutativity depends on what
 **set(value)**: calls `set_add(Some(value), 0)`. Replaces the base and clears the delta. Negative values are allowed, and a negative set value becomes the floor. `set` commutes only when all concurrent callers set the same value. `set(100)` vs `set(100)` merges. `set(100)` vs `set(200)` conflicts. `set(100)` vs `strict_inc(5)` conflicts if the snapshot is not 100, commutes if it is. Reserve `set` for initialization or admin operations.
 
 `strict_inc` and `inc` are interchangeable from a commutativity standpoint. Mix them freely. The trade-off is read cost vs early underflow detection.
+
+## Negative Set Values
+
+Use a negative base only when the state model needs an explicit lower floor:
+
+```rust
+non_negative_int_set(key, -5);
+non_negative_int_inc(key, 1);  // The value becomes -4.
+```
+
+An increment can move a negative base upward without making the result nonnegative. The commit-time floor remains `value >= min(set, 0)`. `strict_inc`, however, rejects an invocation total that remains negative.
+
+Use `Balance` for ordinary balances and allowances. Use nonnegative NNInt bases for ordinary counters.
 
 ## Why This Matters
 

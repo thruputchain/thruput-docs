@@ -5,10 +5,10 @@ description: Execution context, call stack management, and frame lifecycle.
 
 An **Invocation Frame** represents the execution context for a single [contract](/how-it-works/contracts/) method call. A new frame is created:
 - When a transaction first starts (the root frame)
-- Whenever a contract invokes another contract via the Invoke [syscall](/reference/syscalls/) (a child frame), also known as a [cross-contract call](/reference/cross-contract-calls/)
+- Whenever a contract invokes another contract via the Invoke [syscall](/reference/syscalls/) (a child frame), also known as a [cross-contract call](/contracts/cross-contract-calls/)
 
 Each frame tracks the execution state, resource usage, and state modifications for one contract method invocation.
-Frames are independent of artifact type. The default user contract runtime is RV32, Groundhog's 32-bit RISC-V target, but the same frame model also covers native contracts.
+Frames are independent of artifact type. User contracts run on RV32, Groundhog's 32-bit RISC-V target. The same frame model also covers native contracts.
 
 ## Frame Structure
 
@@ -336,7 +336,7 @@ state_changes: {
 
 ## Related Documentation
 
-- [Contracts](/how-it-works/contracts/): Contract types and entrypoint IDs
+- [Contract artifacts and addresses](/how-it-works/contracts/): Artifacts and entrypoint IDs
 - [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): How transactions progress from submission to commit
 - [Syscalls](/reference/syscalls/): How contracts interact with frames
-- [Cross-Contract Calls](/reference/cross-contract-calls/): SDK-level call patterns
+- [Cross-Contract Calls](/contracts/cross-contract-calls/): SDK-level call patterns

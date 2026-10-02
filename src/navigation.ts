@@ -47,19 +47,21 @@ export const sections: DocumentationSection[] = [
     items: [
       'cli',
       'cli/install',
-      'tools/groundhog-cli', 'tutorials/develop-locally', 'tutorials/develop-on-devnet',
+      'cli/configuration', 'cli/wallets',
+      'cli/create-project', 'cli/build-and-test', 'cli/local-node', 'cli/deploy-and-call',
+      'cli/transactions', 'cli/codegen', 'cli/automation', 'cli/troubleshooting', 'cli/reference',
     ],
   },
   {
     id: 'contracts', label: 'Smart Contracts', href: '/contracts/',
     items: [
       'contracts',
-      'contracts/project-structure',
-      'programming-model/storage-types', 'reference/error-handling',
-      'how-it-works/authorization', 'tutorials/add-events-to-a-contract',
-      'reference/cross-contract-calls', 'programming-model/testing',
-      'programming-model/execution', 'programming-model/nnint',
-      'programming-model/advanced', 'how-it-works/contracts', 'how-it-works/invocation-frames',
+      'contracts/project-structure', 'contracts/methods',
+      'programming-model/execution', 'programming-model/storage-types', 'programming-model/nnint',
+      'how-it-works/authorization', 'contracts/errors', 'contracts/events',
+      'contracts/cross-contract-calls', 'how-it-works/invocation-frames',
+      'programming-model/testing', 'contracts/debugging',
+      'contracts/client-bindings', 'how-it-works/contracts',
       { label: 'Reference', collapsed: true, items: [
         'tools/rust-api-docs', 'reference/storage-types', 'reference/sdk-macros', 'reference/syscalls',
       ] },
@@ -83,7 +85,9 @@ export const sections: DocumentationSection[] = [
     items: [
       'guides',
       'tutorials/build-a-counter', 'tutorials/work-with-groundhog-from-typescript',
+      'tutorials/add-events-to-a-contract',
       'tutorials/connect-a-wallet-to-your-app', 'tutorials/build-a-token', 'tutorials/design-a-swap',
+      'tutorials/develop-locally', 'tutorials/develop-on-devnet',
     ],
   },
   {

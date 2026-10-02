@@ -63,7 +63,7 @@ Groundhog exposes these rules to contract developers:
 
 Choose operations that express the change you intend. Use `Balance` for ordinary balance adjustments, `Map` for separate records, and other storage types when the application needs different merge rules. Compatible arithmetic can combine, but ordering-sensitive workflows still need an explicit design.
 
-[Contract Execution](/programming-model/execution/) explains snapshots and deltas. [Storage Types](/programming-model/storage-types/) covers the available APIs, and [NNInt In Depth](/programming-model/nnint/) covers the lower-level integer model.
+[Contract Execution](/programming-model/execution/) explains snapshots and deltas. [Storage Types](/programming-model/storage-types/) covers the available APIs, and [NNInt and concurrent updates](/programming-model/nnint/) covers the lower-level integer model.
 
 ---
 
