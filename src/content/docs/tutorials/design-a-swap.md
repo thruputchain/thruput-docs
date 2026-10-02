@@ -42,7 +42,7 @@ alone does not enforce one operation per pair per block.
 A direct port therefore needs to account for both conflicting writes and
 operations that compute identical reserves. Processing requests sequentially
 inside one transaction makes each operation use the preceding operation's
-updated reserves. See [Execution Model](/how-it-works/execution-model/) for the
+updated reserves. See [Parallel Execution](/how-it-works/execution-model/) for the
 storage merge rules.
 
 :::caution[The serial part stays serial]
@@ -270,7 +270,7 @@ accepted, and the more participants willing to do it the better.
 
 ## Next steps
 
-- [Execution Model](/how-it-works/execution-model/) for snapshots, conflicts,
+- [Parallel Execution](/how-it-works/execution-model/) for snapshots, conflicts,
   and exclusion
 - [Execution](/programming-model/execution/) for gas, scheduling capacity, and
   merged deltas

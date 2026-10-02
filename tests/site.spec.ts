@@ -282,12 +282,12 @@ test('header rebrand retains Groundhog page identity and the exact install promp
 
 test('homepage learn-more links navigate to real docs and valid anchors', async ({ page }) => {
   for (const [feature, href, title] of [
-    ['Keep the logic on-chain', '/programming-model/execution/', 'Execution Model'],
-    ['Compute without gas fees', '/programming-model/execution/#gas', 'Execution Model'],
+    ['Keep the logic on-chain', '/programming-model/execution/', 'Contract Execution'],
+    ['Compute without gas fees', '/programming-model/execution/#gas', 'Contract Execution'],
     ['Build on shared state', '/programming-model/storage-types/', 'Storage Types'],
     ['Make something work', '/tutorials/build-a-counter/', 'Build a Counter'],
     ['Connect an interface', '/tutorials/work-with-groundhog-from-typescript/', 'Work with Groundhog from TypeScript'],
-    ['Understand the engine', '/how-it-works/architecture/', 'Architecture'],
+    ['Understand the engine', '/how-it-works/architecture/', 'System Overview'],
   ]) {
     await page.goto(origin);
     const link = page.getByRole('link', { name: feature, exact: true });

@@ -246,4 +246,4 @@ Later ordinary writes to the key in the same transaction keep the lock request, 
 This is a blunt instrument. Prefer `Balance` or `NNInt` deltas on hot paths. Reserve exclusive writes for operations that genuinely cannot tolerate concurrent access.
 :::
 
-If `Balance` covers your state model, you do not need its lower-level representation. Read [NNInt In Depth](/programming-model/nnint/) when you need signed changes, an explicit base, or the exact `set_add` commutativity rules. For runtime reservation details, continue to [How It Works: Execution Model](/how-it-works/execution-model/).
+If `Balance` covers your state model, you do not need its lower-level representation. Read [NNInt In Depth](/programming-model/nnint/) when you need signed changes, an explicit base, or the exact `set_add` commutativity rules. For runtime reservation details, continue to [Parallel Execution](/how-it-works/execution-model/).

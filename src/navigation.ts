@@ -31,10 +31,11 @@ export const sections: DocumentationSection[] = [
     id: 'architecture', label: 'Understand Groundhog', href: '/architecture/',
     items: [
       'architecture',
+      'how-it-works/architecture',
       'how-it-works/execution-model', 'how-it-works/transaction-lifecycle',
-      'how-it-works/storage-economics', 'how-it-works/architecture',
+      'how-it-works/storage-economics',
       'how-it-works/consensus', 'how-it-works/networking',
-      { label: 'Coming from another platform', collapsed: true, items: [
+      { label: 'Coming from...', collapsed: true, items: [
         'start/for-blockchain-developers',
         'ecosystem/evm', 'ecosystem/solana', 'ecosystem/stellar',
         'start/for-backend-developers', 'start/for-distributed-systems-developers',

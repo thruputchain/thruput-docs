@@ -236,4 +236,4 @@ Once a contract is deployed to an address, that address's `AddressMetadata` cann
 - [Syscalls](/reference/syscalls/): system calls available to contracts
 - [SDK Macros](/reference/sdk-macros/): SDK entrypoint IDs and generated clients
 - [Contract Spec](/reference/contract-spec/): generated method, type, event, and error metadata
-- [Architecture](/how-it-works/architecture/): the big-picture design
+- [System Overview](/how-it-works/architecture/): the component map

@@ -1,6 +1,6 @@
 ---
-title: Execution Model
-description: How Groundhog executes transactions with snapshots, deltas, and commutative storage.
+title: Parallel Execution
+description: How the engine executes transactions against snapshots and reserves compatible state changes.
 ---
 
 ## The Core Idea
@@ -9,7 +9,7 @@ Every transaction reads from a consistent snapshot and records typed deltas. The
 
 Commutativity describes operations whose combined result does not depend on their order. Groundhog still enforces resource limits, including gas limits, bounded return values, and a maximum encoded transaction size.
 
-For the contract-writing model, start with [Merged Deltas](/programming-model/execution/#merged-deltas) and [Storage Types](/programming-model/storage-types/). This page is the next layer down. It covers how the engine implements those rules, including delta encodings, concurrent reservation, and conflict selection.
+This page explains the engine: snapshots, concurrent reservation, and conflict selection. For the rules your code relies on, read [Contract Execution](/programming-model/execution/).
 
 ## Snapshot Isolation
 
@@ -36,7 +36,7 @@ balances[to] = balances[to] + amount;
 In Groundhog:
 
 ```rust
-// Groundhog: write deltas. Two concurrent transfers to the same
+// Groundhog: write deltas. Two compatible transfers to the same
 // account produce two deltas that merge cleanly.
 balances.at_mut(&from).decrease(amount);
 balances.at_mut(&to).increase(amount);
@@ -46,9 +46,9 @@ Two compatible increments to the same balance produce the same result regardless
 
 ## What Commutes and What Doesn't
 
-Operations that commute run in parallel. Operations that don't commute cause the conflicting transaction to be excluded from the block and returned to the mempool.
+Transactions execute concurrently. Storage merge rules determine whether their changes can land together. A conflicting transaction is excluded from the proposal and returned to the mempool.
 
-| Operation | Parallel? | Why |
+| Operation | Can both changes land? | Why |
 |-----------|-----------|-----|
 | Two balance changes on the same counter | When compatible | Resolved bases must match and aggregate bounds must hold |
 | Two writes to different Map keys | Yes | Independent keys don't interact |
@@ -57,20 +57,11 @@ Operations that commute run in parallel. Operations that don't commute cause the
 | Two deletions of the same key | Yes | Same outcome regardless of order |
 | A deletion and a write to the same key | No | Different operation types conflict; one transaction is excluded |
 
+These rules describe the listed operations. Other changes in either transaction can still cause a conflict.
+
 ### What This Means for Your Data Model
 
-Your data model determines your throughput.
-
-**High parallelism** (design for this):
-- Balances as `Balance`: concurrent credits merge, and debits reserve available capacity.
-- Independent records as separate `Map` keys: user profiles, token metadata, order records.
-- Event streams as `RetrocausalQueue`: multiple producers, entries merge automatically.
-
-**Conflicting writes**:
-- Different updates to a config bytestring cannot both land in a block.
-- Any two transactions writing the same bytestring key with different values.
-
-Choose storage around the changes your application needs to combine. Mergeable arithmetic still has bounds; absolute writes can coexist when they store identical values.
+Choose storage around the changes your application needs to combine. Mergeable arithmetic still has bounds; absolute writes can coexist when they store identical values. [Storage Types](/programming-model/storage-types/#choosing-a-type) turns these rules into contract-design choices.
 
 ## How Conflicts Are Resolved
 
@@ -95,7 +86,7 @@ Tx B contract returns with delta -5
       Reserve delta batch: capacity would be -3 → excluded
 ```
 
-Whichever transaction reserves first wins. The lock is per-key, per-block and is initialized from the snapshot. Two transactions touching different keys never interact. Two transactions touching the same key contend for the same aggregate bounds. Reservation can happen concurrently across executor workers; atomic capacity accounting ensures the combined admitted delta remains in range.
+Whichever transaction reserves first wins. The lock is per-key, per-block and is initialized from the snapshot. Reservations on different keys use separate locks. Transactions touching the same key contend for the same aggregate bounds. Reservation can happen concurrently across executor workers; atomic capacity accounting ensures the combined admitted delta remains in range.
 
 For operations that commute (two increases, or two decreases that fit within the balance), both reservations succeed and both transactions land. Checked and lazy operations share this merge behavior. The difference is that checked operations may fail earlier in contract code, while lazy operations leave the snapshot-bound decision to reservation. A lazy adjustment that is invalid against the snapshot can still be admitted if a compatible offsetting delta has already been admitted before its batch is reserved. If the lazy adjustment reserves first, it is excluded. This possibility depends on reservation order, not eventual block-wide netting.
 
@@ -109,69 +100,9 @@ RetrocausalQueue is the exception: it has end-of-block invariant checks that the
 
 From a contract developer's perspective, the result is the same: your transaction either lands or is excluded. You don't manage locks, budgets, or reservation order. The programming model ("compatible deltas merge; incompatible transactions are excluded") is accurate for deciding how to structure your storage. The proposer records reservation-dependent outcomes so validators can replay and verify the proposed block.
 
-## Storage Primitives
+## Related reading
 
-The protocol defines three contract-data storage primitives: **NNInt** (commutative integer), **Bytestring** (raw bytes), and **RetrocausalQueue** (multi-producer queue). Each has its own merge rules for concurrent writes.
-
-The SDK layers typed conveniences on top: **Balance** for checked debit and credit operations, **CapacityConstraint** for reservable capacity, **Map** for keypath-prefixed child storage, **Value** for typed bytestring values, **Vector** for indexed values, and **Node** for compound storage. These are not separate protocol primitives. They inherit the conflict semantics of the items they use.
-
-For the full treatment of each type, conflict semantics, and how to choose between them, see [Programming Model: Storage Types](/programming-model/storage-types/). For the underlying commutativity model, see [NNInt In Depth](/programming-model/nnint/). For API signatures, see [Storage Types Reference](/reference/storage-types/).
-
-## HOG and the Capital Model
-
-Groundhog's costs are capital-based, not usage-based. You hold HOG tokens to get capacity. No tokens are burned for execution or storage.
-
-Every HOG in your account is either **free** (contributing to your throughput share) or **locked** (backing on-chain storage). Free HOGs entitle you to a proportional share of network throughput through age-weighted scheduling. Locked HOGs are returned when you delete the data they back.
-
-Transactions declare a gas limit for computational metering (bounding cross-contract calls, preventing infinite loops), but gas costs zero. For root transactions, the declared limit is the scheduling quantity. The engine measures gas so it can fault an over-limit transaction, not so it can compute a refund. Actual gas consumed does not write refund deltas or create balance updates.
-
-See [Storage & Scheduling Economics](/how-it-works/storage-economics/) for the full cost model, including storage deposits, sponsorship, and Balance-Proportional Scheduling.
-
-## How This Compares
-
-### vs. Ethereum
-
-| Ethereum | Groundhog |
-|----------|-----------|
-| Gas fees per transaction | No per-operation fees; free HOG balance determines throughput share |
-| `SSTORE` / `SLOAD` for 256-bit slots | Typed key-value store with commutativity rules |
-| Sequential execution within a block | Parallel execution; conflicts checked during delta reservation |
-| State persists forever after one-time gas payment | State persists while refundable HOG deposit is held; delete data, get deposit back |
-| Gas price auction for priority | Age-weighted fair scheduling; no bidding |
-
-**What you can stop doing:** gas price estimation, fee market mechanics, and storage slot packing.
-
-**What you need to learn:** which of your operations commute.
-
-### vs. Solana
-
-| Solana | Groundhog |
-|--------|-----------|
-| Must declare read/write account sets upfront | No upfront declaration; conflicts checked during delta reservation |
-| Fixed-size program accounts; `realloc` to resize | Dynamic key-value entries; cost adjusts automatically |
-| Rent-exempt balance required per account | HOG deposit per storage item; conceptually similar |
-| Compute unit budget + priority fees | No per-operation fees; free HOG balance determines throughput share |
-
-**What you can stop doing:** account sizing, `realloc` management, upfront access-list declarations.
-
-**What you need to learn:** commutativity instead of access lists. Storage access is discovered during execution.
-
-### vs. Soroban
-
-| Soroban | Groundhog |
-|---------|-----------|
-| Three storage tiers (Instance, Persistent, Temporary) | One storage model, no tiers |
-| TTLs on persistent storage; must extend or data expires | Permanent storage, no TTLs, no expiration |
-| Resource limits constrain transaction complexity | Gas and encoded-size limits without per-operation fees |
-| Sequence numbers enforce serial execution per account | No sequence numbers; transactions parallelize by default |
-| Fees per transaction (inclusion + resource fees) | No per-operation fees; free HOG balance determines throughput share |
-
-For Soroban developers, the main shift is not contract expressiveness; it is where the runtime asks you to pay attention. Groundhog makes storage permanence and transaction capacity part of the base model, then uses commutativity to decide which operations can merge safely in parallel.
-
-## Related Documentation
-
-- [Merged Deltas](/programming-model/execution/#merged-deltas): Contract-writing model for concurrent state changes
-- [Architecture](/how-it-works/architecture/): The big-picture design
+- [Contract Execution](/programming-model/execution/): The contract-author model
+- [Storage Types](/programming-model/storage-types/): API choices and merge rules
 - [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): How a transaction moves from submission to commit
-- [Contracts](/how-it-works/contracts/): Contract types, deployment, and address derivation
-- [Storage Types Reference](/reference/storage-types/): Full API for all storage primitives
+- [Compute, Capacity & Storage](/how-it-works/storage-economics/): Gas limits, scheduling, and deposits

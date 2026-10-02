@@ -59,7 +59,7 @@ let capped = token.with_gas_limit(500_000);
 capped.transfer(&recipient, 100);
 ```
 
-The default gas limit is `u64::MAX` (no effective cap). Gas is metered but free. Limits prevent runaway computation. See [Execution Model](/programming-model/execution/#gas) for details.
+The default gas limit is `u64::MAX` (no effective cap). Gas is metered but free. Limits prevent runaway computation. See [Contract Execution](/programming-model/execution/#gas) for details.
 
 | Method | Signature | Description |
 |--------|-----------|-------------|

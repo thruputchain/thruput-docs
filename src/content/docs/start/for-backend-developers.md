@@ -25,7 +25,7 @@ fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
 
 That is enough of the model for most contract code. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how storage types decide which concurrent changes can land together. [NNInt In Depth](/programming-model/nnint/) covers the lower-level `set_add` representation behind `Balance`, including base matching and the difference between `strict_inc`, `inc`, and `set`.
 
-**If you'd write it as `SET col = col + ?` in SQL, it parallelizes on Groundhog. If you'd write it as `SET col = ?`, it might conflict.**
+**Relative updates such as `SET col = col + ?` map naturally to mergeable integer operations.** Compatibility still depends on bounds and the transaction's other changes. Absolute replacements can conflict when they assign different values.
 
 ---
 
