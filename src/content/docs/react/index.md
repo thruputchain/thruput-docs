@@ -5,22 +5,25 @@ sidebar:
   label: Overview
 ---
 
-`@groundhogchain/react` provides wallet connection state, balance queries, and typed contract reads for React applications. It uses the [TypeScript client](/typescript/) for network interactions.
+Build wallet controls and contract-data interfaces with `@groundhogchain/react`. The library supplies state and hooks; you supply the components, styling, and application workflow.
 
-## Set up your application
+## How the layers fit
 
-Follow the [React quickstart](/get-started/react/) to display live Devnet contract data. [Package setup](/typescript/setup/) covers registry access.
+- The **TypeScript client** connects to a network and executes typed contract operations.
+- **WalletProvider** shares that client and manages wallet discovery, connection, and account selection.
+- **TanStack Query** manages read state, caching, and mutations through your application's `QueryClient`.
+- **Contract bindings** describe each contract's methods, results, errors, and events.
 
-The package provides a wallet provider, wallet and balance hooks, and typed contract queries. See the [package reference](https://github.com/groundhogchain/react#readme) for its public API.
+The library manages one configured application network and one selected wallet connection. Public reads work without wallet permission. A connected wallet supplies the signing client for writes.
 
-## Choose the right layer
+## Start with a read
 
-- **Wallet connection:** use the React provider and wallet hooks described in the package README.
-- **Balances:** use the balance hooks with the documented query-provider setup.
-- **Contract calls:** use the TypeScript client and [generated bindings](/tools/typescript-bindings/) for the contract operation.
+The [React quickstart](/get-started/react/) displays Devnet's HOG supply using the supplied ERC-20 binding and contract address. You do not need Rust, the CLI, or your own deployment.
 
-For the framework-neutral wallet flow and provider protocol, see [Wallet Integration](/tools/wallet-integration/) and [Wallet Provider](/tools/wallet-provider/).
+For an existing app, follow [Setup](/react/setup/) and [Providers and clients](/react/providers/). Then use [Read contract data](/react/reads/) or [Read balances](/react/balances/). [Cache and refresh data](/react/queries/) explains the query behavior shared by those hooks.
 
-## Learn the client workflow
+## Add wallet actions
 
-The [TypeScript walkthrough](/tutorials/work-with-groundhog-from-typescript/) explains contract deployment, typed reads, and transactions. It is a client walkthrough, not a React UI tutorial.
+[Connect a wallet](/react/wallets/) covers discovery, account selection, and connection states. [Send transactions](/react/transactions/) and [Track transaction results](/react/transaction-status/) cover the approval-to-receipt flow.
+
+Use the [TypeScript account model](/typescript/wallet-clients/) for shared signing concepts and the [React API reference](/react/reference/) for exact hook inputs and results. Complete application walkthroughs belong in [Guides](/guides/).

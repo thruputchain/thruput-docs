@@ -83,7 +83,11 @@ export const sections: DocumentationSection[] = [
   },
   {
     id: 'react', label: 'React', href: '/react/',
-    items: ['react'],
+    items: [
+      'react', 'react/setup', 'react/providers',
+      'react/reads', 'react/balances', 'react/queries', 'react/events',
+      'react/wallets', 'react/transactions', 'react/transaction-status', 'react/reference',
+    ],
   },
   {
     id: 'guides', label: 'Guides', href: '/guides/',

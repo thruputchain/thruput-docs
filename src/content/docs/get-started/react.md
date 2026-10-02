@@ -109,7 +109,7 @@ npm run build
 
 ## Next
 
-See [React](/react/) for wallet connection and hooks. For a complete wallet application, follow [Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/).
+See [Read contract data](/react/reads/) for arguments and query behavior, or [Connect a wallet](/react/wallets/) to add wallet controls. [Send transactions](/react/transactions/) covers approval and execution state.
 
 ## Use a coding agent
 

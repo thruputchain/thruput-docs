@@ -62,6 +62,16 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['TypeScript', '/typescript/events/', 'Read events'],
     ['TypeScript', '/typescript/transport/', 'Configure HTTP transport'],
     ['TypeScript', '/typescript/deployment/', 'Deploy a contract'],
+    ['React', '/react/setup/', 'Setup'],
+    ['React', '/react/providers/', 'Providers and clients'],
+    ['React', '/react/reads/', 'Read contract data'],
+    ['React', '/react/balances/', 'Read balances'],
+    ['React', '/react/queries/', 'Cache and refresh data'],
+    ['React', '/react/events/', 'Read events'],
+    ['React', '/react/wallets/', 'Connect a wallet'],
+    ['React', '/react/transactions/', 'Send transactions'],
+    ['React', '/react/transaction-status/', 'Track transaction results'],
+    ['React', '/react/reference/', 'React API reference'],
     ['Smart Contracts', '/reference/sdk-macros/', 'SDK Macros'],
     ['TypeScript', '/typescript/setup/', 'Package setup'],
     ['Smart Contracts', '/contracts/project-structure/', 'Project structure'],
@@ -130,7 +140,8 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
   await expect(page.locator('.sidebar .top-level a[href="/start/"]')).toHaveCount(0);
 
   await page.goto(origin + '/react/');
-  await expect(page.locator('.pagination-links a')).toHaveCount(0);
+  await expect(page.locator('.pagination-links a')).toHaveCount(1);
+  await expect(page.locator('.pagination-links a')).toHaveAttribute('href', '/react/setup/');
   await page.goto(origin + '/reference/json-rpc-api/');
   await expect(page.locator('.sidebar a[aria-current="page"]')).toHaveAttribute('href', '/reference/json-rpc-api/');
   await expect(page.locator('.sidebar a[aria-current="page"]')).toBeVisible();
