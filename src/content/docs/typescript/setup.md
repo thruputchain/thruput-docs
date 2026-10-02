@@ -3,7 +3,7 @@ title: Package setup
 description: Configure access to Groundhog's JavaScript packages for TypeScript and React applications.
 ---
 
-The TypeScript client and React library are distributed through GitHub Packages. Configure access once, then use the install command in your quickstart.
+The TypeScript client and React library are distributed through GitHub Packages. Configure registry access once, then install the packages your application imports.
 
 ## Before you start
 
@@ -31,7 +31,43 @@ Keep `${NODE_AUTH_TOKEN}` as a literal reference in this file. Do not replace it
 
 Use the latest packages when starting a new project and keep the generated lockfile. A package-access error needs an account or token with the required permissions; repository access alone may not be enough.
 
-## Continue
+## Install the TypeScript client
 
-- [TypeScript quickstart](/get-started/typescript/)
-- [React quickstart](/get-started/react/)
+In a new application directory:
+
+```bash
+npm init -y
+npm pkg set type=module
+npm install @groundhogchain/client @groundhogchain/protocol
+npm install --save-dev typescript tsx @types/node
+mkdir -p src
+```
+
+In an existing application, keep its package configuration and add the dependencies you need. `tsx` runs the Node.js examples; browser apps can use their existing bundler.
+
+The client re-exports common types and constructors. Install the protocol package directly when you import protocol-only constants such as `HOG_ADDRESS`. Schema tooling can import `@groundhogchain/contract-spec`; ordinary generated bindings use the client runtime.
+
+## Type-check an application
+
+For the Node.js examples, create `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts"]
+}
+```
+
+```bash
+npx tsc
+```
+
+The examples use ESM imports and `.js` paths for local TypeScript modules. Browser projects should keep the module settings required by their bundler. Imports from `@groundhogchain/client/local-dev` are Node.js-only.

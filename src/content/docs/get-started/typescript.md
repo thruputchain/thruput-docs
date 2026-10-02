@@ -59,7 +59,7 @@ This is a read-only call. It does not request wallet permission or submit a tran
 
 ## Next
 
-Use [Wallet Integration](/tools/wallet-integration/) to add signing and transaction submission, or continue with the [React quickstart](/get-started/react/) to display contract data in an interface.
+Use [Read contract data](/typescript/reads/) for arguments, caller context, and cancellation, or [Connect a wallet](/tools/wallet-integration/) to add signing and transaction submission.
 
 ## Use a coding agent
 

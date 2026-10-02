@@ -72,8 +72,13 @@ export const sections: DocumentationSection[] = [
     items: [
       'typescript',
       'typescript/setup',
-      'tools/typescript-sdk', 'tools/typescript-bindings',
-      'tools/wallet-integration', 'tools/wallet-provider',
+      'typescript/connect', 'typescript/transport', 'typescript/values',
+      'tools/typescript-bindings', 'typescript/reads', 'typescript/events',
+      'typescript/wallet-clients', 'tools/wallet-integration', 'typescript/accounts', 'typescript/transactions',
+      'typescript/transaction-status', 'typescript/deployment',
+      { label: 'Reference', collapsed: true, items: [
+        'tools/typescript-sdk', 'tools/wallet-provider',
+      ] },
     ],
   },
   {

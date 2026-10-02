@@ -14,7 +14,7 @@ Submitting a transaction is the start of the process. A successful submission do
 | **Committed abort or fault** | The failure is recorded in the block, but the contract changes are discarded |
 | **Excluded from a proposal** | The transaction did not land in that proposal; conflicting transactions return to the mempool for possible later inclusion |
 
-A pending or `unknown` status, a timeout, or an advisory `recentFailure` is not proof of a committed failure. Keep the original network and transaction hash, and resume observation instead of automatically signing a replacement. See [client execution and recovery](/tools/typescript-sdk/#typed-calls-and-observation-recovery) for the application workflow.
+A pending or `unknown` status, a timeout, or an advisory `recentFailure` is not proof of a committed failure. Keep the original network and transaction hash, and resume observation instead of automatically signing a replacement. See [Track transaction results](/typescript/transaction-status/) for the application workflow.
 
 ## Overview
 

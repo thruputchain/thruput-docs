@@ -32,4 +32,4 @@ Regenerate bindings when the contract interface changes. Use the address from th
 
 Keep generated files out of manual edits. Put application wrappers next to them so regeneration does not overwrite application logic.
 
-Continue with [TypeScript Bindings](/tools/typescript-bindings/) for using descriptors, typed views, invocations, and event decoders.
+Continue with [Use contract bindings](/tools/typescript-bindings/) for descriptors and typed calls, or [Read events](/typescript/events/) for filters and decoding.

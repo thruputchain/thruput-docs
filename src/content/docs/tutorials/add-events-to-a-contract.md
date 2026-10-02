@@ -5,7 +5,7 @@ description: "Tutorial: define an event, emit it from a Groundhog contract, test
 
 We're extending the counter from [Build a Counter](/tutorials/build-a-counter/) with a `CounterIncremented` event: define the event type, declare it as part of the contract's interface, emit it, assert on it in a test, find it in the contract spec, and query it over JSON-RPC.
 
-**Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/). For the application steps, complete [TypeScript package setup](/typescript/setup/) and read [TypeScript Bindings](/tools/typescript-bindings/) first.
+**Prerequisites:** A working counter contract from [Build a Counter](/tutorials/build-a-counter/). For the application steps, complete [TypeScript package setup](/typescript/setup/) and read [Use contract bindings](/tools/typescript-bindings/) first.
 
 For contract-only guidance, see [Events](/contracts/events/).
 
@@ -30,7 +30,7 @@ pub struct CounterIncremented<'a> {
 
 - **`#[derive(Event)]`** generates the signature, topic/payload encoding, and typed decoding view. See [SDK Macros](/reference/sdk-macros/#deriveevent) or [`#[derive(Event)]` Rustdoc](https://crates.thruput.network/docs/sdk/0.41.1/doc/sdk/derive.Event.html).
 - **`#[topic]`** makes `by` an indexed topic (topic 1), so consumers can filter events by address. Fields without the attribute, here `amount`, go into the payload.
-- **The lifetime** lets the topic borrow the address. Addresses, fixed 32-byte values, supported integer scalars, `U256`, `I256`, and bool have direct topic encodings. Strings and byte slices are hashed; keep their original value in the payload if consumers need it. See [topic encodings](/tools/typescript-bindings/#events).
+- **The lifetime** lets the topic borrow the address. Addresses, fixed 32-byte values, supported integer scalars, `U256`, `I256`, and bool have direct topic encodings. Strings and byte slices are hashed; keep their original value in the payload if consumers need it. See [topic encodings](/typescript/events/#filter-topics).
 
 ## Step 2: Declare and Emit It
 
@@ -215,7 +215,7 @@ for (const event of page.events) {
 }
 ```
 
-This fetches exactly one typed page. See [Query events](/tools/typescript-bindings/#query-events) for generated filters, typed decoding, and multi-page iteration. The next section adds application-owned persistence to that query.
+This fetches exactly one typed page. See [Read events](/typescript/events/) for generated filters, typed decoding, and multi-page iteration. The next section adds application-owned persistence to that query.
 
 ## Resume Without Missing Events
 

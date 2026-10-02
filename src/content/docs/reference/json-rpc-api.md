@@ -35,7 +35,7 @@ Public response fields use camelCase. Addresses, hashes, calldata, event topics,
 | Errors | Per-entry RPC errors remain independent; transport failures can affect the shared exchange |
 | Guarantees | No shared snapshot, ordering, or atomicity between independent requests |
 | Other limits | Request/response byte limits and concurrency settings are separate |
-| Client defaults | Opt-in HTTP batching uses 100 entries and a 0ms scheduling window; see [client transport](/tools/typescript-sdk/#http-batching) |
+| Client defaults | Opt-in HTTP batching uses 100 entries and a 0ms scheduling window; see [client transport](/typescript/transport/#http-batching) |
 
 ## Wire Design
 
