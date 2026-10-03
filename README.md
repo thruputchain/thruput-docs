@@ -99,8 +99,8 @@ Markdown files live in `src/content/docs/`, organized by section. The sidebar is
 
 ## Agent guidance
 
-The landing page points agents to `/start/build-with-an-agent/` for pre-install
-access checks, then to the installed CLI's `groundhog --skill`. The hosted
+The landing page points agents to `/start/build-with-an-agent/` for skill setup
+and Markdown access, then to the installed CLI's `groundhog skill show`. The hosted
 reference is a pinned artifact, not an independently authored copy of CLI docs.
 
 `public/agents/current.json` identifies the selected guide's CLI version, status,
@@ -114,7 +114,7 @@ To promote another guide:
 1. Obtain `agent-guide.md` from the explicitly selected CLI release and verify it
    against that release's `SHA256SUMS`. Do not select the latest prerelease
    automatically. For a source preview, generate/check it at the recorded commit
-   and compare it with that build's `groundhog --skill`.
+    and compare it with that build's `groundhog skill show --all`.
 2. Add those unchanged bytes at `public/agents/<cli-version>/agent-guide.md`.
    Retain earlier version paths. Never replace an existing version with different
    bytes; a corrected guide needs a new CLI release.
@@ -131,3 +131,45 @@ commit for a push to main). Existing versions cannot be modified, removed, or
 renamed, even if the alias and checksum are updated together. To run this check
 locally, use `node scripts/check-agent-guide-history.mjs origin/main` after fetching
 the base branch. Source-artifact verification in step 1 remains part of promotion.
+
+## Markdown documentation
+
+Both `pnpm build` and `pnpm build:snapshot` generate Markdown from the rendered
+page content. Astro renders Markdown and components first; the exporter removes
+navigation and controls and preserves code, warning titles, tables, tab choices,
+and described diagrams. The HTML and Markdown therefore share one maintained
+source. New content components need export tests when their meaning depends on
+special markup.
+
+The build writes:
+
+- `markdown/index.md`: descriptions and links to every exported page and section.
+- `markdown/pages/<route>.md`: individual pages, with `pages/index.md` for the home page.
+- `markdown/sections/<section>.md`: bundles using the sidebar's section ownership.
+- `markdown/full.md`: all page content.
+- `markdown/assets/`: local assets used by the exported content.
+- `markdown/manifest.json`: page inventory and source identity.
+- `llms.txt` and `llms-full.txt`: site-root discovery and full documentation.
+
+Every HTML page advertises its Markdown URL with a `text/markdown` alternate
+link. Explicit URLs are the supported access method; HTTP content negotiation
+is not implemented. The existing Caddy authentication applies to the exports
+as it does to HTML. The build does not publish or fetch content.
+
+Markdown links resolve relative to their files. Legacy page and fragment
+redirects are resolved during export. The build checks those targets, then
+reparses the output to check file and fragment links. Broken links fail the
+build. Code blocks are left unchanged, including URLs inside examples.
+
+The whole `markdown/` tree can be copied away from the website. With a CLI
+that supports Markdown export, use:
+
+```sh
+groundhog docs export --dir "$PWD/dist/docs-snapshot" --output /path/to/new-folder
+```
+
+Run `pnpm test` for conversion fixtures. The snapshot smoke also checks the
+real CLI export, links in the copied folder, and code examples against their
+source pages. Markdown output records the docs commit and the separately
+selected standalone agent-guide version; the latter does not version the
+whole site.

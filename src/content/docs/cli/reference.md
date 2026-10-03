@@ -112,9 +112,14 @@ description: Groundhog CLI commands, common options, and links to task instructi
 
 | Command | Purpose | Usage |
 | --- | --- | --- |
-| `groundhog --skill` | Print the installed CLI's agent instructions | [Build with an Agent](/start/build-with-an-agent/) |
+| `groundhog skill install [--global] [--agent NAME]` | Install the maintained skill through `npx skills` | [Build with an Agent](/start/build-with-an-agent/) |
+| `groundhog skill update [--global]` | Update only the installed Groundhog skill in the selected scope | Add `--yes --non-interactive` for authorized automation |
+| `groundhog skill show [TOPIC] [--all]` | Print the bundled entry, one topic, or the complete guide offline | `TOPIC` and `--all` are mutually exclusive |
+| `groundhog skill list` | List the bundled skill topics | [Build with an Agent](/start/build-with-an-agent/) |
 | `groundhog docs [--port PORT]` | Serve the bundled local documentation; port `0` selects an available port | [Build with an Agent](/start/build-with-an-agent/#2-share-the-docs) |
 | `groundhog docs --dir PATH` | Serve a trusted local site build | Keep the directory unchanged while serving |
+| `groundhog docs --background` | Start or reuse the background docs server | `docs status` reports its state; `docs stop` stops it |
+| `groundhog docs export --output PATH` | Copy the bundled Markdown docs into a new folder without starting a server | Start at the exported `index.md`; relative links work locally |
 
 ## Shared Flags
 

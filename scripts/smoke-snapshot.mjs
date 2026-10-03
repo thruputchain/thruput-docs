@@ -1,13 +1,41 @@
 import assert from 'node:assert/strict';
-import { mkdirSync } from 'node:fs';
-import { spawn } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
 import { once } from 'node:events';
 import { createInterface } from 'node:readline';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { chromium } from '@playwright/test';
+import { visit } from 'unist-util-visit';
+import { parseMarkdown, validateMarkdown } from './markdown-validation.mjs';
 
 const binary = process.argv[2];
 if (!binary) throw new Error('Usage: node scripts/smoke-snapshot.mjs /path/to/groundhog');
+const exported = mkdtempSync(resolve(tmpdir(), 'groundhog-docs-export-'));
+try {
+  const output = resolve(exported, 'docs');
+  const result = spawnSync(resolve(binary), ['docs', 'export', '--dir', resolve('dist/docs-snapshot'), '--output', output, '--json'], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  const report = JSON.parse(result.stdout);
+  assert.equal(report.ok, true);
+  assert.equal(report.data.index, resolve(output, 'index.md'));
+  const paths = readdirSync(output, { recursive: true }).filter(path => path.endsWith('.md'));
+  await validateMarkdown(output, paths);
+  const codes = source => {
+    const result = [];
+    visit(parseMarkdown(source), 'code', node => { result.push(node.value); });
+    return result;
+  };
+  for (const page of ['get-started/react', 'get-started/contract', 'tutorials/build-a-token', 'reference/json-rpc-api']) {
+    assert.deepEqual(codes(readFileSync(resolve(output, `pages/${page}.md`), 'utf8')),
+      codes(readFileSync(resolve(`src/content/docs/${page}.md`), 'utf8')), `Code changed in ${page}`);
+  }
+  assert.ok(readFileSync(resolve(output, 'pages/reference/json-rpc-api.md'), 'utf8').includes('Not Yet Implemented'));
+  assert.deepEqual(JSON.parse(readFileSync(resolve(output, 'snapshot.json'), 'utf8')), report.data.snapshot);
+  console.log(`CLI exported ${paths.length} Markdown files; portable links and source code examples verified.`);
+} finally {
+  rmSync(exported, { recursive: true, force: true });
+}
 const server = spawn(resolve(binary), ['docs', '--dir', resolve('dist/docs-snapshot'), '--port', '0', '--json'], {
   stdio: ['ignore', 'pipe', 'inherit'],
 });
@@ -23,6 +51,7 @@ try {
   ]);
   clearTimeout(timer);
   const origin = new URL(ready.data.url).origin;
+  assert.equal(ready.data.markdownIndex, resolve('dist/docs-snapshot/markdown/index.md'));
   browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const externalRequests = [];
@@ -71,6 +100,13 @@ try {
   const guide = await context.request.get(`${origin}/agent-guide.md`);
   assert.equal(guide.status(), 200);
   assert.ok((await guide.text()).includes('groundhog-cli-version:'));
+  const markdown = await context.request.get(`${origin}/markdown/pages/get-started/react.md`);
+  assert.equal(markdown.status(), 200);
+  assert.ok(markdown.headers()['content-type'].startsWith('text/markdown'));
+  assert.ok((await markdown.text()).includes('useContractView'));
+  const index = await context.request.get(`${origin}/llms.txt`);
+  assert.equal(index.status(), 200);
+  assert.ok((await index.text()).includes('markdown/sections/react.md'));
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, []);
   console.log('Snapshot smoke passed: real CLI, tutorial, search navigation, local agent prompt, Markdown guide, desktop/mobile, no external requests.');
