@@ -56,6 +56,6 @@ groundhog tx list my-counter --profile devnet --limit 25 --cursor CURSOR
 
 Replace `CURSOR` with the exact returned value. An empty page with a non-empty cursor is not the end. The returned cursor `0x` ends that historical walk.
 
-To check for new activity, omit `--cursor` and start at the head again. A saved cursor continues the old walk; it is not a subscription. For forward ingestion and durable checkpoints, use the [event indexing guidance](/tutorials/add-events-to-a-contract/#resume-without-missing-events).
+To check for new activity, omit `--cursor` and start at the head again. A saved cursor continues the old walk; it is not a subscription. For forward ingestion and durable checkpoints, use the [event indexing guidance](/typescript/events/#resume-without-missing-events).
 
 The [Block Explorer](/tools/block-explorer/) provides a browser-based inspection path.

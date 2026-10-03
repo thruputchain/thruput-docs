@@ -101,4 +101,4 @@ Once submission begins, an error may arrive after broadcast. Use the saved hash 
 
 Use `parseWalletProviderError` for provider errors across browser contexts rather than relying on `instanceof`. The [error table](/tools/wallet-provider/#errors) distinguishes rejection, authorization, network, and transport errors.
 
-For a complete interface with connection controls and a transfer action, follow [Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/).
+For a complete counter interface with wallet-approved updates, follow [Counter, part 4: Connect a wallet](/tutorials/connect-a-wallet-to-your-app/).

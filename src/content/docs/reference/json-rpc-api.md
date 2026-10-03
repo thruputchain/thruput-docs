@@ -327,7 +327,7 @@ Query contract events with cursor pagination and topic filters.
 
 **Returns:** `EventPage` with events, the next cursor, latest indexed block, and oldest retained block.
 
-`query.filters` uses OR across filters and AND within each filter. Contract-address filters are required. Topic filters are positional: `topic0`, `topic1`, and `topic2`. See [Add Events to a Contract](/tutorials/add-events-to-a-contract/#step-5-query-it-on-chain) for an example.
+`query.filters` uses OR across filters and AND within each filter. Contract-address filters are required. Topic filters are positional: `topic0`, `topic1`, and `topic2`. See [Read events](/typescript/events/#query-events) for typed filters and queries.
 
 ### `groundhog_getTransactionsByAddress`
 
@@ -361,7 +361,7 @@ The initial cursor is `"0x"`. A limit of `0` selects the server default of 50. V
 | Cursor validity | Opaque backend format; current malformed-cursor handling can report false exhaustion, so explicit rejection is not guaranteed |
 
 For the executable application pattern and retention limitations, see
-[Resume Without Missing Events](/tutorials/add-events-to-a-contract/#resume-without-missing-events).
+[Resume without missing events](/typescript/events/#resume-without-missing-events).
 
 ## Error Codes
 

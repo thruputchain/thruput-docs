@@ -81,4 +81,4 @@ Rebuild after changing an event declaration. The generated spec records its name
 
 For library-emitted events that no interface declares, `#[event_spec(export)]` explicitly includes the type in the linked contract's spec. See the [event macro reference](/reference/sdk-macros/#deriveevent) for the generated API.
 
-The [event walkthrough](/tutorials/add-events-to-a-contract/) follows the complete path from a counter contract to application queries.
+Use [Read events](/typescript/events/) for application queries, receipt decoding, and pagination.

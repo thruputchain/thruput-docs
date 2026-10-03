@@ -94,9 +94,8 @@ export const sections: DocumentationSection[] = [
     items: [
       'guides',
       'tutorials/build-a-counter', 'tutorials/work-with-groundhog-from-typescript',
-      'tutorials/add-events-to-a-contract',
-      'tutorials/connect-a-wallet-to-your-app', 'tutorials/build-a-token', 'tutorials/design-a-swap',
-      'tutorials/develop-locally', 'tutorials/develop-on-devnet',
+      'tutorials/build-a-counter-with-react', 'tutorials/connect-a-wallet-to-your-app',
+      'tutorials/build-a-token', 'tutorials/build-an-amm',
     ],
   },
   {

@@ -21,12 +21,11 @@ const { href, fragmentRoutes = {} } = Astro.props;
     <script is:inline>
       const link = document.querySelector('a[data-redirect]');
       const fragmentRoutes = JSON.parse(link.dataset.fragmentRoutes);
-      const route = Object.hasOwn(fragmentRoutes, location.hash.slice(1))
-        ? fragmentRoutes[location.hash.slice(1)]
-        : link.href;
+      const mapped = Object.hasOwn(fragmentRoutes, location.hash.slice(1));
+      const route = mapped ? fragmentRoutes[location.hash.slice(1)] : link.href;
       const destination = new URL(route, location.href);
       destination.search = location.search;
-      destination.hash = location.hash;
+      if (!mapped && !destination.hash) destination.hash = location.hash;
       location.replace(destination.href);
     </script>
   </body>

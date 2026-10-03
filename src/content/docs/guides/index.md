@@ -1,31 +1,26 @@
 ---
 title: Guides
-description: Learn Groundhog through contract tutorials, application walkthroughs, and worked designs.
+description: Build a counter app, a token contract, or an AMM with runnable examples and verified checkpoints.
 sidebar:
   label: Overview
 ---
 
-Build a project or work through a design. Choose a guide by the result you want, and use the product sections for individual commands and API details.
+Build a project with a visible result or passing check. The counter series starts from an empty directory. The [examples repository](https://github.com/groundhogchain/groundhog-examples) supplies the token and AMM contracts and a full-featured counter app for reference.
 
-## Start with a counter
+## Build a counter app
 
-Start with the [contract quickstart](/get-started/contract/) for a working Devnet deployment, then continue with the detailed guides:
+One contract and one application across four parts:
 
-1. [Build a Counter](/tutorials/build-a-counter/) explains a small Rust contract, storage, errors, and tests.
-2. [Develop Locally](/tutorials/develop-locally/) walks through deploying and calling the counter on a local node.
-3. [Work with Groundhog from TypeScript](/tutorials/work-with-groundhog-from-typescript/) connects a typed client to a contract.
-4. [Add Events to a Contract](/tutorials/add-events-to-a-contract/) follows an event from its Rust definition through application queries.
+1. [Contract](/tutorials/build-a-counter/): write, test, and deploy the counter.
+2. [TypeScript](/tutorials/work-with-groundhog-from-typescript/): create the client and a server-side development signer.
+3. [React](/tutorials/build-a-counter-with-react/): build a working counter interface with development signing and receipt tracking.
+4. [Connect a wallet](/tutorials/connect-a-wallet-to-your-app/): switch to wallet-approved updates and return to development signing on explicit disconnect.
 
-For a hosted deployment, follow [Develop on Devnet](/tutorials/develop-on-devnet/).
+Start at part 2 using the [supplied Devnet checkpoint](/tutorials/work-with-groundhog-from-typescript/#start-from-the-supplied-checkpoint) to build the application without writing Rust. No repository clone is required.
 
-## Explore another project
+## Build another contract
 
-- **[Connect a Wallet to Your App](/tutorials/connect-a-wallet-to-your-app/)** builds a vanilla TypeScript interface for connecting a wallet, sending a transfer, and checking its receipt.
-- **[Build a Token](/tutorials/build-a-token/)** is a contract tutorial covering storage, an interface implementation, and tests.
-- **[Design a Swap](/tutorials/design-a-swap/)** is a design walkthrough covering request acceptance, execution, and batching. Read it for the design decisions rather than a complete application setup.
+- [Build a token](/tutorials/build-a-token/): balances, allowances, supply policy, events, and native/RV32 checks.
+- [Build an AMM](/tutorials/build-an-amm/): pool creation, liquidity, queued swaps, and correlated outcomes, exercised through the contract test environments.
 
-## Find example code
-
-The [Groundhog examples repository](https://github.com/groundhogchain/groundhog-examples) contains contract and application examples. Use each example's README for its setup, supported dependencies, and checks.
-
-For your first setup, start with [Get Started](/get-started/).
+Use the CLI, Smart Contracts, TypeScript, and React sections for individual tasks and API details. Network setup, event APIs, and wallet connection have their canonical instructions there.

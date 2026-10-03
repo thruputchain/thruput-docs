@@ -290,7 +290,7 @@ fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
 }
 ```
 
-**What changes:** Fields marked `#[topic]` become topics on typed events. Interface 0.1.41 uses `TransferEvent` and `AllowanceChangeEvent`, whose `.log()` methods encode the event. Allowance changes carry signed deltas, not absolute approvals. Filtering happens through the indexer/RPC. See [Add Events](/tutorials/add-events-to-a-contract/) and [Contract Spec](/reference/contract-spec/#events).
+**What changes:** Fields marked `#[topic]` become topics on typed events. The standard token interface uses `TransferEvent` and `AllowanceChangeEvent`, whose `.log()` methods encode the event. Allowance changes carry signed deltas, not absolute approvals. Filtering happens through the indexer/RPC. See [Events](/contracts/events/) and [Contract Spec](/reference/contract-spec/#events).
 
 ## ERC-20 Side-by-Side
 

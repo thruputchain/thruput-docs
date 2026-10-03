@@ -29,7 +29,7 @@ test('legacy deep links resolve to their task area before matching URL roots', (
   assert.equal(sectionForPath('/tools/block-explorer/')?.id, 'tools');
   assert.equal(sectionForPath('/cli/reference/')?.id, 'cli');
   assert.equal(sectionForPath('/contracts/errors/')?.id, 'contracts');
-  assert.equal(sectionForPath('/tutorials/develop-locally/')?.id, 'guides');
+  assert.equal(sectionForPath('/tutorials/build-a-counter/')?.id, 'guides');
   assert.equal(sectionForPath('/react')?.id, 'react');
   assert.equal(sectionForPath('/react/wallets/')?.id, 'react');
   assert.equal(sectionForPath('/reactive/'), undefined);

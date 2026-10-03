@@ -47,7 +47,12 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Smart Contracts', '/programming-model/nnint/', 'NNInt and concurrent updates'],
     ['Smart Contracts', '/programming-model/storage-types/', 'Storage Types'],
     ['Smart Contracts', '/how-it-works/contracts/', 'Contract artifacts and addresses'],
-    ['Guides', '/tutorials/add-events-to-a-contract/', 'Add Events to a Contract'],
+    ['Guides', '/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
+    ['Guides', '/tutorials/work-with-groundhog-from-typescript/', 'Build a counter, part 2: TypeScript'],
+    ['Guides', '/tutorials/build-a-counter-with-react/', 'Build a counter, part 3: React'],
+    ['Guides', '/tutorials/connect-a-wallet-to-your-app/', 'Build a counter, part 4: Connect a wallet'],
+    ['Guides', '/tutorials/build-a-token/', 'Build a token'],
+    ['Guides', '/tutorials/build-an-amm/', 'Build an AMM'],
     ['TypeScript', '/tools/typescript-bindings/', 'Use contract bindings'],
     ['TypeScript', '/tools/typescript-sdk/', 'Client API reference'],
     ['TypeScript', '/tools/wallet-integration/', 'Connect a wallet'],
@@ -118,8 +123,8 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
   for (const [path, label] of [
     ['/reference/storage-types/', 'Smart Contracts'],
     ['/tools/typescript-bindings/', 'TypeScript'],
-    ['/tutorials/develop-locally/', 'Guides'],
-    ['/tutorials/add-events-to-a-contract/', 'Guides'],
+    ['/tutorials/build-a-counter/', 'Guides'],
+    ['/tutorials/build-an-amm/', 'Guides'],
     ['/start/build-with-an-agent/', 'Get Started'],
     ['/tutorials/connect-a-wallet-to-your-app/', 'Guides'],
     ['/start/for-blockchain-developers/', 'Understand Groundhog'],
@@ -215,4 +220,20 @@ test('a deep link reveals its active page after another section was collapsed', 
   await expect(sectionGroup(page, 'TypeScript')).not.toHaveAttribute('open', '');
   await page.goto(origin + '/tools/typescript-bindings/');
   await expect(page.locator('.sidebar a[aria-current="page"]')).toBeVisible();
+});
+
+test('retired tutorial links reach the matching task and mapped heading', async ({ page }) => {
+  for (const [oldPath, destination] of [
+    ['/tutorials/develop-locally/?via=guide#4-start-the-local-node', '/cli/local-node/?via=guide#start-the-node'],
+    ['/tutorials/develop-locally/#6-dry-run-and-deploy', '/cli/deploy-and-call/#deploy-an-artifact'],
+    ['/tutorials/develop-on-devnet/#2-configure-devnet-identity', '/cli/configuration/#devnet'],
+    ['/tutorials/add-events-to-a-contract/#step-1-define-the-event', '/contracts/events/#define-an-event'],
+    ['/tutorials/add-events-to-a-contract/#resume-without-missing-events', '/typescript/events/#resume-without-missing-events'],
+    ['/tutorials/design-a-swap/#the-problem', '/tutorials/build-an-amm/#understand-acceptance-and-execution'],
+  ]) {
+    await page.goto(origin + oldPath);
+    await expect(page).toHaveURL(origin + destination);
+    const hash = new URL(origin + destination).hash.slice(1);
+    await expect(page.locator(`[id="${hash}"]`)).toBeVisible();
+  }
 });

@@ -9,7 +9,6 @@ export default defineConfig({
   redirects: {
     "/start": "/architecture/",
     "/start/getting-started": "/get-started/contract/",
-    "/tutorials/build-a-swap": "/tutorials/design-a-swap",
   },
   integrations: [
     starlight({

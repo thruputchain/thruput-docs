@@ -63,7 +63,31 @@ A cursor continues one historical walk; it does not follow later blocks. Keep th
 
 After exhausting an ascending walk, start a new walk inclusively at the last stored row's block height. Replay and deduplicate that block so a partially processed block does not lose rows. `latestBlock` is the indexer's head, not proof that your application processed every row through that height. Check `oldestBlock` for a retention gap.
 
-The [event walkthrough](/tutorials/add-events-to-a-contract/#resume-without-missing-events) includes application-owned checkpoint storage. For a latest-first UI, refresh from the head rather than continuing an old cursor.
+For a latest-first UI, refresh from the head rather than continuing an old cursor.
+
+For durable ascending ingestion, provide an application-owned store. `loadProgress()` returns `{ height: bigint, cursor: Uint8Array }` or `undefined`; `savePage()` upserts rows by stable identity and saves progress in the same database transaction:
+
+```ts
+const saved = await store.loadProgress();
+let height = saved?.height ?? 0n;
+
+for await (const page of client.iterateEventPages({
+  ...query,
+  anchor: { height },
+  cursor: saved?.cursor ?? new Uint8Array(),
+})) {
+  if (page.oldestBlock > height) {
+    throw new Error("History gap: required blocks are no longer retained");
+  }
+  const last = page.events.at(-1);
+  if (last) height = last.blockHeight;
+  await store.savePage(page.events, { height, cursor: page.cursor.slice() });
+}
+```
+
+The store methods are application code, not SDK APIs. A non-empty saved cursor resumes the previous walk; an empty cursor starts a new scan at the saved height. Serialize heights and cursor bytes exactly. If a block spans pages, restart inclusively at that block and deduplicate instead of skipping to the next height.
+
+Raw JSON-RPC represents an empty cursor as `"0x"` and still requires `order` and `anchor` on continuation requests. Preserve cursor bytes rather than decoding or editing them. Corrupted cursors can resemble exhaustion on some indexers; retention bounds and a cursor alone do not prove complete or recoverable history.
 
 ## Decode receipt events
 

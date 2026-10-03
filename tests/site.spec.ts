@@ -285,8 +285,8 @@ test('homepage learn-more links navigate to real docs and valid anchors', async 
     ['Keep the logic on-chain', '/programming-model/execution/', 'Contract Execution'],
     ['Compute without gas fees', '/programming-model/execution/#gas', 'Contract Execution'],
     ['Build on shared state', '/programming-model/storage-types/', 'Storage Types'],
-    ['Make something work', '/tutorials/build-a-counter/', 'Build a Counter'],
-    ['Connect an interface', '/tutorials/work-with-groundhog-from-typescript/', 'Work with Groundhog from TypeScript'],
+    ['Make something work', '/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
+    ['Connect an interface', '/tutorials/work-with-groundhog-from-typescript/', 'Build a counter, part 2: TypeScript'],
     ['Understand the engine', '/how-it-works/architecture/', 'System Overview'],
   ]) {
     await page.goto(origin);

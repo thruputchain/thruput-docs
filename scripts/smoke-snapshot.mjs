@@ -53,6 +53,10 @@ try {
     await page.waitForURL(`${origin}/${destination}/#${fragment}`);
     assert.equal(await page.locator(`[id="${fragment}"]`).count(), 1);
   }
+  await page.goto(`${origin}/tutorials/add-events-to-a-contract/#step-5-query-it-on-chain`);
+  await page.waitForURL(`${origin}/typescript/events/#query-events`);
+  await page.goto(`${origin}/tutorials/develop-locally/#4-start-the-local-node`);
+  await page.waitForURL(`${origin}/cli/local-node/#start-the-node`);
   await page.goto(`${origin}/tutorials/build-a-counter/`);
   await page.locator('main h1').waitFor();
   await page.locator('site-search > button').click();
