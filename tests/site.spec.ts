@@ -23,7 +23,7 @@ async function checkShell(page: Page) {
   const search = page.locator('site-search > button');
   await expect(search).toHaveAccessibleName('Search documentation');
   const label = search.locator(':scope > span');
-  if ((page.viewportSize()?.width ?? 0) >= 800) {
+  if ((page.viewportSize()?.width ?? 0) >= 1100) {
     await expect(label).toBeVisible();
     await expect(label).toHaveText('Search documentation');
     expect(await label.evaluate(el => {
@@ -65,10 +65,11 @@ for (const width of [320, 375, 701, 800, 1024, 1280, 1920]) {
     await expect(page.locator('h1')).toContainText('The blockchain built for');
     await expect(page.locator('h1')).toContainText('abundance');
     await expect(page.locator('[id="_top"]')).toHaveCount(1);
-    for (const title of ['Programming model', 'Development resources']) {
-      await expect(page.getByRole('heading', { name: title, level: 2 })).toHaveCSS('text-align', 'center');
+    for (const title of ['Shared state. Compatible changes.', 'More room for application logic.', 'Write Rust. Build something you can use.']) {
+      await expect(page.getByRole('heading', { name: title, level: 2 })).toBeVisible();
     }
-    await expect(page.locator('.feature-card')).toHaveCount(6);
+    await expect(page.locator('.workflow a')).toHaveCount(5);
+    await expect(page.locator('header .release-badge')).toHaveText('alpha-pre.1');
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
     await page.keyboard.press('Enter');
@@ -275,8 +276,8 @@ test('header rebrand retains Groundhog page identity and the exact install promp
     await expect(page.locator('header').getByRole('link', { name: 'About', exact: true }))
       .toHaveAttribute('href', '/architecture/');
     if (route === '/') {
-      await expect(page.locator('#install-label')).toHaveText('Paste into your coding agent to get started');
-      await expect(page.locator('.prompt-preview')).toHaveText(prompt);
+      await expect(page.locator('#install-label')).toHaveText('Start with your coding agent');
+      await expect(page.locator('[data-preview-text]')).toHaveText(prompt);
       await expect(page.getByRole('textbox', { name: 'Full agent prompt', includeHidden: true })).toHaveValue(prompt);
     }
   }
@@ -284,24 +285,17 @@ test('header rebrand retains Groundhog page identity and the exact install promp
 
 test('homepage learn-more links navigate to real docs and valid anchors', async ({ page }) => {
   for (const [feature, href, title] of [
-    ['Keep the logic on-chain', '/programming-model/execution/', 'Contract Execution'],
-    ['Compute without gas fees', '/programming-model/execution/#gas', 'Contract Execution'],
-    ['Build on shared state', '/programming-model/storage-types/', 'Storage Types'],
-    ['Make something work', '/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
-    ['Connect an interface', '/tutorials/work-with-groundhog-from-typescript/', 'Build a counter, part 2: TypeScript'],
-    ['Understand the engine', '/how-it-works/architecture/', 'System Overview'],
+    ['Explore the execution model', '/how-it-works/execution-model/', 'Parallel Execution'],
+    ['Understand gas limits', '/programming-model/execution/#gas', 'Contract Execution'],
+    ['Choose your storage', '/programming-model/storage-types/', 'Storage Types'],
+    ['Build a counter, step by step', '/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
+    ['See the merge rules', '/programming-model/nnint/', 'NNInt and concurrent updates'],
   ]) {
     await page.goto(origin);
     const link = page.getByRole('link', { name: feature, exact: true });
     await expect(link).toHaveAttribute('href', href);
-    await expect(link).toHaveClass(/\bfeature-card\b/);
     await expect(link.locator('a')).toHaveCount(0);
-    await expect(link.locator('.learn-more')).toBeVisible();
-    await link.hover();
-    await expect(link).toHaveCSS('border-color', 'rgb(233, 239, 100)');
-    await expect(link.locator('.learn-more')).toHaveCSS('text-decoration-line', 'none');
-    // Click the card's padding rather than its visible call to action.
-    await link.click({ position: { x: 10, y: 10 } });
+    await link.click();
     await expect(page).toHaveURL(origin + href);
     await expect(page.locator('main h1')).toHaveText(title);
     const hash = new URL(page.url()).hash;
@@ -369,7 +363,7 @@ test('logo stays yellow in both themes and toggle follows Start Building', async
   for (const theme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: theme });
     await page.goto(origin + docs);
-    await expect(page.locator('.site-brand svg')).toHaveCSS('color', 'rgb(233, 239, 100)');
+    await expect(page.locator('.site-brand svg:visible')).toHaveCSS('color', 'rgb(233, 239, 100)');
     const build = await page.locator('.header-actions .build-link').boundingBox();
     const toggle = await page.locator('.desktop-theme button').boundingBox();
     expect(build).not.toBeNull();
@@ -385,7 +379,7 @@ test('clipboard denial exposes and selects the exact manual prompt', async ({ pa
   });
   await page.goto(origin);
   await page.getByRole('button', { name: 'Copy prompt', exact: true }).click();
-  await expect(page.getByRole('status')).toContainText('Clipboard access was blocked.');
+  await expect(page.getByRole('dialog', { name: 'Deploy your first counter' }).getByRole('status')).toContainText('Clipboard access was blocked.');
   const textarea = page.getByRole('textbox', { name: 'Full agent prompt' });
   await expect(textarea).toBeVisible();
   await expect(textarea).toBeFocused();

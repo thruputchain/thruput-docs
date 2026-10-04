@@ -1,0 +1,18 @@
+<figure class="state-diagram" aria-label="Two compatible counter increments merge from 100 to 108">
+  <div class="state initial"><span>Committed state</span><strong>100</strong></div>
+  <div class="changes"><div><span>Transaction A</span><strong>+5</strong></div><div><span>Transaction B</span><strong>+3</strong></div></div>
+  <div class="merge"><span aria-hidden="true">↓</span><span>Compatible changes combine</span></div>
+  <div class="state result"><span>New committed state</span><strong>108</strong></div>
+  <figcaption>Illustrative counter updates. Other transaction changes must also be compatible, and network limits still apply.</figcaption>
+</figure>
+<style>
+  .state-diagram { display: flex; flex-direction: column; gap: 1.25rem; margin: 0; padding: 1.5rem; border: 1px solid var(--brand-border); border-radius: .375rem; background: var(--brand-surface); }
+  .state { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  span { color: var(--brand-muted); }
+  strong { font: 400 2rem var(--sl-font-mono); font-variant-numeric: tabular-nums; }
+  .changes { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; padding-block: 1.25rem; border-block: 1px solid var(--brand-border); }
+  .changes > div { display: flex; flex-direction: column; gap: .5rem; }
+  .changes strong, .result strong { color: var(--brand-accent); }
+  .merge { display: flex; align-items: center; gap: .75rem; font-size: .875rem; }
+  figcaption { padding-top: 1rem; border-top: 1px solid var(--brand-border); font-size: .875rem; color: var(--brand-muted); }
+</style>
