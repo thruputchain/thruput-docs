@@ -5,6 +5,8 @@ description: Build wallet and account selectors with explicit connection, networ
 
 `useWallet` exposes discovered wallets, the selected account, and connection actions. `WalletProvider` manages discovery and session listeners; your components render the controls.
 
+To install and fund a wallet for testing, follow [Wallet Extension](/tools/wallet-extension/).
+
 ## Select and connect a wallet
 
 ```tsx

@@ -1,13 +1,13 @@
 ---
-title: Block Explorer
-description: Use the devnet explorer to look up transactions, inspect receipts and events, and check address activity.
+title: Explorer
+description: Use the Devnet explorer to look up transactions, inspect receipts and events, and check address activity.
 ---
 
-Use the [devnet explorer](https://explorer.thruput.network/) to look up transactions, inspect receipts and events, and check address balances and recent activity.
+Use the [Devnet explorer](https://explorer.thruput.network/) to look up transactions, inspect receipts and events, and check address balances and recent activity. Sign in if prompted.
 
 ## Look Up a Transaction or Address
 
-1. Open the [devnet explorer](https://explorer.thruput.network/).
+1. Open the [Devnet explorer](https://explorer.thruput.network/).
 2. Paste a transaction hash or address into the search field. Use the full `0x`-prefixed, 32-byte value (64 hexadecimal characters after `0x`).
 3. Select **Search**.
 
@@ -44,10 +44,15 @@ Use the CLI for terminal workflows, local nodes, or when the explorer is unavail
 
 ```bash
 groundhog balance <wallet-or-address> --profile devnet
+groundhog tx show <transaction-hash> --profile devnet
 groundhog view <contract-or-alias> <method> --profile devnet
 groundhog storage <contract-or-alias> 0x<32-byte-key> --profile devnet
 ```
 
-These commands use devnet. For a local node, use `--profile local` instead.
+These commands use Devnet. For a local node, use `--profile local` instead. The hosted explorer does not show your local node's transactions.
 
 Use the [JSON-RPC API](/reference/json-rpc-api/) directly for receipts, status, address-rooted history, and event pagination.
+
+## If a result is missing
+
+Check the full hash or address and the network that produced it. Indexer-backed history can lag, so use `groundhog tx show` for the original transaction before submitting another one. A pending or missing result does not prove failure.

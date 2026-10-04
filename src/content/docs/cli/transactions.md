@@ -58,4 +58,4 @@ Replace `CURSOR` with the exact returned value. An empty page with a non-empty c
 
 To check for new activity, omit `--cursor` and start at the head again. A saved cursor continues the old walk; it is not a subscription. For forward ingestion and durable checkpoints, use the [event indexing guidance](/typescript/events/#resume-without-missing-events).
 
-The [Block Explorer](/tools/block-explorer/) provides a browser-based inspection path.
+The [Explorer](/tools/block-explorer/) provides a browser-based inspection path.

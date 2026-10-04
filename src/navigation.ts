@@ -100,7 +100,7 @@ export const sections: DocumentationSection[] = [
   },
   {
     id: 'tools', label: 'Tools', href: '/tools/faucet/',
-    items: ['tools/faucet', 'tools/block-explorer'],
+    items: ['tools/faucet', 'tools/block-explorer', 'tools/wallet-extension'],
   },
   {
     id: 'reference', label: 'Reference', href: '/reference/json-rpc-api/',

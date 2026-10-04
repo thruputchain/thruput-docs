@@ -5,6 +5,8 @@ description: Discover browser wallets, connect an account on the intended networ
 
 A browser wallet provider owns account access and transaction approval. Your application receives authorized account information and requests signatures without handling the user's private key.
 
+For installation and test funds, follow [Wallet Extension](/tools/wallet-extension/).
+
 ## Choose the Integration
 
 This page covers the provider-backed path described in [Accounts and wallet clients](/typescript/wallet-clients/). For a Node.js process that manages its own key, use [Use a signer in scripts](/typescript/accounts/). Wallet implementers should use [Wallet provider reference](/tools/wallet-provider/).

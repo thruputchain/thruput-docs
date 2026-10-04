@@ -11,7 +11,7 @@ The display, contract, public client, and transaction-status component stay the 
 
 ## Prepare the wallet
 
-Install a Groundhog-compatible wallet and select the app's network. The [wallet extension instructions](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/wallet-extension) describe the example extension. Request test HOG for that wallet's account; it is independent of the server's development signer.
+Install the [Wallet Extension](/tools/wallet-extension/) and select the app's network. Request test HOG for that wallet's account; it is independent of the server's development signer.
 
 `WalletProvider` is already mounted from part 3. It discovers providers without requesting permission.
 
