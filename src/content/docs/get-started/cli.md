@@ -63,7 +63,7 @@ Copy this prompt into your agent:
 ```text
 Help me complete the Groundhog CLI quickstart:
 https://docs.groundhog.dev/get-started/cli/
-Use the latest CLI and read groundhog --skill. Set up a Devnet
+Use the latest CLI and read groundhog skill show cli. Set up a Devnet
 wallet without creating a contract project or running a local node.
 Preserve any existing keys and configuration. Request test funds,
 check the wallet balance, and inspect the airdrop transaction.

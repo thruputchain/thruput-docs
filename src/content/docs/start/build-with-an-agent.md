@@ -5,32 +5,34 @@ description: Give your coding agent the Groundhog skill and docs, then build a c
 
 Give your agent the Groundhog instructions and docs, then copy the prompt below. The goal is a working counter application: a Rust contract on Devnet, typed bindings, and a React interface.
 
-## 1. Load the skill
+## 1. Install the skill
 
-Have your agent run:
+Run:
 
 ```bash
-groundhog --skill
+groundhog skill install
 ```
 
-This currently prints the instructions for the installed CLI. If you run it yourself, give the output to your agent. If the CLI is missing, start with [Install the CLI](/cli/install/).
+Select your coding agent and installation scope. This requires Node.js 22.20 or newer, npm, Git, and access to the private `groundhogchain/agent-skills` repository. Use existing Git, GitHub CLI, or SSH authentication. If the CLI is missing, start with [Install the CLI](/cli/install/).
+
+For offline reading, your agent can use `groundhog skill show` and then read a topic such as `groundhog skill show contracts`. This reads the CLI's bundled skill, which can differ from the latest installed skill.
 
 ## 2. Share the docs
 
 ```bash
-groundhog docs
+groundhog docs --background
 ```
 
-Keep the command running and give your agent the printed URL. This serves the bundled documentation, not a local blockchain. The app will use Devnet.
+Give your agent the printed Markdown index path. Open the printed browser URL for your own reading. This serves documentation, not a local blockchain. Use `groundhog docs stop` when you finish; the Markdown files remain available.
 
-For an agent on another machine, share the relevant pages as files or provide access to the hosted docs; it cannot reach your localhost. Bundled docs are a snapshot, so use the installed CLI's skill and help output to confirm command behavior.
+For an agent on another machine, use `groundhog docs export --output ./groundhog-docs` and share that folder. The destination must be new. The agent can start with `index.md`, choose a page, or read a bundle under `sections/`. `full.md` contains everything. Bundled docs are a snapshot; use the installed CLI's help to confirm command behavior.
 
 ## 3. Copy the prompt
 
 ```text
 Build a working Groundhog counter application for me on Devnet.
 
-First read this project's AGENTS.md if present, run groundhog --skill,
+First read this project's AGENTS.md if present, run groundhog skill show,
 and read the documentation at the URL or in the files I share. If you
 cannot access the docs, ask me for a copy before guessing at an API.
 

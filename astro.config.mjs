@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import { sidebar } from "./src/navigation.ts";
+import { sidebar, sections, sectionForPath } from "./src/navigation.ts";
+import markdownExport from "./scripts/markdown-export.mjs";
 
 export default defineConfig({
   site: "https://docs.groundhog.dev",
@@ -34,5 +35,6 @@ export default defineConfig({
       ],
       sidebar,
     }),
+    markdownExport({ sections, sectionForPath }),
   ],
 });

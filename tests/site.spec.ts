@@ -2,7 +2,7 @@ import { test as base, expect, type Page } from '@playwright/test';
 
 const origin = 'http://127.0.0.1:4322';
 const docs = '/start/build-with-an-agent/';
-const prompt = 'Help me deploy my first Groundhog contract to Devnet. Follow https://docs.groundhog.dev/get-started/contract/ using the latest CLI. Read groundhog --skill and preserve the project settings it generates. If documentation access is blocked, ask me for a saved copy or use groundhog docs. Keep credentials and signing keys out of this conversation. Set up a funded Devnet wallet, create and test a counter, deploy it, initialize it to 10, increment by 5, and verify that its view returns 15. Do not start a local node. Report actual results and any setup or network errors.';
+const prompt = 'Help me deploy my first Groundhog contract to Devnet. Follow https://docs.groundhog.dev/get-started/contract/ using the latest CLI. Read groundhog skill show and its contracts reference, and preserve the project settings it generates. If documentation access is blocked, ask me for a saved copy or use groundhog docs. Keep credentials and signing keys out of this conversation. Set up a funded Devnet wallet, create and test a counter, deploy it, initialize it to 10, increment by 5, and verify that its view returns 15. Do not start a local node. Report actual results and any setup or network errors.';
 const test = base.extend({
   page: async ({ page }, use) => {
     const errors: string[] = [];
@@ -420,7 +420,7 @@ for (const width of [320, 375, 701, 800, 1024, 1280, 1920]) {
       await expect(page.locator('[id="_top"]')).toHaveCount(1);
       await page.screenshot({ path: testInfo.outputPath(`docs-${theme}-${width}.png`), fullPage: true });
       await checkShell(page);
-      const ids = await page.locator('main h2[id]').evaluateAll(headings => headings.map(el => el.id));
+      const ids = await page.locator('.sl-markdown-content h2[id]').evaluateAll(headings => headings.map(el => el.id));
       expect(ids.length).toBeGreaterThan(0);
       for (const id of ids) {
         await page.goto(origin + docs + '#' + id);

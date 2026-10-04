@@ -65,7 +65,7 @@ The result should be **15**. You have built, tested, deployed, and called a cont
 ```text
 Help me complete the Groundhog contract quickstart:
 https://docs.groundhog.dev/get-started/contract/
-Use the latest CLI and read groundhog --skill. Check CLI setup and
+Use the latest CLI and read groundhog skill show contracts. Check CLI setup and
 Devnet funding first. Scaffold my-counter, preserve its generated
 dependency and compiler settings, then build and test it.
 Deploy to Devnet with the documented contract funding, initialize
