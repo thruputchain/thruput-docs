@@ -139,9 +139,7 @@ npm run build
 
 **Checkpoint:** a small, complete app built without a repository clone. Its default signer is convenient for development, and connected users can approve their own transactions.
 
-## Explore the full example
-
-The [existing counter app](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/counter) implements both paths and adds the keyboard demo, bounded concurrency, signer top-ups, and session activity. Those features are optional extensions, not prerequisites for this guide.
+You can also explore the [full counter example on GitHub](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/counter).
 
 ## Work with an agent
 

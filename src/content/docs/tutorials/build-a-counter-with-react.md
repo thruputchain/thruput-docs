@@ -9,6 +9,15 @@ Add a React interface to the project from [part 2](/tutorials/work-with-groundho
 
 Keep the API server running on port 3001. All files below are inside the `app` directory you created in part 2.
 
+## Install React
+
+From `app`, install the React packages and browser tooling:
+
+```bash
+npm install @groundhogchain/react @tanstack/react-query react react-dom
+npm install --save-dev vite @types/react @types/react-dom
+```
+
 ## Add the browser entry point
 
 ```bash

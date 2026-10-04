@@ -9,7 +9,7 @@ Build the TypeScript layer for the contract from [part 1](/tutorials/build-a-cou
 
 ## Create the app directory
 
-Inside the `counter` project, or in a new directory if using the checkpoint below:
+Inside the `counter` project from part 1:
 
 ```bash
 mkdir app
@@ -18,15 +18,15 @@ npm init -y
 npm pkg set type=module
 ```
 
-Configure [npm registry access](/typescript/setup/#give-npm-package-access). Install the app's dependencies together so React and its client resolve compatibly:
+Configure [npm registry access](/typescript/setup/#give-npm-package-access), then install the TypeScript dependencies:
 
 ```bash
-npm install @groundhogchain/client @groundhogchain/protocol @groundhogchain/react @tanstack/react-query react react-dom
-npm install --save-dev typescript tsx vite @types/node @types/react @types/react-dom
+npm install @groundhogchain/client @groundhogchain/protocol
+npm install --save-dev typescript tsx @types/node
 mkdir -p src/contracts
 ```
 
-React is used in the next part. Keep the generated lockfile. Add these entries to `.gitignore`:
+Keep the generated lockfile. Add these entries to `.gitignore`:
 
 ```text title=".gitignore"
 node_modules/
@@ -34,33 +34,25 @@ dist/
 .env
 ```
 
-Copy the generated binding from part 1:
+## Generate the TypeScript binding
+
+Generate the binding from the contract spec built in part 1. Run this from `app`:
 
 ```bash
-cp ../target/groundhog/counter.ts src/contracts/counter.ts
+groundhog codegen ts ../target/groundhog/counter.spec.xdr \
+  --output src/contracts/counter.ts
 ```
 
-## Use an existing counter
-
-<span id="start-from-the-supplied-checkpoint"></span>
-
-To skip Rust and deployment, download the [existing counter binding](https://github.com/groundhogchain/groundhog-examples/blob/main/apps/counter/src/contracts/generated/counter.ts) into `src/contracts/counter.ts`. With GitHub CLI access:
-
-```bash
-gh api repos/groundhogchain/groundhog-examples/contents/apps/counter/src/contracts/generated/counter.ts \
-  -H "Accept: application/vnd.github.raw" > src/contracts/counter.ts
-```
-
-Use the public checkpoint below. It is shared, so its value can change while others use it. This is a single binding download, not a repository clone.
+The binding provides typed methods and decodes the contract's results. Regenerate it when the contract interface changes.
 
 ## Configure the client
 
-Create `.env`. Replace `COUNTER_ADDRESS` with your part-1 address, or keep the supplied checkpoint:
+Create `.env`. Set `COUNTER_ADDRESS` to the deployment address from part 1 and use the endpoint and network hash for that deployment:
 
 ```dotenv title=".env"
 RPC_URL=https://rpc.thruput.network
 NETWORK_HASH=0xabb9cdbc56285d0e71c9845273ca06211fedf7ee2f58c43cfac6060f9402aa0f
-COUNTER_ADDRESS=0xd66fd30fd2df8338844b70d2ea065c4b540ea24740971312a4de6e7835a30f4f
+COUNTER_ADDRESS=<your-deployed-counter-address>
 ```
 
 These public values identify one deployment. A different network needs its own endpoint, hash, and contract address.
@@ -204,15 +196,15 @@ node --env-file=.env --import tsx server.ts
 
 **Checkpoint:** the typed read works, the development account is funded, and the API is running. The server keeps its private key; `/api/config` exposes only public identity. Part 3 turns these pieces into a usable React counter.
 
-This is a small local-development server. The [full example](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/counter) adds production serving, stricter submission policy, concurrency limits, and operational checks.
+This server is for local development.
 
 ## Work with an agent
 
 ```text
 Follow Build a counter, part 2:
 https://docs.groundhog.dev/tutorials/work-with-groundhog-from-typescript/
-Build the listed files without cloning an examples repository. Use my
-deployment or the supplied checkpoint. Verify the read, funding, and
+Generate the binding from my part-1 contract spec and create the listed
+files using my deployment address. Verify the read, funding, and
 public configuration endpoint. Keep the development key server-side.
 Do not claim success for failed checks or submit replacement transactions
 merely because observation failed.

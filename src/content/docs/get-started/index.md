@@ -26,6 +26,6 @@ Devnet is a shared test network and can be reset. Keep your development keys, bu
 
 ## Build a complete application
 
-Follow the four-part [Build a counter](/tutorials/build-a-counter/) guide from contract to TypeScript, React, and a wallet-approved update. App developers can start with the [supplied TypeScript checkpoint](/tutorials/work-with-groundhog-from-typescript/#start-from-the-supplied-checkpoint) without writing Rust.
+Follow the four-part [Build a counter](/tutorials/build-a-counter/) guide from contract to TypeScript, React, and a wallet-approved update. Each part builds on the project from the previous part.
 
 For token and AMM contract projects, see [Guides](/guides/). New to the platform? Read the [Introduction](/architecture/) before choosing a path.

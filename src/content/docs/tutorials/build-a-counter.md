@@ -7,9 +7,7 @@ sidebar:
 
 Build a small counter application from scratch. Across four parts, you will create a contract, add a TypeScript development signer, build a React interface, and let users switch to their own wallet.
 
-You do not need to clone an examples repository. The fuller [counter example](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/counter) is an optional reference. It adds keyboard controls, concurrent submissions, and session statistics to the same basic flow.
-
-**App-only entry:** part 2 provides a [deployed checkpoint and binding](/tutorials/work-with-groundhog-from-typescript/#use-an-existing-counter). Start there if you want to skip Rust.
+You can also explore the [full counter example on GitHub](https://github.com/groundhogchain/groundhog-examples/tree/main/apps/counter).
 
 ## Create the contract
 
@@ -70,7 +68,7 @@ The native tests exercise contract logic and underflow handling. The artifact te
 ## Build, deploy, and initialize
 
 ```bash
-groundhog build --bindings ts
+groundhog build
 groundhog deploy --profile devnet --fund 10 \
   --init initialize --init-arg 10
 groundhog view counter get --profile devnet
@@ -78,7 +76,7 @@ groundhog view counter get --profile devnet
 
 Funding, deployment, and initialization happen in one transaction. `10` HOG is an example allocation, not a fixed deployment fee. Your new counter should read `10`.
 
-Save the printed deployment address. The build also writes `target/groundhog/counter.ts`, the binding used in part 2.
+Save the printed deployment address. Part 2 uses this address and the contract spec produced by the build.
 
 ## Check a change
 
@@ -97,7 +95,7 @@ For isolated local work, follow [Run a local node](/cli/local-node/) and use its
 Follow Build a counter, part 1:
 https://docs.groundhog.dev/tutorials/build-a-counter/
 Start with groundhog new counter, without cloning an examples repo.
-Run the native and RV32 checks, generate bindings, and deploy using my
+Run the native and RV32 checks, build, and deploy using my
 configured Devnet account. Report the actual address, transaction hash,
 and read value. Keep the generated dependency configuration and report
 failed checks rather than inventing results.

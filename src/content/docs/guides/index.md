@@ -16,7 +16,7 @@ One contract and one application across four parts:
 3. [React](/tutorials/build-a-counter-with-react/): build a working counter interface with development signing and receipt tracking.
 4. [Connect a wallet](/tutorials/connect-a-wallet-to-your-app/): switch to wallet-approved updates and return to development signing on explicit disconnect.
 
-Start at part 2 using the [supplied Devnet checkpoint](/tutorials/work-with-groundhog-from-typescript/#start-from-the-supplied-checkpoint) to build the application without writing Rust. No repository clone is required.
+Follow the four parts in order, using your own contract and deployment throughout.
 
 ## Build another contract
 
