@@ -108,18 +108,23 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | `build --bindings ts` | Contract build plus generated bindings | [Generate bindings](/cli/codegen/) |
 | `codegen ts SPEC -o FILE` | Canonical `.spec.xdr` to TypeScript; stdout if output is omitted | [Write into an app](/cli/codegen/#write-bindings-into-an-application) |
 
-## Local Documentation
+<span id="local-documentation"></span>
+
+## Skills and Local Documentation
 
 | Command | Purpose | Usage |
 | --- | --- | --- |
-| `groundhog skill install [--global] [--agent NAME]` | Install the maintained skill through `npx skills` | [Build with an Agent](/start/build-with-an-agent/) |
-| `groundhog skill update [--global]` | Update only the installed Groundhog skill in the selected scope | Add `--yes --non-interactive` for authorized automation |
-| `groundhog skill show [TOPIC] [--all]` | Print the bundled entry, one topic, or the complete guide offline | `TOPIC` and `--all` are mutually exclusive |
-| `groundhog skill list` | List the bundled skill topics | [Build with an Agent](/start/build-with-an-agent/) |
-| `groundhog docs [--port PORT]` | Serve the bundled local documentation; port `0` selects an available port | [Build with an Agent](/start/build-with-an-agent/#2-share-the-docs) |
-| `groundhog docs --dir PATH` | Serve a trusted local site build | Keep the directory unchanged while serving |
-| `groundhog docs --background` | Start or reuse the background docs server | `docs status` reports its state; `docs stop` stops it |
-| `groundhog docs export --output PATH` | Copy the bundled Markdown docs into a new folder without starting a server | Start at the exported `index.md`; relative links work locally |
+| `groundhog skill install [--global] [--agent NAME]` | Install the maintained skill through `npx skills`; `--agent` is repeatable | [Install the skill](/cli/agent-tools/#install-the-maintained-skill) |
+| `groundhog skill update [--global]` | Update only Groundhog in the selected scope; requires an existing installation | [Update the skill](/cli/agent-tools/#update-an-installed-skill) |
+| `skill install --yes` / `skill update --yes` | Authorize npm execution and skill changes; unattended installation also needs `--agent` | [Automate setup](/cli/agent-tools/#automate-skill-setup) |
+| `groundhog skill show [TOPIC] [--all]` | Print bundled Markdown offline; `TOPIC` and `--all` are mutually exclusive | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |
+| `groundhog skill list` | List bundled topic names | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |
+| `groundhog docs [--foreground] [--port PORT]` | Serve the bundled site in the foreground; default port `4321`, `0` selects a free port | [Serve docs](/cli/agent-tools/#serve-local-documentation) |
+| `groundhog docs --dir PATH` | Serve a trusted local snapshot | [Snapshot override](/cli/agent-tools/#use-a-trusted-site-snapshot) |
+| `groundhog docs --background [--port PORT]` | Start or reuse a matching background server; conflicts with `--foreground` | [Serve docs](/cli/agent-tools/#serve-local-documentation) |
+| `groundhog docs status` | Inspect the current user's background server and log path | [Serve docs](/cli/agent-tools/#serve-local-documentation) |
+| `groundhog docs stop` | Stop the managed background server while retaining extracted Markdown | [Serve docs](/cli/agent-tools/#serve-local-documentation) |
+| `groundhog docs export --output PATH [--dir SNAPSHOT]` | Export portable Markdown into a new directory without serving | [Export Markdown](/cli/agent-tools/#export-markdown-without-a-server) |
 
 ## Shared Flags
 
@@ -129,7 +134,7 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | `--json` | Emit structured output |
 | `--quiet` | Suppress status messages |
 | `--show-cargo-commands` | Print Cargo invocations |
-| `--offline` | Disable managed runtime downloads; does not disable RPC or Cargo traffic |
+| `--offline` | Disable managed runtime downloads and skill installation/updates; does not disable RPC or Cargo traffic |
 
 ### JSON output
 

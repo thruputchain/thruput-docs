@@ -49,7 +49,7 @@ export const sections: DocumentationSection[] = [
       'cli/install',
       'cli/configuration', 'cli/wallets',
       'cli/create-project', 'cli/build-and-test', 'cli/local-node', 'cli/deploy-and-call',
-      'cli/transactions', 'cli/codegen', 'cli/automation', 'cli/troubleshooting', 'cli/reference',
+      'cli/transactions', 'cli/codegen', 'cli/agent-tools', 'cli/automation', 'cli/troubleshooting', 'cli/reference',
     ],
   },
   {

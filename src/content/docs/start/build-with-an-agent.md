@@ -15,7 +15,7 @@ groundhog skill install
 
 Select your coding agent and installation scope. This requires Node.js 22.20 or newer, npm, Git, and access to the private `groundhogchain/agent-skills` repository. Use existing Git, GitHub CLI, or SSH authentication. If the CLI is missing, start with [Install the CLI](/cli/install/).
 
-For offline reading, your agent can use `groundhog skill show` and then read a topic such as `groundhog skill show contracts`. This reads the CLI's bundled skill, which can differ from the latest installed skill.
+Your agent can read release-matched guidance offline with `groundhog skill show`, then choose a topic with `groundhog skill list`. Installation and updates use the maintained source; `show` reads the CLI bundle. See [Skills and local docs](/cli/agent-tools/) for updates, scope, and unattended setup.
 
 ## 2. Share the docs
 
@@ -23,9 +23,9 @@ For offline reading, your agent can use `groundhog skill show` and then read a t
 groundhog docs --background
 ```
 
-Give your agent the printed Markdown index path. Open the printed browser URL for your own reading. This serves documentation, not a local blockchain. Use `groundhog docs stop` when you finish; the Markdown files remain available.
+Give a local agent the printed Markdown index path. Open the printed browser URL for your own reading. This serves documentation, not a local blockchain. `groundhog docs status` reports the background server; `groundhog docs stop` stops it. The Markdown files remain available.
 
-For an agent on another machine, use `groundhog docs export --output ./groundhog-docs` and share that folder. The destination must be new. The agent can start with `index.md`, choose a page, or read a bundle under `sections/`. `full.md` contains everything. Bundled docs are a snapshot; use the installed CLI's help to confirm command behavior.
+For an agent on another machine, [export and share the Markdown folder](/cli/agent-tools/#export-markdown-without-a-server). It can start with `index.md`, choose a page, or read a focused section. A remote agent cannot reach your loopback URL or local files directly.
 
 ## 3. Copy the prompt
 

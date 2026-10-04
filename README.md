@@ -169,10 +169,9 @@ added later, verify authentication parity, `Content-Type: text/markdown`, and
 `Vary: Accept` before enabling it. Unauthenticated hosted probes currently return
 401, so successful hosted export access needs verification after deployment.
 
-The integrated agent setup copy requires the GH-459 CLI commands. Release
-0.22.1 does not include `groundhog skill` or `groundhog docs export`; coordinate
-publication of that copy with the CLI release. The local GH-459 build supports
-the snapshot verification command below.
+The agent setup and CLI pages document `groundhog skill` and `groundhog docs`
+from the GH-459 command implementation. Use a CLI build with those commands
+for snapshot export verification.
 
 Markdown links resolve relative to their files. Legacy page and fragment
 redirects are resolved during export. The build checks those targets, then

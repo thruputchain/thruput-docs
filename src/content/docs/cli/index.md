@@ -35,4 +35,4 @@ The [contract quickstart](/get-started/contract/) adds deployment and calls. Use
 
 Run `groundhog <command> --help` for the installed version's options, or use the [command reference](/cli/reference/). [Profiles and networks](/cli/configuration/) explains profile selection and project overrides.
 
-For agent instructions and local documentation, see [Build with an Agent](/start/build-with-an-agent/).
+Use [Skills and local docs](/cli/agent-tools/) to install agent guidance, read bundled references, and serve or export documentation. [Build with an Agent](/start/build-with-an-agent/) combines setup with a first-project prompt.
