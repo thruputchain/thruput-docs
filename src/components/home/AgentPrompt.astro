@@ -1,5 +1,7 @@
 ---
-const prompt = 'Help me deploy my first Groundhog contract to Devnet. Follow https://docs.groundhog.dev/get-started/contract/ using the latest CLI. Read groundhog skill show and its contracts reference, and preserve the project settings it generates. If documentation access is blocked, ask me for a saved copy or use groundhog docs. Keep credentials and signing keys out of this conversation. Set up a funded Devnet wallet, create and test a counter, deploy it, initialize it to 10, increment by 5, and verify that its view returns 15. Do not start a local node. Report actual results and any setup or network errors.';
+import onboarding from '../../content/docs/start/build-with-an-agent.md?raw';
+const prompt = onboarding.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
+if (!prompt) throw new Error('Agent onboarding must include a text prompt.');
 ---
 
 <home-agent-prompt data-local-snapshot={process.env.GROUNDHOG_DOCS_SNAPSHOT ? "true" : undefined} role="group" aria-labelledby="install-label">

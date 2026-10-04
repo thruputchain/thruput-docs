@@ -1,8 +1,10 @@
 import { test as base, expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 
 const origin = 'http://127.0.0.1:4322';
 const docs = '/start/build-with-an-agent/';
-const prompt = 'Help me deploy my first Groundhog contract to Devnet. Follow https://docs.groundhog.dev/get-started/contract/ using the latest CLI. Read groundhog skill show and its contracts reference, and preserve the project settings it generates. If documentation access is blocked, ask me for a saved copy or use groundhog docs. Keep credentials and signing keys out of this conversation. Set up a funded Devnet wallet, create and test a counter, deploy it, initialize it to 10, increment by 5, and verify that its view returns 15. Do not start a local node. Report actual results and any setup or network errors.';
+const onboarding = readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8');
+const prompt = onboarding.match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
 const test = base.extend({
   page: async ({ page }, use) => {
     const errors: string[] = [];

@@ -99,9 +99,10 @@ Markdown files live in `src/content/docs/`, organized by section. The sidebar is
 
 ## Agent guidance
 
-The landing page points agents to `/start/build-with-an-agent/` for skill setup
-and Markdown access, then to the installed CLI's `groundhog skill show`. The hosted
-reference is a pinned artifact, not an independently authored copy of CLI docs.
+The landing page imports the prompt from `/start/build-with-an-agent/`. Maintain
+its text block in that page only. The prompt installs the CLI and skill, exports
+the docs, and verifies a counter through CLI calls on Devnet. The hosted
+standalone reference is a pinned artifact, not a separately authored CLI guide.
 
 `public/agents/current.json` identifies the selected guide's CLI version, status,
 SHA-256, and source. The selected reference is the released CLI **0.19.0** guide
