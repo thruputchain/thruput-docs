@@ -107,9 +107,15 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
       `Source: <${page.url}>\n\n${bundle ? '' : provenance(snapshot)}${page.description}\n\n` +
       toMarkdown(tree, options);
   }
-  const grouped = [...sections, { id: 'overview', label: 'Overview' }].map(section => ({
-    ...section, pages: [...pages.values()].filter(page => page.section.id === section.id),
-  })).filter(section => section.pages.length);
+  const grouped = [...sections, { id: 'overview', label: 'Overview' }].map(section => {
+    const entries = (section.items ?? []).flatMap(item =>
+      typeof item === 'string' ? [item] : item.items ?? []);
+    const order = new Map(entries.map((slug, index) => [normalizedRoute(new URL(slug, site)), index]));
+    return { ...section, pages: [...pages.values()]
+      .filter(page => page.section.id === section.id)
+      .sort((a, b) => (order.get(a.url) ?? entries.length) - (order.get(b.url) ?? entries.length)) };
+  }).filter(section => section.pages.length);
+  const orderedPages = grouped.flatMap(section => section.pages);
   const index = from => `# Thruput documentation\n\n${provenance(snapshot)}` +
     `Read a focused section or an individual page before loading the full documentation.\n\n` +
     `- [Complete documentation](${relativeLink(from, 'markdown/full.md')})\n\n` +
@@ -131,7 +137,7 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
   }
   for (const path of ['markdown/full.md', 'llms-full.txt']) {
     await write(path, `# Thruput documentation\n\n${provenance(snapshot)}` +
-      [...pages.values()].map(page => render(page, path, true)).join('\n---\n\n'));
+      orderedPages.map(page => render(page, path, true)).join('\n---\n\n'));
   }
   for (const [source, target] of assets) {
     await mkdir(dirname(resolve(directory, target)), { recursive: true });

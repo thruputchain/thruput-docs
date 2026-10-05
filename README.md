@@ -75,6 +75,15 @@ The smoke blocks non-loopback browser requests and checks local search,
 tutorial navigation, the agent prompt, Markdown, and desktop/mobile layout.
 Screenshots are written below `test-results/snapshot/`.
 
+To validate counter-guide files independently of the examples app, extract a
+chapter with `node scripts/prepare-counter-guide.mjs APP_DIR COUNTER_BINDING 4`,
+using the binding generated from your counter build. Install the chapter's
+dependencies in `APP_DIR` and run its build. Then run
+`node scripts/check-counter-recovery.mjs APP_DIR` to check the exact recovery
+helper against expiry, network/hash mismatches, receipt and RPC outcomes, storage
+failure, and evidence-preserving archival. This check uses the app's installed
+SDK and React packages through their public exports.
+
 ## Content
 
 Markdown files live in `src/content/docs/`, organized by section. The sidebar is manually configured in `astro.config.mjs`.

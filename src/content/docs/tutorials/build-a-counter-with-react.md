@@ -115,12 +115,25 @@ Create a small shared update module. It retains the hash before submitting and c
 import { useRef, useState } from "react";
 import { deserializeSignedTransaction, fromHex0x, hashSignedTransaction, toHex0x, type ConnectedGroundhogClient } from "@groundhogchain/client";
 import { parseSignTransactionResult } from "@groundhogchain/client/provider";
-import { useWaitForTransactionReceipt } from "@groundhogchain/react";
+import { useClient, useWaitForTransactionReceipt } from "@groundhogchain/react";
 
 export type Config = { networkId: string; counterAddress: string; signerAddress: string | null };
 export type Direction = "increment" | "decrement";
 export type Pending = { hash: string; signedTransaction: string; account: string; networkId: string };
 export type Prepared = { record: Pending; submit(): Promise<unknown> };
+
+export async function archiveExpiredUpdate(client: ConnectedGroundhogClient, record: Pending, key: string, storage: Pick<Storage, "setItem" | "removeItem">) {
+  if (toHex0x(client.network.networkHash) !== record.networkId) throw new Error("Select the original network before recovery");
+  const signed = deserializeSignedTransaction(fromHex0x(record.signedTransaction));
+  const hash = hashSignedTransaction(signed);
+  if (toHex0x(hash) !== record.hash) throw new Error("Saved transaction hash does not match its bytes");
+  const tip = await client.getChainTip();
+  if (tip.height < signed.tx.uniquifier.block_expiry_height) throw new Error("The transaction has not expired; keep observing it");
+  if (await client.getTransactionReceipt(hash)) throw new Error("A receipt is available; check the transaction and finish it");
+  // Expiry prevents future inclusion, but a missing receipt does not prove it never committed.
+  storage.setItem(`${key}:archived:${record.hash}`, JSON.stringify({ ...record, outcome: "unresolved", archivedAtHeight: tip.height.toString() }));
+  storage.removeItem(key);
+}
 
 export async function prepareDevelopment(client: ConnectedGroundhogClient, config: Config, direction: Direction): Promise<Prepared> {
   if (!config.signerAddress) throw new Error("Development signer unavailable");
@@ -138,6 +151,7 @@ export async function prepareDevelopment(client: ConnectedGroundhogClient, confi
 }
 
 export function useUpdate(config: Config) {
+  const client = useClient();
   const key = `counter:${config.networkId}:${config.counterAddress}`;
   const [state, setState] = useState<{ record: Pending | null; error: string | null }>(() => {
     try {
@@ -151,12 +165,13 @@ export function useUpdate(config: Config) {
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const lock = useRef(false);
   const receipt = useWaitForTransactionReceipt({ hash: busy ? null : state.record?.hash ?? null });
 
   async function send(prepare: () => Promise<Prepared>) {
     if (lock.current || state.record || state.error) return;
-    lock.current = true; setBusy(true); setError(null);
+    lock.current = true; setBusy(true); setError(null); setNotice(null);
     try {
       const update = await prepare();
       localStorage.setItem(key, JSON.stringify(update.record));
@@ -171,7 +186,20 @@ export function useUpdate(config: Config) {
     try { localStorage.removeItem(key); setState({ record: null, error: null }); setError(null); }
     catch { setError("Could not clear the saved record"); }
   }
-  return { pending: state.record, error: state.error ?? error, busy, blocked: busy || Boolean(state.record || state.error), receipt, send, finish };
+  async function archiveExpired() {
+    if (lock.current || !state.record) return;
+    const record = state.record;
+    if (!window.confirm("Archive this expired update? Its past outcome may still be unknown. This does not resend or cancel it. Inspect its original hash before repeating the operation.")) return;
+    lock.current = true; setBusy(true); setError(null);
+    try {
+      await archiveExpiredUpdate(client, record, key, localStorage);
+      setState({ record: null, error: null });
+      setNotice(`Archived ${record.hash} in browser storage. Its outcome is unresolved; inspect this hash before repeating the operation.`);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Recovery failed");
+    } finally { lock.current = false; setBusy(false); }
+  }
+  return { pending: state.record, error: state.error ?? error, notice, busy, blocked: busy || Boolean(state.record || state.error), receipt, send, finish, archiveExpired };
 }
 ```
 
@@ -207,6 +235,7 @@ export function UpdateStatus({ update }: { update: ReturnType<typeof useUpdate> 
   return <section aria-label="Transaction">
     {update.busy ? <p>Preparing or submitting…</p> : null}
     {update.error ? <p role="alert">{update.error}</p> : null}
+    {update.notice ? <p role="status">{update.notice}</p> : null}
     {update.pending ? <>
       <p>Original signer: {update.pending.account}</p>
       <p>Transaction: {update.pending.hash}</p>
@@ -217,6 +246,7 @@ export function UpdateStatus({ update }: { update: ReturnType<typeof useUpdate> 
         <p>Waiting for a result. A timeout does not cancel the transaction.</p>
         {update.receipt.error ? <p role="alert">{update.receipt.error.message}</p> : null}
         <button type="button" disabled={update.busy || update.receipt.isFetching} onClick={() => void update.receipt.refetch()}>Check transaction</button>
+        <button type="button" disabled={update.busy} onClick={() => void update.archiveExpired()}>Archive expired update</button>
       </>}
     </> : null}
   </section>;
@@ -252,6 +282,8 @@ npm run dev
 Open Vite's URL. Click **Increment**, wait for **Update committed**, and confirm the refreshed counter value. Click **Finish** before another update. Try **Decrement** too.
 
 The public read refreshes independently of signing. An error or timeout does not cause another transaction to be submitted. A saved hash remains available after reload; this minimal example keeps one unresolved update per counter and network in one browser tab.
+
+If submission was stopped after signing, a receipt may never arrive. **Archive expired update** checks the original network, signed bytes, expiry height, and receipt before releasing the active slot. It preserves the complete record under `counter:NETWORK:CONTRACT:archived:HASH` in browser storage. It does not resend the transaction or prove it never committed: an unavailable or lagging indexer can still hide a past receipt. Inspect the original hash before repeating the operation. Recovery errors, including a failed archive write, keep the active record.
 
 ```bash
 npm run build

@@ -101,3 +101,30 @@ test('broken local links and fragments stop export', async t => {
     await assert.rejects(exportMarkdown({ directory, site, snapshot }), /Broken/);
   }
 });
+
+test('indexes and bundles follow navigation order, including grouped entries', async t => {
+  const directory = await fixture(t, '<p>Home</p>');
+  const slugs = ['guides', 'tutorials/build-a-counter', 'tutorials/work-with-groundhog-from-typescript',
+    'tutorials/build-a-counter-with-react', 'tutorials/connect-a-wallet-to-your-app'];
+  for (const [index, slug] of slugs.entries()) {
+    const path = join(directory, slug, 'index.html');
+    await mkdir(dirname(path), { recursive: true });
+    await writeFile(path, html(`<p>Chapter marker ${index}</p>`));
+  }
+  const section = { id: 'guides', label: 'Guides', items: [slugs[0],
+    { label: 'Counter', items: slugs.slice(1) }, { label: 'External', link: 'https://example.test/' }] };
+  await exportMarkdown({ directory, site, snapshot, sections: [section],
+    sectionForPath: path => slugs.some(slug => path === `/${slug}/`) ? section : undefined });
+  for (const file of ['markdown/index.md', 'llms.txt']) {
+    const content = await readFile(join(directory, file), 'utf8');
+    const positions = slugs.map(slug => content.indexOf(`pages/${slug}.md`));
+    assert.ok(positions.every(position => position >= 0));
+    assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
+  }
+  for (const file of ['markdown/sections/guides.md', 'markdown/full.md', 'llms-full.txt']) {
+    const content = await readFile(join(directory, file), 'utf8');
+    const positions = slugs.map((_, index) => content.indexOf(`Chapter marker ${index}`));
+    assert.ok(positions.every(position => position >= 0));
+    assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
+  }
+});

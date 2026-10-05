@@ -133,6 +133,8 @@ Each update captures its original signing client and account. A receipt is obser
 
 After a committed result, **Finish** clears its saved record. For an unresolved result, **Check transaction** observes the original hash without submitting again. Reload with a saved hash to verify recovery.
 
+A session change can stop submission after the signed record was saved. Once the signed transaction expires, use **Archive expired update** from part 3 to preserve its evidence and release the active slot. This never switches signers, resubmits, or treats a missing receipt as proof of failure.
+
 ```bash
 npm run build
 ```

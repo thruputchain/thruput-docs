@@ -4,6 +4,26 @@ const origin = 'http://127.0.0.1:4322';
 const path = '/tutorials/work-with-groundhog-from-typescript/';
 const markdown = '/markdown/pages/tutorials/work-with-groundhog-from-typescript.md';
 
+for (const name of ['cli', 'contract', 'typescript', 'react']) {
+  test(`copies the ${name} quickstart prompt from its coding-agent section`, async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto(`${origin}/get-started/${name}/`);
+    const prompt = await page.locator('#use-a-coding-agent').evaluate(heading => {
+      const section = heading.closest('.sl-heading-wrapper') ?? heading;
+      for (let node = section.nextElementSibling; node; node = node.nextElementSibling) {
+        const code = node.querySelector('pre code');
+        if (code) return [...code.querySelectorAll('.ec-line .code')].map(line => line.textContent).join('\n');
+      }
+      return '';
+    });
+    expect(prompt).toContain(`/get-started/${name}/`);
+    await page.locator('page-actions summary').click();
+    await page.getByRole('button', { name: 'Copy task prompt' }).click();
+    await expect(page.locator('page-actions').getByRole('status')).toHaveText('Copied');
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(prompt);
+  });
+}
+
 test('copies the exported page, Markdown link, and existing task prompt', async ({ page, context, request }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto(origin + path);
