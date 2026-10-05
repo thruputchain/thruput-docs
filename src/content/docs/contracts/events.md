@@ -24,7 +24,7 @@ Here, consumers can filter on `by` and read `amount` from the payload. Strings a
 
 ## Declare and emit it
 
-This self-contained contract records an increment and emits its amount and caller:
+Add the event to a counter method to record the amount and caller:
 
 ```rust
 use sdk::storage::NNInt;

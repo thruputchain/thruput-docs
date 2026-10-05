@@ -26,7 +26,7 @@ target/groundhog/counter.spec.json
 
 The `.rv32a` file is the executable contract artifact. `groundhog deploy` wraps those bytes in the protocol's `Contract::kRv32` variant before signing and submitting the deploy transaction.
 
-The executor accepts contract code blobs up to 256 KiB. The complete signed transaction also has a 2 MB encoded-size bound, so a deployment transaction must satisfy both limits.
+Deployment must satisfy the network's limits on attached contract size, RV32 code, guest memory, and new contracts per transaction. Client and gateway submission limits also apply. Use the selected network's configuration rather than assuming a fixed maximum.
 
 #### Entrypoints
 

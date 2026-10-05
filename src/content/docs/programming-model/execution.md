@@ -58,7 +58,7 @@ Your contract does not control these phases. [Transaction Lifecycle](/how-it-wor
 
 From your contract's perspective, a conflicting transaction simply doesn't land. Your code runs, produces deltas, and the system determines whether that completed delta batch is compatible with other transactions in the block. Incompatible transactions are excluded and returned to the mempool. See [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) for the engine-level details.
 
-Your contract writes no retry logic. Client-side, the flow is the same as any other chain: submit a transaction, get a hash, check whether it landed. How conflicts are determined depends on the storage type you choose. See [Storage Types](/programming-model/storage-types/).
+Clients keep the submitted hash and observe its outcome. A pending result is not a reason to sign a replacement transaction. See [Track transaction results](/typescript/transaction-status/). Storage choices determine which changes can coexist; see [Storage Types](/programming-model/storage-types/).
 
 ## Gas
 

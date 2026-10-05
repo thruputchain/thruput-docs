@@ -1,6 +1,6 @@
 ---
 title: "For Blockchain Developers"
-description: Map your Ethereum, Solana, or Move experience to Groundhog's programming model.
+description: Understand Groundhog's storage and execution rules through a familiar token transfer.
 ---
 
 The contract lifecycle is familiar: write, test, deploy, and call. The main changes are how storage updates combine and how execution and storage are funded. This page introduces those shifts using a Solidity transfer as the starting point.
@@ -33,7 +33,7 @@ The code stays familiar. `balances` is a `Map<ContractAddress, Balance>`. Callin
 
 `decrease(amount)` loads the sender's snapshot balance because the contract needs to fail immediately when funds are insufficient. `lazy_increase(amount)` skips the receiver load because the contract does not need an immediate overflow result. Its bound is checked when the transaction's completed delta batch is admitted. Both calls produce deltas that can merge with compatible transactions. `Balance` accepts only nonnegative amounts and exposes no absolute `set` operation.
 
-That is enough of the model for this transfer. [Build a Token](/tutorials/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how Groundhog combines changes across a block.
+[Build a Token](/tutorials/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how Groundhog combines changes across a block.
 
 ---
 
@@ -52,8 +52,7 @@ Groundhog exposes these rules to contract developers:
 - **Gas price estimation.** Gas limits exist for metering, but gas costs zero. The declared gas limit still consumes scheduling capacity.
 - **Ordering-sensitive balance updates.** Commutative balance deltas have the same merged outcome in any execution order. Application flows that conflict still need protocol-aware design.
 - **Nonces.** Replay protection uses a unique expiry-height and nonce pair, without a sequential account counter.
-- **Fee-driven compute tuning.** Gas limits still bound each transaction and child call, but using more gas does not increase a token fee.
-- **Access lists.** Unlike Solana, where every account a transaction touches must be declared up front, Groundhog discovers storage access during execution. (EVM only requires explicit access lists when opting into EIP-2930.)
+- **Access lists.** Groundhog discovers storage access during execution. Compare [Solana account declarations](/ecosystem/solana/#access-lists-vs-type-based-parallelism) with Ethereum's optional [EIP-2930 access lists](https://eips.ethereum.org/EIPS/eip-2930).
 - **Storage slot packing.** Typed fields via `#[sdk::storage]`. No manual layout, no packing variables into 256-bit slots.
 - **TTL management.** No storage expiry. Data persists as long as its HOG deposit is held. Delete the data, get the deposit back.
 

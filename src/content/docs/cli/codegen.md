@@ -30,6 +30,6 @@ Replace `my_counter` with your artifact's name and the output directory with you
 
 Regenerate bindings when the contract interface changes. Use the address from the matching deployment rather than an address copied from another example.
 
-Keep generated files out of manual edits. Put application wrappers next to them so regeneration does not overwrite application logic.
+Do not edit generated files. Put application wrappers next to them so regeneration does not overwrite application logic.
 
 Continue with [Use contract bindings](/tools/typescript-bindings/) for descriptors and typed calls, or [Read events](/typescript/events/) for filters and decoding.

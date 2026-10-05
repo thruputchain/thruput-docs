@@ -26,13 +26,13 @@ value >= min(set, 0)
 
 So `set(-5)` may commit `-5`, and `set_add(-5, 10)` may commit `5`. The engine still rejects subtracting from an already-negative explicit base, such as `set_add(-5, -1)`. Use `Balance` for ordinary balances. Use `NNInt` when the state model needs signed changes or an explicit base.
 
-Your contract never calls `set_add` directly. The SDK methods (`strict_inc`, `inc`, `set`) map onto it. But this two-component model is what makes the commutativity rules simple and mechanical.
+The storage handle exposes `strict_inc`, `inc`, and `set`. These methods map to the lower-level `set_add` operation.
 
 ## The One Rule
 
 Two concurrent `set_add` calls commute **if and only if their resolved set values are equal**.
 
-The set values don't have to be any particular value. They just have to match each other.
+The bases must match each other; they do not have to equal the snapshot value.
 
 | Tx A | Tx B | Result |
 |------|------|--------|
@@ -58,10 +58,10 @@ Since `None` resolves to the start-of-block value, commutativity depends on what
 
 ## How the API Maps to set_add
 
-| Method | Effective call | Forces snapshot read? | Commutes? |
+| Method | Effective call | Loads the base if needed? | Commutes? |
 |--------|----------------|-----------------------|-----------|
-| `strict_inc(delta)` | `set_add(Some(base), accumulated + delta)` | Yes | Yes, when all callers resolve to the same snapshot base |
-| `inc(delta)` | `set_add(existing_set_or_None, accumulated + delta)` | No | Yes, when all callers resolve to the same snapshot base |
+| `strict_inc(delta)` | `set_add(Some(base), accumulated + delta)` | Yes | When resolved bases match |
+| `inc(delta)` | `set_add(existing_set_or_None, accumulated + delta)` | No | When resolved bases match |
 | `set(value)` | `set_add(Some(value), 0)` | No | Only if all concurrent callers set the same value |
 
 **strict_inc(delta)**: loads the current base (pending explicit set, snapshot NNInt, or `0` for an empty key), checks that this invocation's total is nonnegative, then calls `set_add(Some(base), accumulated + delta)`. Aborts immediately if this invocation's result would be negative. Use this when lower-level integer state needs an early underflow check.
@@ -70,7 +70,7 @@ Since `None` resolves to the start-of-block value, commutativity depends on what
 
 **set(value)**: calls `set_add(Some(value), 0)`. Replaces the base and clears the delta. Negative values are allowed, and a negative set value becomes the floor. `set` commutes only when all concurrent callers set the same value. `set(100)` vs `set(100)` merges. `set(100)` vs `set(200)` conflicts. `set(100)` vs `strict_inc(5)` conflicts if the snapshot is not 100, commutes if it is. Reserve `set` for initialization or admin operations.
 
-`strict_inc` and `inc` are interchangeable from a commutativity standpoint. Mix them freely. The trade-off is read cost vs early underflow detection.
+`strict_inc` and `inc` can merge when their resolved bases match. Choose between them based on the read cost and need for early underflow detection.
 
 ## Negative Set Values
 
@@ -89,6 +89,4 @@ Use `Balance` for ordinary balances and allowances. Use nonnegative NNInt bases 
 
 For NNInt writes that resolve to the same base, transaction ordering does not affect the merged value. The deltas are addition, and addition commutes.
 
-This is what "compatible" means in [Merged Deltas](/programming-model/execution/#merged-deltas): at reservation, the system checks whether all deltas for a given storage location share the same resolved set value. If they do, the adds merge. If they don't, one transaction is excluded.
-
-Pick the narrowest storage API that fits the state. Use `Balance` for balances and `NNInt` when you need signed changes or explicit bases. The runtime handles their concurrency rules.
+Matching bases are required, but do not guarantee inclusion: aggregate bounds and other transaction changes still matter. See [Merged Deltas](/programming-model/execution/#merged-deltas) for the contract-level model.

@@ -3,13 +3,10 @@ title: JSON-RPC API
 description: Groundhog JSON-RPC methods, wire types, and error codes.
 ---
 
-:::caution[Draft]
-This API is under active development. Method signatures and response formats may change; breaking changes bump the major version of `groundhog_version.wireFormat`.
-:::
-
-:::note[Version checked]
-This page describes `groundhog-rpc` `0.19.0` and JSON-RPC wire format `7.0.0`. Documentation-only corrections do not add methods or change payloads.
-:::
+| API property | Value |
+| --- | --- |
+| Wire format | `8.1.0` |
+| Compatibility | Breaking wire changes increase the major version of `groundhog_version.wireFormat` |
 
 The Groundhog gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
 
@@ -153,6 +150,20 @@ Get the current committed chain tip.
 | Missing field | Unspecified by this config, not zero and not an SDK-selected default |
 | Scope | Configured execution limits; not a general storage-cost estimator or a complete list of effective runtime defaults |
 
+### `groundhog_serverLimits`
+
+| Property | Contract |
+| --- | --- |
+| Parameters | None |
+| Result | Endpoint request limits, returned without contacting a backend |
+| Scope | Operator settings; values can differ between endpoints on the same chain |
+| `maxViewGas` | Maximum `view` gas limit and default when `gasLimit` is omitted; `u64` |
+| `maxViewCalldataBytes` | Maximum view calldata size in bytes; `u64` |
+| `maxEventsPerPage` | Maximum event-query `limit`; `u32` |
+| `maxTransactionsPerPage` | Maximum address-transaction-query `limit`; `u32` |
+| `maxCursorBytes` | Maximum pagination cursor size in bytes; `u64` |
+| Consensus limits | Reported separately by `groundhog_chainConfig` |
+
 ### `groundhog_networkInfo`
 
 
@@ -178,6 +189,11 @@ Request an idempotent native HOG airdrop.
 | --- | --- | --- |
 | `request.recipient` | address | Recipient address as `0x`-prefixed 32-byte hex |
 | `request.clientNonce` | string | Caller-selected idempotency nonce as `0x`-prefixed 1-to-32-byte hex |
+
+| Availability | Contract |
+| --- | --- |
+| Configured airdrop backend | Method is registered |
+| No airdrop backend | Standard JSON-RPC `Method not found` (`-32601`) |
 
 The same recipient and `clientNonce` identify the same logical attempt on a network. Poll a pending attempt by repeating the exact request. Do not generate a new nonce for that attempt.
 
@@ -216,19 +232,14 @@ Get wire, implementation, build, and packaging-platform versions.
 
 **Parameters:** None.
 
-**Returns:**
-
-```json
-{
-  "wireFormat": "7.0.0",
-  "implementation": "0.19.0",
-  "commitHash": "<commit>",
-  "releaseVersion": null,
-  "bundleManifestDigest": null
-}
-```
-
-`releaseVersion` and `bundleManifestDigest` are present only when the serving binary matches an installed release bundle; `platformVersion` is an optional legacy build-time field. It is independent of the validated release identity and may be absent even when `releaseVersion` is present. `commitHash` may be `null`. Consumers may branch on `wireFormat`. `implementation`, `commitHash`, and the release fields are diagnostic.
+| Response field | Contract |
+| --- | --- |
+| `wireFormat` | Wire-format SemVer; clients may use it for compatibility checks |
+| `implementation` | Diagnostic implementation version |
+| `commitHash` | Diagnostic build commit or `null` |
+| `platformVersion` | Optional packaging-platform version, independent of validated release identity |
+| `releaseVersion` | Present when the binary matches a validated installed release bundle; otherwise omitted |
+| `bundleManifestDigest` | Validated bundle manifest digest; otherwise omitted |
 
 ### `groundhog_view`
 
@@ -236,9 +247,20 @@ Execute a read-only contract invocation against committed state. The invocation 
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `request` | `ViewRequest` | Contract address, entrypoint ID, calldata, and optional caller |
+| `request.contract` | address | `0x`-prefixed 32-byte contract address |
+| `request.entrypoint` | bytes | `0x`-prefixed 8-byte entrypoint ID |
+| `request.calldata` | bytes | `0x`-prefixed call input |
+| `request.caller` | address | Optional simulated caller |
+| `request.gasLimit` | `u64` | Optional positive gas budget, at most `serverLimits.maxViewGas`; omission selects that maximum |
 
-**Returns:** `ViewResponse` with root output, events, and snapshot height. `output.result` is `return`, `abort`, or `fault`. Returns `-32052` when the deployment has no view backend.
+| Response field or case | Contract |
+| --- | --- |
+| `output` | Root output tagged by `result`: `return` with `returnData`, `abort` with `abortData`, or `fault` |
+| `events` | Events emitted during the simulation |
+| `height` | Committed snapshot height; requests cannot select a past height |
+| `gasUsed` | Required `u64` gas consumed by the root and child invocations; equals the selected limit on an out-of-gas fault |
+| Invalid gas limit | Zero or above the endpoint maximum returns invalid params (`-32602`) |
+| No view backend | Returns `-32052` |
 
 ### `groundhog_getBalance`
 

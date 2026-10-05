@@ -21,7 +21,7 @@ Reads also reflect changes within the current transaction and successful child c
 
 ## Delta Writes
 
-Transactions do not write final values. They produce deltas: descriptions of how to change a value.
+Transactions record typed operations: arithmetic deltas, value replacements, or deletions. Each storage type defines how those operations combine.
 
 Instead of "set balance to 50", a transaction says "increment balance by 10." After each root contract call completes, the runtime reserves its delta batch alongside compatible deltas already admitted to the proposed block. The admitted deltas form the next state at commit.
 
@@ -88,7 +88,7 @@ Tx B contract returns with delta -5
 
 Whichever transaction reserves first wins. The lock is per-key, per-block and is initialized from the snapshot. Reservations on different keys use separate locks. Transactions touching the same key contend for the same aggregate bounds. Reservation can happen concurrently across executor workers; atomic capacity accounting ensures the combined admitted delta remains in range.
 
-For operations that commute (two increases, or two decreases that fit within the balance), both reservations succeed and both transactions land. Checked and lazy operations share this merge behavior. The difference is that checked operations may fail earlier in contract code, while lazy operations leave the snapshot-bound decision to reservation. A lazy adjustment that is invalid against the snapshot can still be admitted if a compatible offsetting delta has already been admitted before its batch is reserved. If the lazy adjustment reserves first, it is excluded. This possibility depends on reservation order, not eventual block-wide netting.
+Compatible operations, such as two increases within the upper bound or two decreases within the available balance, can both reserve successfully. Checked and lazy operations share these merge rules. Checked operations can detect underflow in contract code; lazy operations leave that check to reservation. Credits from other transactions do not increase the snapshot's subtraction budget. A lazy decrease cannot rely on another transaction's same-block credit.
 
 ### What Block Close Does
 
@@ -96,9 +96,9 @@ By the time block close runs, all capacity conflicts have been resolved. Block c
 
 RetrocausalQueue is the exception: it has end-of-block invariant checks that the other storage types do not. RCQ entries from excluded transactions are removed during block finalization.
 
-### Why the Simplified Model Still Holds
+<span id="why-the-simplified-model-still-holds"></span>
 
-From a contract developer's perspective, the result is the same: your transaction either lands or is excluded. You don't manage locks, budgets, or reservation order. The programming model ("compatible deltas merge; incompatible transactions are excluded") is accurate for deciding how to structure your storage. The proposer records reservation-dependent outcomes so validators can replay and verify the proposed block.
+The proposer records reservation-dependent outcomes so validators can replay and verify the proposed block. Contract code chooses storage operations; it does not manage the engine's reservation locks.
 
 ## Related reading
 

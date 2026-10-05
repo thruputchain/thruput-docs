@@ -1,15 +1,13 @@
 ---
 title: Consensus
-description: "SCP-based consensus, block production, and irrevocable finality."
+description: How SCP coordinates proposals, validation, and finalized blocks.
 ---
-
-:::caution[Draft]
-This page describes the current architecture. Some details may change as the protocol matures.
-:::
 
 ## Overview
 
-Groundhog uses the Stellar Consensus Protocol (SCP) for agreement. SCP is a federated Byzantine agreement protocol: each validator picks its own **quorum slices** (the sets of validators it trusts), and the network converges on a single value without a fixed committee or rotating leader. Nomination uses a priority function to bias which validator's proposed value is considered first per round, but no validator can unilaterally decide a block; agreement comes from overlapping quorum slices, not from a designated proposer.
+Groundhog uses the Stellar Consensus Protocol (SCP) for agreement. Each validator chooses **quorum slices**: sets of validators whose agreement it considers sufficient. Overlapping quorum slices allow validators to agree on a block.
+
+Nomination uses a priority function to favor a proposed value in each round. Validators still need agreement under the configured quorum rules before finalizing a block.
 
 SCP provides finality under its quorum-intersection and fault assumptions. Applications use the finalized block result rather than a probabilistic confirmation count.
 

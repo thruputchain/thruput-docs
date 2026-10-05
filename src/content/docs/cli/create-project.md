@@ -32,13 +32,13 @@ See [Project structure](/contracts/project-structure/) for the complete layout a
 
 ## Select a network
 
-The scaffold selects the local profile by default. Use an explicit profile when deploying to Devnet:
+The scaffold selects the local profile by default. Inspect the inherited Devnet settings before deploying:
 
 ```bash
 groundhog config get devnet --sources
 ```
 
-Builds and native/artifact tests run on your machine regardless of the profile. Deployments and calls use its network settings. See [Profiles and networks](/cli/configuration/).
+Use `--profile devnet` on deployments and calls to select that network. Builds and native/artifact tests run on your machine regardless of the profile. See [Profiles and networks](/cli/configuration/).
 
 ## Work in a Cargo workspace
 

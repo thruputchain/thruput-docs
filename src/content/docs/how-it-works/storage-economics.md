@@ -3,9 +3,7 @@ title: Compute, Capacity & Storage
 description: How HOG provides scheduling capacity and refundable storage deposits, while gas meters execution without a token fee.
 ---
 
-Groundhog's economic model is capital-based, not usage-based. You hold HOG tokens to get capacity. You don't pay per operation.
-
-HOG has two jobs: providing scheduling capacity and backing stored data.
+HOG provides scheduling capacity and backs onchain storage. Running contract code has no token fee.
 
 ## The Two Jobs of HOG
 
@@ -16,7 +14,7 @@ Every HOG token in your account is in one of two states:
 | **Free** | Entitles you to a share of network throughput | No deposit to reclaim; scheduling does not spend the tokens |
 | **Locked** | Backs a piece of on-chain storage | Returned when you delete the data |
 
-Free HOGs determine how many transactions you can push through the network. Locked HOGs hold your data on-chain. The tradeoff is direct: every HOG you lock for storage is one less HOG contributing to your throughput share.
+Locking HOG for storage reduces the free balance available for scheduling.
 
 ## Execution: Free, Throughput-Allocated
 

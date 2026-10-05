@@ -17,7 +17,7 @@ Separately, the **RPC gateway** (groundhog-rpc) provides external API access. It
 
 Within the execution layer, no component discovers peers independently. The mempool is the registry for intra-node communication. When a component registers, it gets back the addresses of everything else it needs to talk to.
 
-Inter-node communication (consensus, transaction gossip) is managed by the coordinator, which maintains its own peer topology via configured quorum sets. The mempool knows nothing about other validators. See [Consensus](/how-it-works/consensus/) for how coordinators find and talk to each other.
+The coordinator manages inter-node consensus and transaction gossip using its configured peers and quorum sets. See [Consensus](/how-it-works/consensus/) for how coordinators reach agreement.
 
 ## Component Registration
 
@@ -45,7 +45,7 @@ The mempool (scheduler) is more than a transaction pool. It orchestrates the blo
 - Collects execution results after executors have submitted their deltas to the database for reservation
 - Notifies DB shards of state changes at commit
 
-The coordinator does not execute transactions or manage storage. It asks the mempool "give me a block to propose" and "commit this block." The mempool handles everything else.
+The coordinator requests proposals and commits. The scheduler coordinates the execution services that perform the work.
 
 ## Coordinator Connection
 
@@ -64,7 +64,7 @@ The mempool also calls back to the coordinator via a reverse RPC channel to noti
 
 Clients submit transactions and query state through the public gateway.
 
-**JSON-RPC gateway.** A separate service (`groundhog-rpc`) that exposes a JSON-RPC 2.0 API over HTTP. It submits transactions directly to the hogd scheduler. Reads use the scheduler, indexer, database gateway, or view gateway according to the method. The gateway is architecturally separate from the validator. It does not participate in consensus and can be scaled independently. See [JSON-RPC API](/reference/json-rpc-api/) for the method reference.
+**JSON-RPC gateway.** Exposes JSON-RPC 2.0 over HTTP and routes requests to the relevant execution-layer service. See [JSON-RPC API](/reference/json-rpc-api/) for the method reference.
 
 **Wallet integration.** Wallets sign transactions client-side and submit them through the JSON-RPC gateway. See [Wallet Integration](/tools/wallet-integration/) for the application-facing flow.
 

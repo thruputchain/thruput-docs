@@ -14,7 +14,7 @@ npm create vite@latest my-groundhog-ui -- --template react-ts
 cd my-groundhog-ui
 ```
 
-Complete [package setup](/typescript/setup/) in this directory, then install the application dependencies:
+Configure [npm package access](/typescript/setup/#give-npm-package-access) in this directory, then install the application dependencies:
 
 ```bash
 npm install

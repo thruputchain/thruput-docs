@@ -168,19 +168,7 @@ Every public SDK function whose name starts with `try_` reports its own failures
 
 `LibraryExn` is `#[non_exhaustive]`: when matching, always include a wildcard arm.
 
-When calling another contract via a `try_*` method, `LibraryExn` is caught like any other exception type:
-
-```rust
-match client.try_do_something() {
-    Err(e) => match_exn!(e, {
-        LibraryExn::NonNegativeIntUnderflow => {
-            // The called contract underflowed an NNInt
-        }
-        _ => e.re_throw(),
-    }),
-    Ok(_) => {}
-}
-```
+Generated `try_*` calls can return a `LibraryExn` thrown by the callee. See [Library errors](#library-errors) below for an example.
 
 ## Cross-Contract Errors
 

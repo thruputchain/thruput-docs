@@ -12,9 +12,10 @@ mkdir my-groundhog-app
 cd my-groundhog-app
 npm init -y
 npm pkg set type=module
+mkdir -p src
 ```
 
-Complete [package setup](/typescript/setup/) in this directory, then install the latest SDK and a TypeScript runner:
+Configure [npm package access](/typescript/setup/#give-npm-package-access) in this directory, then install the latest SDK and a TypeScript runner:
 
 ```bash
 npm install @groundhogchain/client @groundhogchain/protocol
@@ -23,7 +24,7 @@ npm install --save-dev typescript tsx @types/node
 
 ## 2. Read a contract
 
-Create `index.ts`:
+Create `src/index.ts`:
 
 ```ts
 import { createGroundhogClient, devnet, formatUnits, getContract } from "@groundhogchain/client";
@@ -50,7 +51,7 @@ main().catch((error: unknown) => {
 ## 3. Run it
 
 ```bash
-npx tsx index.ts
+npx tsx src/index.ts
 ```
 
 You should see **HOG supply** and **Read at block**, each followed by a value. Run the command again to make another read. The values come from Devnet and can change; there is no fixed expected block number.

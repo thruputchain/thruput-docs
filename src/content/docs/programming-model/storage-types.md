@@ -5,7 +5,7 @@ description: "SDK storage types, their conflict semantics, and how to choose bet
 
 The SDK storage layer exposes the types you use to model contract state. The type you choose determines whether concurrent writes merge, conflict, or ignore each other. At the protocol level, the primitives are `NNInt`, `Bytestring`, and `RetrocausalQueue`. `Balance` and `CapacityConstraint` provide narrower APIs over the integer primitive. `Map`, `Value`, `Vector`, and `Node` provide typed composition.
 
-This page explains behavior and tradeoffs. For exact method signatures, see [Storage Types Reference](/reference/storage-types/) or [`sdk::storage` Rustdoc](https://crates.thruput.network/docs/sdk/0.34.3/doc/sdk/storage/index.html).
+This page explains behavior and tradeoffs. For exact method signatures, see [Storage Types Reference](/reference/storage-types/) or [`sdk::storage` Rustdoc](https://crates.thruput.network/docs/sdk/0.42.2/doc/sdk/storage/index.html).
 
 ## NNInt
 
@@ -21,13 +21,13 @@ pub struct Counter {
 }
 ```
 
-Concurrent increments merge automatically:
+With a snapshot value of `100`, these changes can merge:
 
 ```rust
-// Two transactions run concurrently against the same snapshot:
+// Two transactions run against a snapshot value of 100:
 self.value.strict_inc(5);    // Tx A: "add 5"
 self.value.strict_inc(-3);   // Tx B: "subtract 3"
-// Both land. Result: original + 2
+// If both transactions are admitted, the result is 102.
 ```
 
 Pass negative values to `strict_inc` to subtract. With a nonnegative base, the runtime prevents concurrent decrements from driving the value below zero. `NNInt` also permits an explicit negative `set`, which changes its commit-time floor. Use `Balance` when negative values and absolute replacement should not be part of the contract API.
@@ -73,7 +73,7 @@ The `try_` variants report errors that are available during contract execution, 
 
 ## Map\<K, V\>
 
-Key-value store. Different keys are fully independent and never conflict. Same-key behavior follows the value type's rules.
+Key-value store. Different keys use independent storage locations. Same-key behavior follows the value type's rules. Other shared writes or storage-funding limits can still prevent the complete transactions from landing together.
 
 ```rust
 use sdk::storage::{Balance, Map};
@@ -116,7 +116,7 @@ self.owner.set(&new_owner);    // Tx A
 self.owner.set(&other_owner);  // Tx B -- conflict, one excluded
 ```
 
-Use Bytestring for config, ownership, or metadata where you accept that concurrent writers to the same location are mutually exclusive. Not for hot paths.
+Use Bytestring for raw configuration or metadata. Writers of different values to the same location conflict; writers of identical values can coexist.
 
 ## RCQ\<T\> / RetrocausalQueue
 

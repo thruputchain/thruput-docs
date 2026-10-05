@@ -3,7 +3,7 @@ title: Contract Spec
 description: Canonical contract metadata, structured identities, methods, types, events, and exceptions.
 ---
 
-Source baseline: CLI 0.19.0, SDK/spec-tool 0.41.1. For usage, see
+For usage, see
 [TypeScript Bindings](/tools/typescript-bindings/) and [Build a Counter](/tutorials/build-a-counter/).
 
 ## Where the Spec Lives
