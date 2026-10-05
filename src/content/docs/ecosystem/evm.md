@@ -1,6 +1,6 @@
 ---
 title: EVM & Solidity
-description: Translate Solidity contract patterns into Groundhog storage, calls, and authorization.
+description: Translate Solidity contract patterns into Thruput storage, calls, and authorization.
 ---
 
 The contract lifecycle remains write, test, deploy, and call. The main differences are typed storage updates, the call runtime, and resource accounting. This page compares those mechanisms, not network performance.
@@ -13,7 +13,7 @@ The contract lifecycle remains write, test, deploy, and call. The main differenc
 <span id="calling"></span>
 <span id="reading-state"></span>
 
-| Task | Groundhog path |
+| Task | Thruput path |
 | --- | --- |
 | Write | Rust with SDK storage handles and contract macros |
 | Compile | `groundhog build` produces an RV32 artifact and contract-spec sidecars |
@@ -22,13 +22,13 @@ The contract lifecycle remains write, test, deploy, and call. The main differenc
 | Call | Use generated Rust or TypeScript bindings |
 | Read | Use a typed view through the public client or `groundhog view` |
 
-Groundhog entrypoints use 8-byte IDs and CXS arguments. Ethereum contract calls commonly use a 4-byte selector and ABI arguments; see [Ethereum transactions](https://ethereum.org/en/developers/docs/transactions/). Use bindings rather than constructing either encoding manually.
+Thruput entrypoints use 8-byte IDs and CXS arguments. Ethereum contract calls commonly use a 4-byte selector and ABI arguments; see [Ethereum transactions](https://ethereum.org/en/developers/docs/transactions/). Use bindings rather than constructing either encoding manually.
 
-Groundhog deployment addresses derive from the deployer, nonce, and code hash. This resembles `CREATE2` in allowing address prediction, but uses a different preimage. See [Contract artifacts and addresses](/how-it-works/contracts/).
+Thruput deployment addresses derive from the deployer, nonce, and code hash. This resembles `CREATE2` in allowing address prediction, but uses a different preimage. See [Contract artifacts and addresses](/how-it-works/contracts/).
 
 ## Mental Model Shifts
 
-| Solidity / EVM pattern | Groundhog pattern |
+| Solidity / EVM pattern | Thruput pattern |
 | --- | --- |
 | Mapping of token balances | `Map<ContractAddress, Balance>` |
 | Read-modify-write balance assignment | Checked or lazy relative balance changes |
@@ -44,7 +44,7 @@ Groundhog deployment addresses derive from the deployer, nonce, and code hash. T
 
 An EVM external call can call back into a contract already on the stack; see [Solidity external calls](https://docs.soliditylang.org/en/latest/control-structures.html#external-function-calls).
 
-Groundhog rejects invocation of a contract already on the call stack. For A → B → A, the last call is rejected as reentrant. This runtime check is separate from snapshot isolation. Reads within a transaction can still observe its own earlier changes and successful child calls.
+Thruput rejects invocation of a contract already on the call stack. For A → B → A, the last call is rejected as reentrant. This runtime check is separate from snapshot isolation. Reads within a transaction can still observe its own earlier changes and successful child calls.
 
 Use [recoverable calls](/contracts/cross-contract-calls/#error-handling) when the parent should inspect a child failure rather than propagate it.
 
@@ -54,13 +54,13 @@ Compatible arithmetic changes have the same merged value regardless of execution
 
 ### Gas Limits and Gas Price Estimation
 
-Ethereum transactions specify gas limits and fee parameters. Groundhog gas meters execution but costs zero tokens, so no gas price estimation is needed. Gas usage still matters: the declared root limit consumes scheduling capacity, and exceeding it faults execution.
+Ethereum transactions specify gas limits and fee parameters. Thruput gas meters execution but costs zero tokens, so no gas price estimation is needed. Gas usage still matters: the declared root limit consumes scheduling capacity, and exceeding it faults execution.
 
 Free HOG balances provide capacity; stored data requires separate deposits. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
 
 ### Nonce Management
 
-Ethereum account transactions use a sequential nonce. Groundhog replay protection uses an expiry-height and nonce pair, unique for the originating address. It need not increase sequentially. That permits independent transactions from one address without a sequential account counter.
+Ethereum account transactions use a sequential nonce. Thruput replay protection uses an expiry-height and nonce pair, unique for the originating address. It need not increase sequentially. That permits independent transactions from one address without a sequential account counter.
 
 ### Integer Overflow/Underflow
 
@@ -68,7 +68,7 @@ Ethereum account transactions use a sequential nonce. Groundhog replay protectio
 
 ### The `approve()` Race Condition
 
-An absolute allowance replacement can grant new spending authority after the previous allowance has already been spent. The example Groundhog token instead uses relative allowance adjustments. The caller requests an increase or decrease, not a replacement amount.
+An absolute allowance replacement can grant new spending authority after the previous allowance has already been spent. The example Thruput token instead uses relative allowance adjustments. The caller requests an increase or decrease, not a replacement amount.
 
 This does not remove the need to inspect outcomes or choose an authorization policy. See the [token implementation](/tutorials/build-a-token/#apply-supply-and-allowance-policy) for its exact allowance methods and exclusive-update option.
 
@@ -100,7 +100,7 @@ Define `Error` with `#[contract_exception]`. A forwarding contract becomes the i
 
 ### Constructor and Initialization
 
-Groundhog does not invoke `initialize` automatically or make it once-only. Guard initialization in contract storage when required. The CLI's [atomic initialization](/cli/deploy-and-call/#include-initialization) combines funding, deployment, and the initializer call.
+Thruput does not invoke `initialize` automatically or make it once-only. Guard initialization in contract storage when required. The CLI's [atomic initialization](/cli/deploy-and-call/#include-initialization) combines funding, deployment, and the initializer call.
 
 ### Events
 
@@ -112,7 +112,7 @@ Define events with `#[derive(Event)]`, mark filterable fields with `#[topic]`, a
 
 ## What Doesn't Exist
 
-| EVM feature | Groundhog approach |
+| EVM feature | Thruput approach |
 | --- | --- |
 | `msg.value` | Transfer tokens explicitly through their contract interface |
 | `delegatecall` and proxy code replacement | Deploy a new immutable contract at a new address |

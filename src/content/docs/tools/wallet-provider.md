@@ -26,7 +26,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | `connect` | None | Prompt for origin-scoped access; successful session has at least one account |
 | `getSession` | None | Non-interactive session snapshot; never grants access |
 | `disconnect` | None | `null`; idempotently revokes origin permission and pending approvals |
-| `getCapabilities` | `{ account, networkHash }` | `WalletCapabilities`; requires an authorized account on that network |
+| `getCapabilities` (optional) | `{ account, networkHash }` | `WalletCapabilities`; requires an authorized account on that network; never prompts or grants access |
 | `signTransaction` | `{ account, networkHash, transaction }` | `{ signedTransaction, hash }`; approval and signing only |
 | `submitTransaction` | `{ account, networkHash, signedTransaction }` | `{ hash }`; broadcast acknowledgement, not an execution receipt |
 
@@ -34,10 +34,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | --- | --- |
 | Request shape | Exactly the method's defined fields, including nested `params` |
 | Selection | Explicit account and network; no implicit network switch |
-| `WalletCapabilities` | `{ account, networkHash, atomicBatch: { maxCalls: number } \| null }` |
-| Capability advertisement | Include `getCapabilities` in `supportedMethods` to enable the adapter's capability request |
-| Unsupported capabilities | No advertisement or a `4200` response means unsupported batching; other request errors propagate |
-| Atomic batch | Ordered, all-or-nothing DefaultWallet calls; honor `maxCalls` |
+| Batch contract | [Optional Atomic Batch Capabilities](#optional-atomic-batch-capabilities) |
 
 ## Canonical Data and Limits
 
@@ -50,6 +47,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | Provider ID | 1–64 ASCII letters, digits, dots, underscores, or hyphens |
 | Provider name | 1–80 characters; no controls or surrounding whitespace; render as text |
 | Provider version | Exactly `"1.0.0"` |
+| Provider `supportedMethods` | Optional array of at most 32 strings; unknown names are opaque, including names with punctuation or namespaces |
 | Error message | At most 1,024 characters |
 | Unsigned transaction | Canonical classic XDR, at most 1,048,500 decoded bytes |
 | Signed transaction | Canonical classic XDR, at most 1,048,576 decoded bytes |
@@ -75,6 +73,27 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | Connect/disconnect ordering | Page-facing changes arrive before the request resolves, including across bridges |
 | Pending operation | Recheck authorization before signing or broadcasting |
 | Session change | Clear approvals; old approval cannot survive a changed session |
+
+## Optional Atomic Batch Capabilities
+
+| Item | Requirement |
+| --- | --- |
+| Advertisement | Providers implementing `getCapabilities` must include that exact name in top-level `supportedMethods`, separate from `info` and `WalletSession` |
+| Unknown advertised method | Ignore the name; it does not invalidate the provider |
+| Unadvertised capability method | Clients must not probe it; the SDK reports unsupported batching without making that request |
+| Response shape | Exactly `{ account, networkHash, atomicBatch: { maxCalls: number } \| null }` |
+| Scope | Response account and network must match the request's canonical account and network; provider verifies current origin/account authorization and network |
+| Side effects | Capability queries must not prompt, grant access, sign, or broadcast |
+| Unsupported batching | `atomicBatch: null`, no advertisement, or an advertised capability request returning `4200` |
+| Other failures | Permission and transport errors propagate; malformed responses or mismatched scope are errors, not unsupported capability |
+| Call limit | `maxCalls` is an integer from 1 to 16; a batch must contain at least one call and stay within the advertised limit |
+| Atomicity | Ordered, all-or-nothing calls inside one `DefaultWallet.execute` transaction, not multiple independent transactions; an inner abort or fault rolls back the batch |
+| Queued work | A successful batch that enqueues work does not establish the outcome of later processing |
+| Session changes | Discard capability state when the account/network session changes; check support again before batch preparation |
+| Approval | Use the existing `signTransaction` and `submitTransaction` requests; one approval covers only that exact batch transaction |
+| Persistence and recovery | Save signed bytes, hash, account, and network before submission; inspect the original hash after uncertainty |
+| Fallback | Never split a rejected or uncertain batch into individual transactions |
+| Application usage | [Execute multiple calls](/typescript/transactions/#execute-multiple-calls) |
 
 ## Signing and Transaction Identity
 
@@ -142,7 +161,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | `parseWalletAccount`, `parseWalletSession`, `parseWalletProviderInfo` | Canonical data and frozen snapshots; separately require nonempty accounts after connect |
 | `parseWalletProvider` | Metadata and callable methods on the live object |
 | `parseWalletHex32`, `parseWalletNetworkHash` | Distinct hex encodings |
-| `parseWalletCapabilities` | Account, network, and batch capability shape |
+| `parseWalletCapabilities` | Exact scoped response shape and DefaultWallet call-count bounds; authorization and expected-scope comparison are separate |
 | `parseProviderRequest` | Exact request union and bounded XDR |
 | `parseTransactionHex`, `parseSignedTransactionHex` | Canonical decoded objects, without signature verification |
 | `parseSignTransactionResult`, `parseSubmitTransactionResult` | Result shape; not signature, approval, or broadcast verification |
@@ -156,6 +175,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | `MAX_UNSIGNED_TRANSACTION_BYTES` | `1_048_500` |
 | `MAX_WALLET_ACCOUNTS` | `32` |
 | `MAX_DISCOVERED_PROVIDERS` | `32` |
+| `MAX_DEFAULT_WALLET_CALLS` | `16` |
 
 ## SDK Adapter Behavior
 
@@ -164,7 +184,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | `createProviderWalletClient({ client, provider, account, networkHash })` | Synchronous separate binding for an authorized wire account; does not connect or mutate client |
 | `getCapabilities()` | Fresh account/network capabilities when advertised; absence or `4200` means unsupported batching |
 | `prepareExecution(request)` | Unsigned DefaultWallet transaction with nonce, expiry, and size handling |
-| `prepareBatchExecution(request)` | Unsigned atomic batch after support checks |
+| `prepareBatchExecution(request)` | Unsigned DefaultWallet transaction containing ordered `invocations`; snapshots inputs before async work and validates fresh capability limits |
 | `signTransaction(transaction)` | Verified approval; never broadcasts |
 | `submitTransaction(signed)` | Consumes latest approval once, including on failure; verifies response hash |
 | `executeAndWait(request, controls)` | Prepare, sign, save through `onSigned`, submit, and observe successful execution |

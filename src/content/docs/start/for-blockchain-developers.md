@@ -1,6 +1,6 @@
 ---
 title: "For Blockchain Developers"
-description: Understand Groundhog's storage and execution rules through a familiar token transfer.
+description: Understand Thruput's storage and execution rules through a familiar token transfer.
 ---
 
 The contract lifecycle is familiar: write, test, deploy, and call. The main changes are how storage updates combine and how execution and storage are funded. This page introduces those shifts using a Solidity transfer as the starting point.
@@ -19,7 +19,7 @@ function transfer(address to, uint256 amount) public {
 }
 ```
 
-The same transfer on Groundhog:
+The same transfer on Thruput:
 
 ```rust
 fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
@@ -33,7 +33,7 @@ The code stays familiar. `balances` is a `Map<ContractAddress, Balance>`. Callin
 
 `decrease(amount)` loads the sender's snapshot balance because the contract needs to fail immediately when funds are insufficient. `lazy_increase(amount)` skips the receiver load because the contract does not need an immediate overflow result. Its bound is checked when the transaction's completed delta batch is admitted. Both calls produce deltas that can merge with compatible transactions. `Balance` accepts only nonnegative amounts and exposes no absolute `set` operation.
 
-[Build a Token](/tutorials/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how Groundhog combines changes across a block.
+[Build a Token](/tutorials/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how Thruput combines changes across a block.
 
 ---
 
@@ -47,12 +47,12 @@ Contract calls also have different reentrancy rules from the EVM. See the [EVM r
 
 ## Resource and Transaction Rules
 
-Groundhog exposes these rules to contract developers:
+Thruput exposes these rules to contract developers:
 
 - **Gas price estimation.** Gas limits exist for metering, but gas costs zero. The declared gas limit still consumes scheduling capacity.
 - **Ordering-sensitive balance updates.** Commutative balance deltas have the same merged outcome in any execution order. Application flows that conflict still need protocol-aware design.
 - **Nonces.** Replay protection uses a unique expiry-height and nonce pair, without a sequential account counter.
-- **Access lists.** Groundhog discovers storage access during execution. Compare [Solana account declarations](/ecosystem/solana/#access-lists-vs-type-based-parallelism) with Ethereum's optional [EIP-2930 access lists](https://eips.ethereum.org/EIPS/eip-2930).
+- **Access lists.** Thruput discovers storage access during execution. Compare [Solana account declarations](/ecosystem/solana/#access-lists-vs-type-based-parallelism) with Ethereum's optional [EIP-2930 access lists](https://eips.ethereum.org/EIPS/eip-2930).
 - **Storage slot packing.** Typed fields via `#[sdk::storage]`. No manual layout, no packing variables into 256-bit slots.
 - **TTL management.** No storage expiry. Data persists as long as its HOG deposit is held. Delete the data, get the deposit back.
 
@@ -81,4 +81,4 @@ Continue in layers:
 3. [Contract Execution](/programming-model/execution/) and [Storage Types](/programming-model/storage-types/) give the full contract-author model.
 4. [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) explains the engine's reservation machinery.
 
-For a detailed Solidity-to-Groundhog mapping, see [EVM & Solidity](/ecosystem/evm/).
+For a detailed Solidity-to-Thruput mapping, see [EVM & Solidity](/ecosystem/evm/).

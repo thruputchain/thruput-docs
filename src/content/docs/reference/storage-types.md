@@ -1,6 +1,6 @@
 ---
 title: Storage Types
-description: API reference for Groundhog storage types.
+description: API reference for Thruput storage types.
 ---
 
 | Area | Links |

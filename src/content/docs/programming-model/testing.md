@@ -1,6 +1,6 @@
 ---
 title: Testing
-description: "How to test Groundhog contracts: native logic tests, RV32 integration tests, setup, and error matching."
+description: "How to test Thruput contracts: native logic tests, RV32 integration tests, setup, and error matching."
 ---
 
 ## Test Modes

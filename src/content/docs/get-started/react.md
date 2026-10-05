@@ -55,7 +55,7 @@ start().catch((error: unknown) => {
 });
 ```
 
-The client and query cache are created once. `WalletProvider` makes the client available to Groundhog hooks; it does not connect a wallet automatically.
+The client and query cache are created once. `WalletProvider` makes the client available to Thruput hooks; it does not connect a wallet automatically.
 
 ## 3. Display the result
 
@@ -114,9 +114,9 @@ See [Read contract data](/react/reads/) for arguments and query behavior, or [Co
 ## Use a coding agent
 
 ```text
-Build the Groundhog React quickstart:
+Build the Thruput React quickstart:
 https://docs.groundhog.dev/get-started/react/
-Use a React TypeScript Vite project, the latest published Groundhog
+Use a React TypeScript Vite project, the latest published Thruput
 packages, and hosted Devnet. Configure package access through my environment.
 Display the HOG total supply and its read height with useContractView.
 Include loading and error states and a Refresh button. Run the build

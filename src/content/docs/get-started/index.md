@@ -1,6 +1,6 @@
 ---
 title: Get Started
-description: Choose a starting point for Groundhog contracts, applications, or coding agents.
+description: Choose a starting point for Thruput contracts, applications, or coding agents.
 sidebar:
   label: Choose a path
 ---

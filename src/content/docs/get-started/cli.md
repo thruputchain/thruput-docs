@@ -5,7 +5,7 @@ description: Create a Devnet wallet, request test HOG, and inspect your first tr
 
 Create a wallet on Devnet, fund it with test HOG, and inspect the funding transaction. You do not need a contract project or a local node.
 
-**Before you start:** [install the latest CLI](/cli/install/). Run these commands outside an existing Groundhog project so they use your global configuration.
+**Before you start:** [install the latest CLI](/cli/install/). Run these commands outside an existing Thruput project so they use your global configuration.
 
 ## 1. Set up the CLI
 

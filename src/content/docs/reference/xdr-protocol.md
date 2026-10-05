@@ -1,6 +1,6 @@
 ---
 title: XDR Protocol
-description: Encoding boundaries and source definitions for the Groundhog protocol.
+description: Encoding boundaries and source definitions for the Thruput protocol.
 ---
 
 ## Encodings

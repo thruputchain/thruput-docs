@@ -1,6 +1,6 @@
 ---
 title: TypeScript
-description: Connect applications and services to Groundhog with the TypeScript client and typed contract bindings.
+description: Connect applications and services to Thruput with the TypeScript client and typed contract bindings.
 sidebar:
   label: Overview
 ---

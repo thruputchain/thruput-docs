@@ -266,13 +266,13 @@ test('header is centered on homepage and full-width with 20px gutters on docs', 
   }
 });
 
-test('header rebrand retains Groundhog page identity and the exact install prompt', async ({ page }) => {
+test('header and page titles use Thruput while preserving the exact CLI install prompt', async ({ page }) => {
   for (const route of ['/', docs]) {
     await page.goto(origin + route);
     const brand = page.locator('header').getByRole('link', { name: 'Thruput homepage', exact: true });
     await expect(brand).toHaveText('THRUPUT');
     await expect(brand).toHaveAttribute('href', '/');
-    await expect(page).toHaveTitle(/Groundhog/);
+    await expect(page).toHaveTitle(/Thruput/);
     await expect(page.locator('header').getByRole('link', { name: 'About', exact: true }))
       .toHaveAttribute('href', '/architecture/');
     if (route === '/') {

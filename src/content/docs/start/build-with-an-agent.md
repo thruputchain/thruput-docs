@@ -1,6 +1,6 @@
 ---
 title: Build with an Agent
-description: Give your coding agent one prompt to install Groundhog, fund a wallet, and deploy and call a counter contract on Devnet.
+description: Give your coding agent one prompt to install the Groundhog CLI, fund a wallet, and deploy and call a counter contract on Thruput Devnet.
 ---
 
 Paste this prompt into your coding agent. It will install the CLI and skill, read an exported copy of the docs, and build and verify a counter contract on Devnet.
@@ -8,12 +8,12 @@ Paste this prompt into your coding agent. It will install the CLI and skill, rea
 ## Copy the prompt
 
 ```text
-Help me deploy and use my first Groundhog counter contract on Devnet.
+Help me deploy and use my first Thruput counter contract on Devnet.
 
 1. Install the latest Groundhog CLI and run groundhog init. Use
    groundhog --help to see all available commands. Follow the installation
    instructions at https://docs.groundhog.dev/cli/install/.
-2. Install the Groundhog skill for this project and coding agent with
+2. Install the groundhog skill for this project and coding agent with
    groundhog skill install, then read the installed skill.
 3. Export the documentation into a new folder with groundhog docs export.
    Read its index and the relevant setup and contract instructions.

@@ -1,6 +1,6 @@
 ---
 title: JSON-RPC API
-description: Groundhog JSON-RPC methods, wire types, and error codes.
+description: Thruput JSON-RPC methods, wire types, and error codes.
 ---
 
 | API property | Value |
@@ -8,7 +8,7 @@ description: Groundhog JSON-RPC methods, wire types, and error codes.
 | Wire format | `8.1.0` |
 | Compatibility | Breaking wire changes increase the major version of `groundhog_version.wireFormat` |
 
-The Groundhog gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
+The Thruput gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
 
 ## Request Format
 
@@ -36,7 +36,7 @@ Public response fields use camelCase. Addresses, hashes, calldata, event topics,
 
 ## Wire Design
 
-Groundhog returns JSON-native objects with typed fields. Transactions use classic XDR; contract arguments and return values use CXS. Clients use the corresponding codecs for those bytes. RPC responses themselves are JSON. See [XDR Protocol](/reference/xdr-protocol/) for the encoding boundary.
+Thruput returns JSON-native objects with typed fields. Transactions use classic XDR; contract arguments and return values use CXS. Clients use the corresponding codecs for those bytes. RPC responses themselves are JSON. See [XDR Protocol](/reference/xdr-protocol/) for the encoding boundary.
 
 Storage reads preserve the protocol value kind:
 

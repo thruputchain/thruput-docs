@@ -1,9 +1,9 @@
 ---
 title: "For Backend Developers"
-description: Map your Postgres and database experience to Groundhog's programming model.
+description: Map your Postgres and database experience to Thruput's programming model.
 ---
 
-Database snapshot isolation is a useful starting point for Groundhog. Transactions share a committed block snapshot, but their writes follow typed storage merge rules rather than SQL conflict rules.
+Database snapshot isolation is a useful starting point for Thruput. Transactions share a committed block snapshot, but their writes follow typed storage merge rules rather than SQL conflict rules.
 
 ## Shared Snapshot
 

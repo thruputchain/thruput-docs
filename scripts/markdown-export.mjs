@@ -110,7 +110,7 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
   const grouped = [...sections, { id: 'overview', label: 'Overview' }].map(section => ({
     ...section, pages: [...pages.values()].filter(page => page.section.id === section.id),
   })).filter(section => section.pages.length);
-  const index = from => `# Groundhog documentation\n\n${provenance(snapshot)}` +
+  const index = from => `# Thruput documentation\n\n${provenance(snapshot)}` +
     `Read a focused section or an individual page before loading the full documentation.\n\n` +
     `- [Complete documentation](${relativeLink(from, 'markdown/full.md')})\n\n` +
     grouped.map(section => `## ${section.label}\n\n` +
@@ -130,7 +130,7 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
       section.pages.map(page => render(page, path, true)).join('\n---\n\n'));
   }
   for (const path of ['markdown/full.md', 'llms-full.txt']) {
-    await write(path, `# Groundhog documentation\n\n${provenance(snapshot)}` +
+    await write(path, `# Thruput documentation\n\n${provenance(snapshot)}` +
       [...pages.values()].map(page => render(page, path, true)).join('\n---\n\n'));
   }
   for (const [source, target] of assets) {

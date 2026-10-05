@@ -115,7 +115,7 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | Command | Purpose | Usage |
 | --- | --- | --- |
 | `groundhog skill install [--global] [--agent NAME]` | Install the maintained skill through `npx skills`; `--agent` is repeatable | [Install the skill](/cli/agent-tools/#install-the-maintained-skill) |
-| `groundhog skill update [--global]` | Update only Groundhog in the selected scope; requires an existing installation | [Update the skill](/cli/agent-tools/#update-an-installed-skill) |
+| `groundhog skill update [--global]` | Update only the `groundhog` skill in the selected scope; requires an existing installation | [Update the skill](/cli/agent-tools/#update-an-installed-skill) |
 | `skill install --yes` / `skill update --yes` | Authorize npm execution and skill changes; unattended installation also needs `--agent` | [Automate setup](/cli/agent-tools/#automate-skill-setup) |
 | `groundhog skill show [TOPIC] [--all]` | Print bundled Markdown offline; `TOPIC` and `--all` are mutually exclusive | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |
 | `groundhog skill list` | List bundled topic names | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |

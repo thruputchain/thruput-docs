@@ -1,11 +1,11 @@
 ---
 title: Introduction
-description: Learn what Groundhog is and how compatible updates let contracts share state.
+description: Learn what Thruput is and how compatible updates let contracts share state.
 sidebar:
   label: Introduction
 ---
 
-Groundhog is an L1 blockchain for smart contract applications. You write contract logic in Rust and connect applications through the TypeScript client or React library.
+Thruput is an L1 blockchain for smart contract applications. You write contract logic in Rust and connect applications through the TypeScript client or React library.
 
 Its central idea is that transactions can update shared state by recording compatible changes. The runtime combines those changes using rules defined by the storage type.
 
@@ -26,7 +26,7 @@ These increases can combine if the rest of the transactions are compatible and n
 
 This is useful for shared counters and balances. It does not make every operation independent: replacing a value, enforcing uniqueness, or choosing a winning order can require different rules. Your storage choices determine which changes can combine.
 
-[Parallel Execution](/how-it-works/execution-model/) explains how Groundhog applies these rules. [Storage types](/programming-model/storage-types/) shows how to use them in a contract.
+[Parallel Execution](/how-it-works/execution-model/) explains how Thruput applies these rules. [Storage types](/programming-model/storage-types/) shows how to use them in a contract.
 
 ## Build in two layers
 

@@ -1,6 +1,6 @@
 ---
 title: Smart Contracts
-description: Write, test, and understand Groundhog contracts with the Rust SDK.
+description: Write, test, and understand Thruput contracts with the Rust SDK.
 sidebar:
   label: Overview
 ---

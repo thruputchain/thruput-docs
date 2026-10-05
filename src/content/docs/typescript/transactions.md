@@ -87,6 +87,14 @@ Pass an ordered list to `executeCallsAndWait` to execute calls atomically. If a 
 
 For a provider wallet, await `getCapabilities()` and inspect the returned `atomicBatch` before offering a multi-call action. `null` means unsupported; `maxCalls` gives the advertised limit. The adapter checks support during preparation as well. One atomic wallet transaction is different from [HTTP request batching](/typescript/transport/#http-batching).
 
+The SDK requests capabilities only when the provider advertises `getCapabilities`. No advertisement or a `4200` response means unsupported batching. Permission errors, transport failures, malformed responses, and account/network mismatches must remain errors. Refresh capability state after a session change; see [batch capability requirements](/tools/wallet-provider/#optional-atomic-batch-capabilities).
+
+Keep a batch within the wallet's advertised limit, up to 16 calls. For explicit preparation, `prepareBatchExecution({ invocations, gasLimit })` builds one unsigned transaction; use the same [sign, save, submit, and observe flow](/tools/wallet-integration/#prepare-sign-save-submit-observe) as a single call.
+
+If batching is unsupported, offer a single-call action only when it meets the user's intended operation. Do not split an operation that requires atomicity. After a batch is rejected or its submission is uncertain, never fall back to individual transactions. Retain its signed evidence and [inspect the original hash](/typescript/transaction-status/).
+
+A batch that enqueues requests commits their acceptance, not their later execution. Track the resulting request IDs and outcomes as described in [Build an AMM](/tutorials/build-an-amm/#understand-acceptance-and-execution).
+
 ## Set gas and funding
 
 Each child call has a budget; the root needs enough gas for the wallet wrapper and its child calls. The numbers above are example transfer budgets, not universal defaults. `walletGasLimit(invocations, overhead)` sums invocation budgets and an overhead that you have measured for your workload. For typed calls, pass each call's `invocation` field.

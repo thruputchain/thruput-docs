@@ -11,7 +11,7 @@ This page is the contract-author model. Read it before choosing storage types. I
 
 All transactions in a block read the same committed state from the previous block. Ordinary storage reads do not see another transaction's writes within the block. Reads include changes made within your transaction, including successful child calls. Other transactions cannot change the snapshot you read.
 
-The shared snapshot is a useful database analogy, but Groundhog has its own typed delta merge rules.
+The shared snapshot is a useful database analogy, but Thruput has its own typed delta merge rules.
 
 `RetrocausalQueue` has separate observation rules: a consumer can observe concurrent inserts in the same block. The proposer records these observations for validator replay.
 
@@ -75,7 +75,7 @@ client.with_gas_limit(100_000).transfer(&to, amount);
 
 Gas has no token fee, but lower gas limits use less scheduling capacity. Choose a limit that covers execution and design storage operations to avoid unnecessary conflicts.
 
-Groundhog needs no gas price estimation because the token price of gas is zero. Gas usage still matters when choosing an execution limit.
+Thruput needs no gas price estimation because the token price of gas is zero. Gas usage still matters when choosing an execution limit.
 
 ## Throughput
 

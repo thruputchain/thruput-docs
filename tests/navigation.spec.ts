@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 const origin = 'http://127.0.0.1:4322';
 const sections = [
   ['Get Started', '/get-started/', 'Get Started'],
-  ['Understand Groundhog', '/architecture/', 'Introduction'],
+  ['Understand Thruput', '/architecture/', 'Introduction'],
   ['CLI', '/cli/', 'CLI'],
   ['Smart Contracts', '/contracts/', 'Smart Contracts'],
   ['TypeScript', '/typescript/', 'TypeScript'],
@@ -83,14 +83,14 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Tools', '/tools/faucet/', 'Faucet'],
     ['Tools', '/tools/block-explorer/', 'Explorer'],
     ['Tools', '/tools/wallet-extension/', 'Wallet Extension'],
-    ['Understand Groundhog', '/how-it-works/architecture/', 'System Overview'],
-    ['Understand Groundhog', '/how-it-works/execution-model/', 'Parallel Execution'],
-    ['Understand Groundhog', '/how-it-works/transaction-lifecycle/', 'Transaction Lifecycle'],
-    ['Understand Groundhog', '/how-it-works/storage-economics/', 'Compute, Capacity & Storage'],
-    ['Understand Groundhog', '/how-it-works/consensus/', 'Consensus'],
-    ['Understand Groundhog', '/how-it-works/networking/', 'Networking'],
-    ['Understand Groundhog', '/start/for-blockchain-developers/', 'For Blockchain Developers'],
-    ['Understand Groundhog', '/start/for-backend-developers/', 'For Backend Developers'],
+    ['Understand Thruput', '/how-it-works/architecture/', 'System Overview'],
+    ['Understand Thruput', '/how-it-works/execution-model/', 'Parallel Execution'],
+    ['Understand Thruput', '/how-it-works/transaction-lifecycle/', 'Transaction Lifecycle'],
+    ['Understand Thruput', '/how-it-works/storage-economics/', 'Compute, Capacity & Storage'],
+    ['Understand Thruput', '/how-it-works/consensus/', 'Consensus'],
+    ['Understand Thruput', '/how-it-works/networking/', 'Networking'],
+    ['Understand Thruput', '/start/for-blockchain-developers/', 'For Blockchain Developers'],
+    ['Understand Thruput', '/start/for-backend-developers/', 'For Backend Developers'],
     ['Smart Contracts', '/programming-model/execution/', 'Contract Execution'],
   ]) {
     const response = await page.goto(origin + path);
@@ -128,7 +128,7 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
     ['/tutorials/build-an-amm/', 'Guides'],
     ['/start/build-with-an-agent/', 'Get Started'],
     ['/tutorials/connect-a-wallet-to-your-app/', 'Guides'],
-    ['/start/for-blockchain-developers/', 'Understand Groundhog'],
+    ['/start/for-blockchain-developers/', 'Understand Thruput'],
     ['/tools/faucet/', 'Tools'],
     ['/tools/block-explorer/', 'Tools'],
   ]) {
@@ -142,7 +142,7 @@ test('deep links open their section and tutorials belong to Guides', async ({ pa
   await expect(typescript.locator('a[href="/tutorials/connect-a-wallet-to-your-app/"]')).toHaveCount(0);
   await expect(sectionGroup(page, 'CLI').locator('details')).toHaveCount(0);
   await expect(sectionGroup(page, 'Get Started').locator('a[href="/tools/faucet/"], a[href="/tools/block-explorer/"]')).toHaveCount(0);
-  await expect(sectionGroup(page, 'Understand Groundhog').getByRole('link', { name: 'Introduction', exact: true, includeHidden: true })).toHaveCount(1);
+  await expect(sectionGroup(page, 'Understand Thruput').getByRole('link', { name: 'Introduction', exact: true, includeHidden: true })).toHaveCount(1);
   await expect(page.locator('.sidebar .top-level a[href="/start/"]')).toHaveCount(0);
 
   await page.goto(origin + '/react/');

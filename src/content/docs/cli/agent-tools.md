@@ -1,6 +1,6 @@
 ---
 title: Skills and local docs
-description: Install and update the Groundhog skill, read bundled guidance, and serve or export local documentation.
+description: Install and update the groundhog skill, read bundled guidance, and serve or export local documentation.
 ---
 
 Use `groundhog skill` for coding-agent instructions and `groundhog docs` for the developer documentation. For a first project, follow [Build with an Agent](/start/build-with-an-agent/).
@@ -37,7 +37,7 @@ groundhog skill update
 groundhog skill update --global
 ```
 
-Each command updates only Groundhog, not other installed skills. If Groundhog is absent from that scope, run `skill install` there first. A current installation needs no change. Repeating installation uses the installer again; it does not create a second skill name.
+Each command updates only the `groundhog` skill, not other installed skills. If `groundhog` is absent from that scope, run `skill install` there first. A current installation needs no change. Repeating installation uses the installer again; it does not create a second skill name.
 
 The equivalent direct update commands are:
 

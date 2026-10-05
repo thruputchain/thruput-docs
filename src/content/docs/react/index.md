@@ -1,6 +1,6 @@
 ---
 title: React
-description: Use Groundhog's React provider and hooks for wallets and contract data.
+description: Use Thruput's React provider and hooks for wallets and contract data.
 sidebar:
   label: Overview
 ---
