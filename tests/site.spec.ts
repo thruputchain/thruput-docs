@@ -289,7 +289,6 @@ test('homepage learn-more links navigate to real docs and valid anchors', async 
     ['Understand gas limits', '/programming-model/execution/#gas', 'Contract Execution'],
     ['Choose your storage', '/programming-model/storage-types/', 'Storage Types'],
     ['Build a counter, step by step', '/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
-    ['See the merge rules', '/programming-model/nnint/', 'NNInt and concurrent updates'],
   ]) {
     await page.goto(origin);
     const link = page.getByRole('link', { name: feature, exact: true });

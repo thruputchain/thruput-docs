@@ -1,9 +1,9 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import { Code } from '@astrojs/starlight/components';
 import AgentPrompt from '../components/home/AgentPrompt.astro';
 import DotField from '../components/home/DotField.astro';
 import SharedState from '../components/home/SharedState.astro';
+import CounterExample from '../components/home/CounterExample.astro';
 import ProjectFooter from '../components/ProjectFooter.astro';
 
 const steps = [
@@ -11,11 +11,8 @@ const steps = [
   ['02', 'Write', 'Define contract logic in Rust.', '/contracts/'],
   ['03', 'Test', 'Check native and RV32 execution.', '/cli/build-and-test/'],
   ['04', 'Deploy', 'Fund and initialize on Devnet.', '/cli/deploy-and-call/'],
-  ['05', 'Connect', 'Use TypeScript and React.', '/typescript/'],
+  ['05', 'Connect', 'Call with typed bindings.', '/typescript/'],
 ];
-const counter = `pub fn increment(&mut self, amount: u64) {
-    self.value.strict_inc(amount as i128);
-}`;
 ---
 <StarlightPage hasSidebar={true} frontmatter={{
   title: 'Groundhog',
@@ -40,7 +37,7 @@ const counter = `pub fn increment(&mut self, amount: u64) {
           <p class="eyebrow">01 / A different starting point</p>
           <h2 id="shared-state">Shared state.<br />Compatible changes.</h2>
           <p>Groundhog is an L1 blockchain for smart contract applications. Transactions record changes to typed storage; the runtime combines changes that can coexist.</p>
-          <p>A shared counter is a small example. Two compatible increments can combine without either transaction calculating the other's result. Balances and collections have their own rules.</p>
+          <p>A shared counter is a small example. Three transactions read the same snapshot and record compatible increments. Their changes combine without one transaction waiting to read another's result. Balances and collections have their own rules.</p>
           <a class="text-link" href="/how-it-works/execution-model/">Explore the execution model <span aria-hidden="true">↗</span></a>
         </div>
         <SharedState />
@@ -48,24 +45,24 @@ const counter = `pub fn increment(&mut self, amount: u64) {
     </section>
 
     <section class="home-section differences" aria-labelledby="differences">
-      <div class="home-container">
-        <div class="section-copy"><p class="eyebrow">02 / The programming model</p><h2 id="differences">More room for application logic.</h2><p>Match orders, resolve a game turn, or run an auction alongside the assets it moves. Start with your application's rules, then choose how its state should change.</p></div>
+      <div class="home-container differences-layout">
+        <div class="section-copy"><p class="eyebrow">02 / Why Groundhog</p><h2 id="differences">More room for application logic.</h2><p>Match orders, resolve a game turn, or run an auction alongside the assets it moves. Choose the storage and capacity your application needs.</p></div>
         <div class="difference-list">
-          <article id="concurrency"><span class="number">01</span><div><h3>Parallel execution, shared state</h3><p>Compatible transactions can update shared state in parallel. Storage types define which changes merge; conflicting changes can be excluded from a proposal.</p><a class="text-link" href="/programming-model/storage-types/">Choose your storage <span aria-hidden="true">↗</span></a></div></article>
-          <article id="capacity"><span class="number">02</span><div><h3>Compute without gas fees</h3><p>Gas meters computation but costs zero tokens. Execution has limits, and a root transaction's declared gas limit counts toward scheduling capacity.</p><a class="text-link" href="/programming-model/execution/#gas">Understand gas limits <span aria-hidden="true">↗</span></a></div></article>
-          <article id="compute"><span class="number">03</span><div><h3>Hold capacity. Fund storage.</h3><p>Free HOG balances provide scheduling capacity. Stored data locks a deposit; deleting it returns that deposit. No gas fee does not mean unlimited resources.</p><a class="text-link" href="/how-it-works/storage-economics/">Read the economic model <span aria-hidden="true">↗</span></a></div></article>
+          <article id="concurrency"><span class="number">01</span><div><h3>Parallel execution, shared state</h3><p>Storage types let compatible changes combine across transactions. Your choice of storage defines the merge rules.</p><a class="text-link" href="/programming-model/storage-types/">Choose your storage <span aria-hidden="true">↗</span></a></div></article>
+          <article id="compute"><span class="number">02</span><div><h3>Compute without gas fees</h3><p>Gas meters computation but costs zero tokens. Execution limits still apply.</p><a class="text-link" href="/programming-model/execution/#gas">Understand gas limits <span aria-hidden="true">↗</span></a></div></article>
+          <article id="capacity"><span class="number">03</span><div><h3>Balance-based capacity</h3><p>Free HOG balances provide scheduling capacity. A root transaction's declared gas limit determines how much capacity it uses.</p><a class="text-link" href="/how-it-works/storage-economics/#balance-proportional-scheduling">Explore scheduling <span aria-hidden="true">↗</span></a></div></article>
+          <article id="storage"><span class="number">04</span><div><h3>Refundable storage deposits</h3><p>Stored data locks HOG as a deposit. Delete the data to reclaim that deposit.</p><a class="text-link" href="/how-it-works/storage-economics/#storage-refundable-deposits">Understand storage deposits <span aria-hidden="true">↗</span></a></div></article>
         </div>
       </div>
     </section>
 
-    <section class="home-section" aria-labelledby="developer-experience">
+    <section class="home-section developer-section" aria-labelledby="developer-experience">
       <div class="home-container">
         <div class="split">
-          <div class="section-copy"><p class="eyebrow">03 / From contract to application</p><h2 id="developer-experience">Write Rust.<br />Build something you can use.</h2><p>The CLI handles the contract loop. Generated TypeScript bindings connect your app to the contract. React adds queries, wallet connections, and transaction hooks.</p><a class="text-link" href="/tutorials/build-a-counter/">Build a counter, step by step <span aria-hidden="true">↗</span></a></div>
-          <div class="code-example"><p class="example-label">A method from the counter contract</p><Code code={counter} lang="rust" title="src/implementation.rs" /><p>The <code>NNInt</code> field records a relative change. The storage model determines how it combines with other updates.</p><a class="text-link" href="/programming-model/nnint/">See the merge rules <span aria-hidden="true">↗</span></a></div>
+          <div class="section-copy"><p class="eyebrow">03 / From contract to application</p><h2 id="developer-experience">Write Rust. Build something you can use.</h2><p>Create, test, deploy, and inspect contracts with a complete CLI. Generate TypeScript bindings to call them from your application. Give your coding agent the Groundhog skill and local docs to work from the same tools and instructions.</p><a class="text-link" href="/tutorials/build-a-counter/">Build a counter, step by step <span aria-hidden="true">↗</span></a></div>
+          <CounterExample />
         </div>
-        <ol class="workflow" role="list">{steps.map(([number, title, description, href]) => <li><a href={href}><span class="eyebrow">{number}</span><h3>{title}</h3><p>{description}</p></a></li>)}</ol>
-        <div class="developer-links"><a href="/react/">Build a React interface ↗</a><a href="/start/build-with-an-agent/">Start with an agent ↗</a><a href="/cli/agent-tools/">Skills and local docs ↗</a></div>
+        <ol class="workflow" role="list">{steps.map(([number, title, description, href]) => <li><a href={href}><span class="number">{number}</span><div><h3>{title}</h3><p>{description}</p></div></a></li>)}</ol>
       </div>
     </section>
     <div class="home-container"><ProjectFooter /></div>
@@ -75,7 +72,7 @@ const counter = `pub fn increment(&mut self, amount: u64) {
 <style>
   .home-page { isolation: isolate; color-scheme: only dark; background: var(--brand-background); color: var(--brand-foreground); font-family: var(--sl-font); }
   .home-container { width: calc(100% - 2.5rem); max-width: 77.5rem; margin-inline: auto; }
-  .home-fallback, .hero-links, .developer-links { display: flex; flex-wrap: wrap; gap: 1rem 2rem; }
+  .home-fallback, .hero-links { display: flex; flex-wrap: wrap; gap: 1rem 2rem; }
   .home-fallback { justify-content: center; padding: 1rem; }
   .home-page a { color: var(--sl-color-text-accent); }
   .home-page a:hover { text-decoration: underline; text-underline-offset: .25em; }
@@ -90,36 +87,39 @@ const counter = `pub fn increment(&mut self, amount: u64) {
   @keyframes cursor-blink { 50% { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .hero-cursor { animation: none; } }
   .hero-links { justify-content: center; margin-top: 1.75rem; }
-  .hero-links a, .text-link, .developer-links a { text-decoration: none; }
+  .hero-links a, .text-link { text-decoration: none; }
   .home-section { padding-block: 3.5rem; border-bottom: 1px solid var(--brand-border); }
+  .home-section.developer-section { padding-block: 3.5rem; }
   .split { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; align-items: center; }
   .section-copy { display: flex; flex-direction: column; align-items: start; gap: 1.25rem; }
   .home-page h2 { margin: 0; max-width: 24ch; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 400; line-height: 1.25; letter-spacing: -.04em; text-wrap: balance; }
   .section-copy p:not(.eyebrow) { margin: 0; max-width: 56ch; color: var(--brand-muted); font-size: 1.125rem; line-height: 1.65; }
   .home-page h3 { margin: 0; font-size: 1.125rem; font-weight: 500; letter-spacing: -.025em; }
   .differences { background: #141511; }
-  .difference-list { display: grid; gap: 2rem; margin-top: 2.5rem; }
+  .differences-layout { display: grid; gap: 2.5rem; align-items: start; }
+  .difference-list { display: grid; gap: 2.5rem; }
   .difference-list article { display: flex; gap: 1.25rem; border-top: 1px solid var(--brand-border); padding-top: 1.5rem; }
+  .difference-list article:first-child { border-top: 0; padding-top: 0; }
   .number { color: var(--brand-accent); font-family: var(--sl-font-mono); }
-  .difference-list p, .code-example p { color: var(--brand-muted); line-height: 1.65; }
+  .difference-list p { color: var(--brand-muted); line-height: 1.65; }
   .difference-list p { max-width: 56ch; }
-  .code-example { min-width: 0; }
-  .example-label { margin: 0 0 1rem; font-size: .875rem; }
-  .code-example :global(.expressive-code) { max-width: 100%; }
-  .workflow { display: grid; grid-template-columns: 1fr; list-style: none; padding: 0; margin: 3rem 0 0; border-top: 1px solid var(--brand-border); }
+  .workflow { display: grid; grid-template-columns: 1fr; gap: 1.5rem; list-style: none; padding: 1.5rem 0 0; margin: 2rem 0 0; border-top: 1px solid var(--brand-border); }
   .workflow li { min-width: 0; }
-  .workflow a { display: flex; flex-direction: column; gap: .75rem; padding: 1.5rem 0; height: 100%; color: var(--brand-foreground); text-decoration: none; }
-  .workflow a:hover { color: var(--brand-accent); }
+  .workflow a { display: flex; align-items: baseline; gap: .75rem; height: 100%; color: var(--brand-foreground); text-decoration: none; }
+  .workflow a > div { display: flex; flex-direction: column; gap: .375rem; }
+  .workflow .number { flex-shrink: 0; }
+  .home-page .workflow a:hover { color: var(--brand-accent); text-decoration: none; }
   .workflow p { margin: 0; color: var(--brand-muted); }
-  .developer-links { padding-top: 1.5rem; border-top: 1px solid var(--brand-border); }
   @media (min-width: 701px) {
     .home-container { width: calc(100% - 4rem); }
     .hero-content { padding-block: 6rem 4rem; }
     .home-section { padding-block: 5rem; }
     .split { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .difference-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .difference-list article:nth-child(2) { border-top: 0; padding-top: 0; }
     .workflow { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.5rem; }
-    .workflow a, .developer-links { font-size: .9375rem; }
+    .workflow a { font-size: .9375rem; }
   }
-  @media (min-width: 1101px) { .home-container { width: calc(100% - 6rem); } .difference-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; } }
+  @media (min-width: 1101px) { .home-container { width: calc(100% - 6rem); } .differences-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } }
   @media (min-width: 1700px) { .home-container { max-width: 88.75rem; } .hero-content { padding-block: 4rem 5rem; } .home-page h1 { font-size: 5rem; } }
 </style>
