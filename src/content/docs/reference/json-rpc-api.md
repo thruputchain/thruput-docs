@@ -5,8 +5,9 @@ description: Thruput JSON-RPC methods, wire types, and error codes.
 
 | API property | Value |
 | --- | --- |
-| Wire format | `8.1.0` |
+| Wire format | `9.0.0` |
 | Compatibility | Breaking wire changes increase the major version of `groundhog_version.wireFormat` |
+| Schema | [Generated OpenRPC specification](https://github.com/groundhogchain/groundhog-rpc/blob/main/crates/json-rpc/open-rpc-spec/snapshots/groundhog-spec.json) for method signatures and field types |
 
 The Thruput gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
 
@@ -21,7 +22,14 @@ The Thruput gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node to
 }
 ```
 
-Public response fields use camelCase. Addresses, hashes, calldata, event topics, and other byte fields use `0x`-prefixed lowercase hex. Large protocol quantities such as balances use decimal strings. Block heights and other bounded fields use JSON numbers.
+Public response fields use camelCase. Addresses, hashes, calldata, event topics, and other byte fields use `0x`-prefixed lowercase hex.
+
+| Integer field | JSON representation | TypeScript client representation |
+| --- | --- | --- |
+| 64-bit and wider integers, including heights, nanosecond timestamps, gas, counts, and balances | Canonical decimal string, including `"0"` and `"42"` | `bigint` |
+| Smaller bounded integers, including protocol versions, page limits, and event sequence numbers | JSON number | Protocol-specific type or `number` |
+
+The wide-integer rule applies to requests, responses, and structured error data. Numeric JSON is rejected for wide fields, even for small values. Strings must fit the field's signed or unsigned range and must not contain leading zeros, a leading `+`, negative zero, whitespace, fractions, or exponent notation. CLI JSON reports follow the same precision policy. Binary XDR and CXS encodings are unchanged.
 
 ## JSON-RPC Arrays
 
@@ -42,7 +50,7 @@ Storage reads preserve the protocol value kind:
 
 ```json
 {
-  "blockHeight": 4567,
+  "blockHeight": "4567",
   "item": {
     "kind": "nonnegativeInt",
     "value": "1000000000"
@@ -83,11 +91,11 @@ Get a committed transaction's execution result and events.
 ```json
 {
   "txHash": "0x<64 lowercase hex characters>",
-  "height": 12345,
+  "height": "12345",
   "status": { "result": "ok" },
   "events": [],
   "returnData": "0x42",
-  "gasUsed": 1234
+  "gasUsed": "1500"
 }
 ```
 
@@ -108,7 +116,7 @@ A receipt proves that the transaction committed. Only `status.result: "ok"` prov
 
 | Field | Meaning |
 | --- | --- |
-| `gasUsed` | Consumed root/child execution gas plus pre-execution validation of attached contracts; a JSON integer, parsed as bigint by the TypeScript client |
+| `gasUsed` | Consumed root/child execution gas plus pre-execution validation of attached contracts; an unsigned 64-bit decimal string, parsed as `bigint` by the TypeScript client |
 | Gas billing | No token fee or unused-gas refund; declared root gas remains the scheduling quantity |
 
 ### `groundhog_getTransactionStatus`
@@ -138,7 +146,7 @@ Get the current committed chain tip.
 
 **Parameters:** None.
 
-**Returns:** `{ "height": number, "blockHash": "0x..." }`.
+**Returns:** `{ "height": "42", "blockHash": "0x..." }`. Height is a signed 64-bit decimal string.
 
 ### `groundhog_chainConfig`
 
@@ -147,6 +155,7 @@ Get the current committed chain tip.
 | Parameters | None |
 | Result | `NetworkConfigParams`, the execution parameters explicitly stated by the chain |
 | Optional integer fields | `maxSha256Buffers`, `maxCrossInvokeDepth`, `maxNewContractsPerTx`, `maxBytestringLen`, `maxContractSizeBytes`, `maxSavepointDepth`, `maxAuthTokenDepth`, `maxRv32CodeBytes`, `maxRv32MemoryBytes` |
+| Integer encoding | These bounds are `u32` JSON numbers |
 | Missing field | Unspecified by this config, not zero and not an SDK-selected default |
 | Scope | Configured execution limits; not a general storage-cost estimator or a complete list of effective runtime defaults |
 
@@ -157,11 +166,11 @@ Get the current committed chain tip.
 | Parameters | None |
 | Result | Endpoint request limits, returned without contacting a backend |
 | Scope | Operator settings; values can differ between endpoints on the same chain |
-| `maxViewGas` | Maximum `view` gas limit and default when `gasLimit` is omitted; `u64` |
-| `maxViewCalldataBytes` | Maximum view calldata size in bytes; `u64` |
-| `maxEventsPerPage` | Maximum event-query `limit`; `u32` |
-| `maxTransactionsPerPage` | Maximum address-transaction-query `limit`; `u32` |
-| `maxCursorBytes` | Maximum pagination cursor size in bytes; `u64` |
+| `maxViewGas` | Maximum `view` gas limit and default when `gasLimit` is omitted; `u64` decimal string |
+| `maxViewCalldataBytes` | Maximum view calldata size in bytes; `u64` decimal string |
+| `maxEventsPerPage` | Maximum event-query `limit`; `u32` JSON number |
+| `maxTransactionsPerPage` | Maximum address-transaction-query `limit`; `u32` JSON number |
+| `maxCursorBytes` | Maximum pagination cursor size in bytes; `u64` decimal string |
 | Consensus limits | Reported separately by `groundhog_chainConfig` |
 
 ### `groundhog_networkInfo`
@@ -205,7 +214,7 @@ The same recipient and `clientNonce` identify the same logical attempt on a netw
   "recipient": "0x<64 lowercase hex characters>",
   "rawAmount": "100000000",
   "txHash": "0x<64 lowercase hex characters>",
-  "retryAfterSeconds": 5
+  "retryAfterSeconds": "5"
 }
 ```
 
@@ -219,7 +228,7 @@ The same recipient and `clientNonce` identify the same logical attempt on a netw
   "recipient": "0x<64 lowercase hex characters>",
   "txHash": "0x<64 lowercase hex characters>",
   "rawAmount": "100000000",
-  "height": 12345,
+  "height": "12345",
   "status": { "result": "ok" }
 }
 ```
@@ -234,7 +243,7 @@ Get wire, implementation, build, and packaging-platform versions.
 
 | Response field | Contract |
 | --- | --- |
-| `wireFormat` | Wire-format SemVer; clients may use it for compatibility checks |
+| `wireFormat` | Wire-format SemVer, `"9.0.0"` for this contract; clients may use it for compatibility checks |
 | `implementation` | Diagnostic implementation version |
 | `commitHash` | Diagnostic build commit or `null` |
 | `platformVersion` | Optional packaging-platform version, independent of validated release identity |
@@ -251,14 +260,14 @@ Execute a read-only contract invocation against committed state. The invocation 
 | `request.entrypoint` | bytes | `0x`-prefixed 8-byte entrypoint ID |
 | `request.calldata` | bytes | `0x`-prefixed call input |
 | `request.caller` | address | Optional simulated caller |
-| `request.gasLimit` | `u64` | Optional positive gas budget, at most `serverLimits.maxViewGas`; omission selects that maximum |
+| `request.gasLimit` | `u64` decimal string | Optional positive gas budget, at most `serverLimits.maxViewGas`; omission selects that maximum |
 
 | Response field or case | Contract |
 | --- | --- |
 | `output` | Root output tagged by `result`: `return` with `returnData`, `abort` with `abortData`, or `fault` |
 | `events` | Events emitted during the simulation |
-| `height` | Committed snapshot height; requests cannot select a past height |
-| `gasUsed` | Required `u64` gas consumed by the root and child invocations; equals the selected limit on an out-of-gas fault |
+| `height` | Committed snapshot height as a signed 64-bit decimal string; requests cannot select a past height |
+| `gasUsed` | Required `u64` decimal string for gas consumed by the root and child invocations; equals the selected limit on an out-of-gas fault |
 | Invalid gas limit | Zero or above the endpoint maximum returns invalid params (`-32602`) |
 | No view backend | Returns `-32052` |
 
@@ -276,7 +285,7 @@ Read the latest committed native HOG balance.
 {
   "address": "0x<64 lowercase hex characters>",
   "rawBalance": "1000000000",
-  "height": 4567
+  "height": "4567"
 }
 ```
 
@@ -301,7 +310,7 @@ Get block information by height.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `height` | integer | Block height |
+| `height` | decimal string | Signed 64-bit block height, for example `"42"` |
 
 **Returns:** `BlockInfo` or `null`.
 
@@ -312,8 +321,8 @@ Get block information by height.
   "networkHash": "0x...",
   "configHash": "0x...",
   "proposer": "0x...",
-  "blockTimepoint": 123,
-  "blockHeight": 42,
+  "blockTimepoint": "1791200000000000001",
+  "blockHeight": "42",
   "txsHash": "0x...",
   "storageHash": "0x...",
   "eventsHash": "0x...",
@@ -333,7 +342,7 @@ Get the number of transactions in the scheduler.
 
 **Parameters:** None.
 
-**Returns:** nonnegative integer.
+**Returns:** unsigned 64-bit decimal string, for example `"0"`.
 
 :::caution[Gateway Only]
 The hosted gateway (`hog-gateway`) returns `-32052` for this method. `groundhog node` serves it for the local chain.
@@ -349,6 +358,12 @@ Query contract events with cursor pagination and topic filters.
 
 **Returns:** `EventPage` with events, the next cursor, latest indexed block, and oldest retained block.
 
+| Pagination field | JSON type |
+| --- | --- |
+| `anchor.height` for `{"kind":"atHeight","height":"42"}` | Signed 64-bit decimal string |
+| `latestBlock`, `oldestBlock`, and event `blockHeight` | Signed 64-bit decimal string |
+| `limit` and event `sequenceNumber` | Unsigned 32-bit JSON number |
+
 `query.filters` uses OR across filters and AND within each filter. Contract-address filters are required. Topic filters are positional: `topic0`, `topic1`, and `topic2`. See [Read events](/typescript/events/#query-events) for typed filters and queries.
 
 ### `groundhog_getTransactionsByAddress`
@@ -360,6 +375,8 @@ Query transactions whose root invocation targets an address.
 | `query` | `AddressTransactionQuery` | Address, order, anchor, cursor, and limit |
 
 **Returns:** `TransactionRefPage` with transaction hashes and heights, the next cursor, latest indexed block, and oldest retained block. Hydrate a reference with `groundhog_getTransactionReceipt`.
+
+Anchor heights, reference heights, `latestBlock`, and `oldestBlock` use decimal strings, as in `groundhog_getEvents`.
 
 The initial cursor is `"0x"`. A limit of `0` selects the server default of 50. Values above the configured cap, normally 200, are rejected. Nested calls to the address do not match.
 
