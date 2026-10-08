@@ -1,6 +1,6 @@
 ---
 title: Skills and local docs
-description: Install and update the groundhog skill, read bundled guidance, and serve or export local documentation.
+description: Install, update, and read the groundhog skill, and serve or export local documentation.
 ---
 
 Use `groundhog skill` for coding-agent instructions and `groundhog docs` for the developer documentation. For a first project, follow [Build with an Agent](/start/build-with-an-agent/).
@@ -39,27 +39,31 @@ groundhog skill update --global
 
 Each command updates only the `groundhog` skill, not other installed skills. If `groundhog` is absent from that scope, run `skill install` there first. A current installation needs no change. Repeating installation uses the installer again; it does not create a second skill name.
 
-The equivalent direct update commands are:
+For a direct project-scoped update:
 
 ```bash
 npx skills update groundhog --project
-npx skills update groundhog --global
 ```
 
-## Read bundled guidance offline
+<span id="read-bundled-guidance-offline"></span>
+
+## Read installed guidance offline
 
 ```bash
 groundhog skill show
 groundhog skill list
 groundhog skill show contracts
-groundhog skill show --all
+groundhog skill show contracts --global
+groundhog skill list --global
 ```
 
-`show` prints the entry file as Markdown. `list` prints available topics: `cli`, `contracts`, `react`, `troubleshooting`, and `typescript`. Select a topic for focused guidance, or use `--all` for the complete guide. A topic and `--all` cannot be combined.
+`show` prints the installed `SKILL.md` unchanged. `list` lists the Markdown references in that installation. Select a topic, such as `contracts`, to read its reference. There is no `--all` option; read the entry and the references needed for your task.
 
-These commands read the revision bundled with the installed CLI. They need no Node.js, npm, Git, or network access. Output identifies the CLI version and skill source. Add `--json` for structured content and provenance.
+By default, these commands look for `.agents/skills/groundhog` in the current directory, then under your home directory. Run them from the directory where you installed the project skill. `--global` selects only the home-directory installation. An invalid project installation reports an error rather than falling back to the global copy.
 
-Installation and updates follow the latest maintained skill source; `show` does not read that installed copy. Updating a skill does not change the CLI bundle. The old `groundhog --skill` flag is replaced by `groundhog skill show`.
+Install the skill before reading it. Once installed, `show` and `list` need no Node.js, npm, Git, or network access. Missing files produce an installation or read error, not bundled fallback content. Add `--json` for the selected scope, file path, and content or topic list.
+
+Updates change the installed files that `show` and `list` read. This is separate from `groundhog docs`, which serves a documentation snapshot bundled with the CLI.
 
 ## Automate skill setup
 

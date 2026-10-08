@@ -75,7 +75,7 @@ Both environments support Rust contracts, with different storage and authorizati
 | Storage TTL and archival/restoration | No storage TTL; funded data remains until deleted |
 | `require_auth()` | Immediate-caller checks or explicit runtime auth tokens, according to the contract policy |
 | `#[contractimpl]` | `#[contract]` on a Rust interface or implementation |
-| Inclusion and resource fees | Gas metering without a token fee; HOG-backed scheduling and storage |
+| Inclusion and resource fees | No conventional gas fees; native-token-backed scheduling and storage |
 
 Soroban TTL expiry is not the same for every storage type: Temporary data is deleted, while Persistent and Instance entries are archived and can be restored. See [Stellar state archival](https://developers.stellar.org/docs/learn/fundamentals/contract-development/storage/state-archival).
 

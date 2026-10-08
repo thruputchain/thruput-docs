@@ -14,7 +14,7 @@ groundhog deploy --profile devnet --fund 10
 
 Confirm the deployment. The CLI waits for its result, prints the deployed address, and saves an alias using the package name. For a project named `my-counter`, later commands can use that alias instead of the address.
 
-Native deployment requires an explicit `--fund` amount. It transfers HOG from the sender to the new contract to cover deployment and state storage. `10` is an example allocation, not a fixed fee or minimum.
+Native deployment requires an explicit `--fund` amount. It transfers native tokens from the sender to the new contract to cover deployment and state storage. `10` is an example allocation, not a fixed fee or minimum.
 
 At a workspace root, use `-p PACKAGE`. Use `--artifact PATH` to select an artifact directly and `--alias NAME` when you want a specific alias.
 

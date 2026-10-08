@@ -5,7 +5,9 @@ description: Display a typed contract view with loading, error, data, and refres
 
 `useContractView` reads a generated method descriptor and infers its arguments and result. Mount the [application providers](/react/setup/) first.
 
-## Display HOG supply
+<span id="display-hog-supply"></span>
+
+## Display native-token supply
 
 Use this as `src/App.tsx`. The binding and deployed address are supplied by the SDK packages:
 
@@ -24,12 +26,12 @@ export default function App() {
 
   return (
     <main>
-      <h1>HOG supply</h1>
+      <h1>Native-token supply</h1>
       {supply.isLoading ? <p>Reading the contract…</p> : null}
       {supply.error ? <p role="alert">{supply.error.message}</p> : null}
       {supply.data ? (
         <>
-          <p>{formatUnits(supply.data.value, 7)} HOG</p>
+          <p>{formatUnits(supply.data.value, 7)} native tokens</p>
           <p>Read at block {supply.data.height.toString()}</p>
         </>
       ) : null}

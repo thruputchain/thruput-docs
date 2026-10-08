@@ -1,9 +1,9 @@
 ---
 title: Read balances
-description: Read native HOG and token balances for a connected account or an explicit address.
+description: Read native-token and contract-token balances for a connected account or an explicit address.
 ---
 
-Use `useBalance` for native HOG and `useTokenBalance` for a standard ERC-20 contract. Both return query state, a `queryKey`, and data containing `rawBalance` and `height`.
+Use `useBalance` for the native token and `useTokenBalance` for a standard ERC-20 contract. Both return query state, a `queryKey`, and data containing `rawBalance` and `height`.
 
 ## Follow the connected account
 
@@ -16,7 +16,7 @@ export function NativeBalance() {
   if (balance.isLoading) return <p>Loading balance…</p>;
   if (balance.error) return <p role="alert">{balance.error.message}</p>;
   if (!balance.data) return <p>Connect a wallet on this network to see its balance.</p>;
-  return <p>{formatUnits(balance.data.rawBalance, 7)} HOG</p>;
+  return <p>{formatUnits(balance.data.rawBalance, 7)} native tokens</p>;
 }
 ```
 
@@ -44,7 +44,7 @@ export function TokenBalance({ token, owner, decimals }: {
 }
 ```
 
-Addresses accept hex strings or SDK-branded bytes. Equivalent inputs share a key. The hook does not fetch token metadata or choose decimals; supply those from the application or a metadata read. HOG has seven decimals.
+Addresses accept hex strings or SDK-branded bytes. Equivalent inputs share a key. The hook does not fetch token metadata or choose decimals; supply those from the application or a metadata read. The native token has seven decimals.
 
 ## Handle missing inputs
 

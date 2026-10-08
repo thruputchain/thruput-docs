@@ -1,9 +1,9 @@
 ---
 title: Faucet
-description: Request test HOG for a Devnet wallet and check the funding result.
+description: Request native test tokens for a Devnet wallet and check the funding result.
 ---
 
-Use the [hosted faucet](https://thruput-faucet.up.railway.app) to fund a Devnet wallet or contract address with test HOG.
+Use the [hosted faucet](https://thruput-faucet.up.railway.app) to fund a Devnet wallet or contract address with native test tokens. These tokens have no monetary value. The faucet's interface currently labels them HOG.
 
 ## Request funds in the browser
 

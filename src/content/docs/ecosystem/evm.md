@@ -56,7 +56,7 @@ Compatible arithmetic changes have the same merged value regardless of execution
 
 Ethereum transactions specify gas limits and fee parameters. Thruput gas meters execution but costs zero tokens, so no gas price estimation is needed. Gas usage still matters: the declared root limit consumes scheduling capacity, and exceeding it faults execution.
 
-Free HOG balances provide capacity; stored data requires separate deposits. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+Unlocked native-token balances provide capacity; stored data requires separate deposits. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
 
 ### Nonce Management
 

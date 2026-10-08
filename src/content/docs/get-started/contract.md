@@ -10,7 +10,7 @@ Deploy a counter to Devnet, increase its value, and read the result.
 ## 1. Create a contract
 
 ```bash
-groundhog new my-counter
+groundhog new my-counter --template counter
 cd my-counter
 ```
 
@@ -35,7 +35,7 @@ groundhog deploy --profile devnet --fund 10
 
 Confirm the deployment. The CLI prints the contract address and saves the alias `my-counter` in the project's Devnet profile.
 
-`--fund 10` transfers 10 test HOG to the contract for this example's storage. It is a funding amount, not a fixed deployment fee.
+`--fund 10` transfers 10 native test tokens to the contract for this example's storage. These tokens have no monetary value. This is a funding amount, not a fixed deployment fee.
 
 ## 4. Change the counter
 
@@ -65,7 +65,8 @@ The result should be **15**. You have built, tested, deployed, and called a cont
 ```text
 Help me complete the Thruput contract quickstart:
 https://docs.groundhog.dev/get-started/contract/
-Use the latest CLI and read groundhog skill show contracts. Check CLI setup and
+Use the latest CLI, install the groundhog skill for this project, and read
+groundhog skill show contracts. Scaffold with --template counter. Check CLI setup and
 Devnet funding first. Scaffold my-counter, preserve its generated
 dependency and compiler settings, then build and test it.
 Deploy to Devnet with the documented contract funding, initialize

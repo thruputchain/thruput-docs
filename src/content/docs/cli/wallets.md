@@ -53,7 +53,7 @@ The hosted faucet selects the amount. Local-node requests can use `--amount`:
 groundhog airdrop alice --profile local --amount 25
 ```
 
-To transfer HOG to another saved wallet or an address:
+To transfer native tokens to another saved wallet or an address:
 
 ```bash
 groundhog transfer RECIPIENT 1 --profile devnet

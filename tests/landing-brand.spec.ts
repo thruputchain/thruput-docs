@@ -43,7 +43,7 @@ test('homepage preserves technical content and prompt in Markdown without UI con
   const response = await request.get(origin + '/markdown/pages/index.md');
   expect(response.ok()).toBe(true);
   const markdown = await response.text();
-  for (const text of ['Thruput is an L1', 'compatible increments', '100', '+5', '+3', '+2', '110', 'costs zero tokens', 'strict_inc(amount as i128)', prompt]) expect(markdown).toContain(text);
+  for (const text of ['Thruput is an L1', 'compatible increments', '100', '+5', '+3', '+2', '110', 'No conventional gas fees', 'no monetary value', 'native tokens', 'strict_inc(amount as i128)', prompt]) expect(markdown).toContain(text);
   expect(markdown).not.toContain('Close prompt preview');
   expect(markdown).not.toContain('Preview setup prompt');
 });

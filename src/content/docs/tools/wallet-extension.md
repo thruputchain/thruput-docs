@@ -31,11 +31,13 @@ Open the wallet from the toolbar. Select **New wallet**, enter and confirm a pas
 
 Follow the prompt to back up your recovery phrase in **Settings**. Keep the phrase private. Use **Restore wallet** if you already have a test recovery phrase you want to use.
 
-## Select Devnet and get test HOG
+<span id="select-devnet-and-get-test-hog"></span>
+
+## Select Devnet and get native test tokens
 
 Check the network dropdown. New wallets start on **Devnet**; existing wallets keep their saved selection.
 
-Open **Assets** and click **Request test HOG**. Wait for the balance to update. Use test HOG for transfers and contract storage funding. Gas costs zero tokens.
+Open **Assets** and click **Request test HOG**, the wallet's label for native test tokens. Wait for the balance to update. These tokens have no monetary value. They fund storage deposits and provide scheduling capacity under load; there are no conventional gas fees.
 
 ![Wallet showing the Devnet selector, Assets tab, and Request test HOG button](/images/wallet/wallet-devnet.png)
 
@@ -73,5 +75,5 @@ For a source build, follow the [wallet README](https://github.com/groundhogchain
 | Chrome cannot find the manifest | Select the extracted `thruput-wallet` folder, or `dist` for a source build. |
 | Wrong network | Select the app's network in the wallet, then reconnect from the app. |
 | Connection no longer works after a Devnet reset | Select Devnet again to refresh its network identity, then reconnect. |
-| No test HOG yet | Wait for the request to finish and follow any displayed cooldown or error. |
+| No native test tokens yet | Wait for the request to finish and follow any displayed cooldown or error. |
 | A transaction has a hash but no result | Inspect that hash in the [Explorer](/tools/block-explorer/) or with [the CLI](/cli/transactions/#look-up-one-transaction) before submitting another update. |

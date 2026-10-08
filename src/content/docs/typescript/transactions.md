@@ -7,7 +7,7 @@ A binding builds an application call. A wallet wraps that call into an authorize
 
 ## Send from a script
 
-Set up and fund the account from [Use a signer in scripts](/typescript/accounts/). For this small-transfer example, choose a recipient that already has HOG. Create `src/send.ts`:
+Set up and fund the account from [Use a signer in scripts](/typescript/accounts/). For this small-transfer example, choose a recipient that already has native tokens. Create `src/send.ts`:
 
 ```ts
 import { addressFromHex, gasAmount, parseUnits, toHex0x } from "@groundhogchain/client";
@@ -99,4 +99,4 @@ A batch that enqueues requests commits their acceptance, not their later executi
 
 Each child call has a budget; the root needs enough gas for the wallet wrapper and its child calls. The numbers above are example transfer budgets, not universal defaults. `walletGasLimit(invocations, overhead)` sums invocation budgets and an overhead that you have measured for your workload. For typed calls, pass each call's `invocation` field.
 
-Gas costs zero tokens, but the declared root limit uses scheduling capacity backed by the sender's free HOG. Storage deposits are separate. A new recipient's first credit must cover its balance storage, so a small first transfer can fail. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+There are no conventional gas fees, but the declared root limit uses scheduling capacity backed by the sender's unlocked native tokens. Storage deposits are separate. A new recipient's first credit must cover its balance storage, so a small first transfer can fail. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).

@@ -67,22 +67,22 @@ client.with_gas_limit(100_000).transfer(&to, amount);
 
 ## Throughput: Balance-Proportional Scheduling
 
-Your free HOG token balance determines your share of network throughput.
+Your unlocked native-token balance determines your share of network throughput.
 
 - **Under capacity**: scheduling contention is lower, but admission, propagation, conflicts, and expiry still affect inclusion.
-- **Under congestion**: throughput is allocated proportionally to free HOG balances. If you hold 2x the HOG, you get roughly 2x the throughput.
+- **Under congestion**: throughput is allocated proportionally to unlocked native-token balances. If you hold twice the tokens, you get roughly twice the throughput for comparable demand.
 
-The mechanism: HOG cycles between "ready" and "scheduled" states via age-weighted queuing. No tokens are consumed. No tokens are burned.
+The mechanism: native tokens cycle between "ready" and "scheduled" states via age-weighted queuing. No tokens are consumed. No tokens are burned.
 
-HOG transferred between accounts enters the recipient's scheduling queue as newly received capacity. It does not carry the sender's accumulated scheduling age. This is why a transaction can transfer HOG from the same balance that scheduled it without creating refund accounting or extra contention.
+Native tokens transferred between accounts enter the recipient's scheduling queue as newly received capacity. They do not carry the sender's accumulated scheduling age. This is why a transaction can transfer native tokens from the same balance that scheduled it without creating refund accounting or extra contention.
 
 
 
 ## Storage Costs: Deposits, Not Fees
 
-Writing data to the ledger locks HOG according to the storage type and size. Deleting data returns its deposit. This is a refundable deposit, not a burn.
+Writing data to the ledger locks native tokens according to the storage type and size. Deleting data returns its deposit. This is a refundable deposit, not a burn.
 
-- Every HOG locked for storage is one less HOG contributing to your throughput share.
+- Every native token locked for storage is one less token contributing to your throughput share.
 - Current source uses a configured storage cost model: base item cost, bytestring per-byte cost, contract deployment cost, auth key cost, RCQ entry cost, replay-cache entry cost, and balance cost.
 - Dynamic pricing based on network state size is a target design, not the current implementation.
 - Your contract does not calculate or manage deposits. The runtime handles storage cost accounting at commit.

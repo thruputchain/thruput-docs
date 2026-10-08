@@ -7,7 +7,7 @@ description: Use an explicit mutation to request approval, save signed transacti
 
 ## Execute a typed call
 
-This component sends a small HOG transfer to an already funded recipient. The application supplies `savePending`, which must durably save the approved transaction before resolving:
+This component sends a small native-token transfer to an already funded recipient. The application supplies `savePending`, which must durably save the approved transaction before resolving:
 
 ```tsx
 import { gasAmount, parseUnits, toHex0x, TransactionObservationError, type ContractAddress } from "@groundhogchain/client";
@@ -39,9 +39,9 @@ export function SendHog({ receiver, savePending }: {
   }
 
   return (
-    <section aria-label="Send HOG">
+    <section aria-label="Send native tokens">
       <button disabled={wallet.status !== "connected" || execution.isPending || unresolved} onClick={send}>
-        {execution.isPending ? "Waiting for approval or confirmation…" : "Send HOG"}
+        {execution.isPending ? "Waiting for approval or confirmation…" : "Send native tokens"}
       </button>
       {execution.error ? <p role="alert">{execution.error.message}</p> : null}
       {unresolved ? <p>Check the saved transaction before starting another transfer.</p> : null}

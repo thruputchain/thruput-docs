@@ -5,7 +5,9 @@ description: Use the public client and TanStack Query to display typed contract 
 
 Compose the TypeScript client's event actions with TanStack Query. Generated bindings provide filtering and decoding; React components provide loading, empty, error, and refresh states.
 
-## Display recent HOG transfers
+<span id="display-recent-hog-transfers"></span>
+
+## Display recent native-token transfers
 
 ```tsx
 import { toHex0x } from "@groundhogchain/client";
@@ -30,7 +32,7 @@ export function RecentTransfers() {
   });
 
   return (
-    <section aria-label="Recent HOG transfers">
+    <section aria-label="Recent native-token transfers">
       {transfers.isLoading ? <p>Loading transfers…</p> : null}
       {transfers.error ? <p role="alert">{transfers.error.message}</p> : null}
       {transfers.data?.events.length === 0 ? <p>No transfers in this page.</p> : null}

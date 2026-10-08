@@ -40,7 +40,7 @@ const result = await wallet.deployContractAndWait(deployment, {
 console.log("Deployed:", toHex0x(result.address));
 ```
 
-`amount` is explicit raw HOG funding for the target contract. The example allocation and gas budgets are not universal costs. `0n` skips the funding transfer. The sender still needs scheduling capacity for the root transaction.
+`amount` is explicit native-token funding in base units for the target contract. The example allocation and gas budgets are not universal costs. `0n` skips the funding transfer. The sender still needs scheduling capacity for the root transaction.
 
 Funding, deployment, and the optional initializer form one atomic operation. The initializer targets the predicted address and sees the wallet as its caller. If it fails, the operation rolls back. The helper waits for success and verifies the returned deployment address.
 

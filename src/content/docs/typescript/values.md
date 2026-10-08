@@ -17,7 +17,7 @@ const oneHog = parseUnits("1", 7);    // 10000000n
 
 Both helpers support 0–255 decimals and signed amounts. Parsing rejects whitespace, exponents, and excess precision rather than rounding. `ParseUnitsError.code` is `malformed` or `precision`; invalid decimal counts throw `RangeError`.
 
-HOG has seven decimal places. Other tokens choose their own decimals. Check positivity and the contract's integer bounds separately. Avoid converting amounts to `number`, which can lose precision.
+The native token has seven decimal places. Other tokens choose their own decimals. Check positivity and the contract's integer bounds separately. Avoid converting amounts to `number`, which can lose precision.
 
 ## Convert addresses and hashes
 
@@ -33,7 +33,7 @@ export function parseInputs(addressText: string, transactionText: string) {
 
 These inputs use `0x`-prefixed hex. Provider session network hashes use a different wire format: 64 lowercase hex characters without `0x`. Convert explicitly when crossing the [wallet provider](/tools/wallet-provider/#canonical-data-and-limits) boundary.
 
-Use `gasAmount(500_000n)` for a typed gas budget. A gas amount is a computation limit, not a HOG amount.
+Use `gasAmount(500_000n)` for a typed gas budget. A gas amount is a computation limit, not a native-token amount.
 
 ## Store values in application data
 

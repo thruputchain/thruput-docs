@@ -5,7 +5,9 @@ description: Read an existing contract with typed views, handle read failures, a
 
 A view simulates a contract call against committed state without submitting a transaction. It needs a public client and a binding, not a signer.
 
-## Read the existing HOG contract
+<span id="read-the-existing-hog-contract"></span>
+
+## Read the existing native-token contract
 
 Use the `src/client.ts` from [Connect to a network](/typescript/connect/). Create `src/read.ts`:
 
@@ -17,7 +19,7 @@ import { client } from "./client.js";
 
 const hog = getContract({ binding: ERC20.v0_1, address: HOG_ADDRESS, client });
 const result = await hog.totalSupply.view({ args: undefined });
-console.log("HOG supply:", formatUnits(result.value, 7));
+console.log("Native-token supply:", formatUnits(result.value, 7));
 console.log("Read at block:", result.height.toString());
 ```
 
@@ -25,7 +27,7 @@ console.log("Read at block:", result.height.toString());
 npx tsx src/read.ts
 ```
 
-The client supplies the standard ERC-20 binding, and the protocol package supplies the deployed HOG address. No Rust contract or generated application file is needed for this example.
+The client supplies the standard ERC-20 binding, and the protocol package supplies the deployed native-token address as `HOG_ADDRESS`. No Rust contract or generated application file is needed for this example.
 
 ## Pass arguments and caller context
 

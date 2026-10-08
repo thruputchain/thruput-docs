@@ -15,7 +15,8 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | `groundhog init` | Initialize profiles and check setup; offer initial key creation interactively | [CLI quickstart](/get-started/cli/) |
 | `groundhog init --non-interactive --generate-key` | Explicitly authorize initial key creation without prompts | [Automation](/cli/automation/) |
 | `groundhog status [--profile NAME]` | Inspect project, key, compiler, and runtime readiness | [Troubleshooting](/cli/troubleshooting/) |
-| `groundhog new NAME [--template counter\|stub]` | Create a contract project | [Create a project](/cli/create-project/) |
+| `groundhog new [NAME] [--path PATH] [--template counter\|counter-app]` | Create a minimal contract by default; omit the name for interactive setup | [Create a project](/cli/create-project/) |
+| `groundhog templates list` / `groundhog templates show NAME` | Discover named templates and their prerequisites offline | [Choose a template](/cli/create-project/#choose-a-template) |
 | `groundhog completion SHELL` | Print shell completions | `groundhog completion --help` |
 | `groundhog COMMAND --help` | Print the installed command's options | Available on each command |
 
@@ -44,9 +45,9 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | `wallet create [--key NAME] [--name NAME]` | Derive and save an empty native account binding | [Create a wallet](/cli/wallets/#create-a-key-and-wallet) |
 | `wallet ls` / `wallet use NAME` | List or select a profile wallet | [Select an account](/cli/wallets/#select-an-account) |
 | `wallet rm NAME` | Remove a local binding | Does not remove onchain state |
-| `balance [TARGET]` | Read native HOG balance | [Funding](/cli/wallets/#fund-and-transfer) |
+| `balance [TARGET]` | Read the native-token balance | [Funding](/cli/wallets/#fund-and-transfer) |
 | `airdrop [RECIPIENT]` | Request test funding | [Faucet](/tools/faucet/) |
-| `transfer RECIPIENT AMOUNT` | Transfer HOG from the selected account | [Funding and transfers](/cli/wallets/#fund-and-transfer) |
+| `transfer RECIPIENT AMOUNT` | Transfer native tokens from the selected account | [Funding and transfers](/cli/wallets/#fund-and-transfer) |
 
 ## Build and Test
 
@@ -81,7 +82,7 @@ description: Groundhog CLI commands, common options, and links to task instructi
 
 | Command or option | Purpose | Usage |
 | --- | --- | --- |
-| `deploy --fund HOG` | Deploy and fund a contract from a native account | [Deploy and call](/cli/deploy-and-call/) |
+| `deploy --fund AMOUNT` | Deploy and fund a contract with native tokens | [Deploy and call](/cli/deploy-and-call/) |
 | `deploy --init METHOD --init-arg VALUE` | Initialize atomically with deployment | [Initialization](/cli/deploy-and-call/#include-initialization) |
 | `deploy --artifact PATH --alias NAME` | Select an artifact and saved alias | [Deployment](/cli/deploy-and-call/#deploy-an-artifact) |
 | `call CONTRACT METHOD [ARGS...]` | Submit a signed contract invocation | [Calls](/cli/deploy-and-call/#submit-a-call) |
@@ -117,8 +118,8 @@ description: Groundhog CLI commands, common options, and links to task instructi
 | `groundhog skill install [--global] [--agent NAME]` | Install the maintained skill through `npx skills`; `--agent` is repeatable | [Install the skill](/cli/agent-tools/#install-the-maintained-skill) |
 | `groundhog skill update [--global]` | Update only the `groundhog` skill in the selected scope; requires an existing installation | [Update the skill](/cli/agent-tools/#update-an-installed-skill) |
 | `skill install --yes` / `skill update --yes` | Authorize npm execution and skill changes; unattended installation also needs `--agent` | [Automate setup](/cli/agent-tools/#automate-skill-setup) |
-| `groundhog skill show [TOPIC] [--all]` | Print bundled Markdown offline; `TOPIC` and `--all` are mutually exclusive | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |
-| `groundhog skill list` | List bundled topic names | [Read guidance](/cli/agent-tools/#read-bundled-guidance-offline) |
+| `groundhog skill show [TOPIC] [--global]` | Read an installed skill file offline; current-directory installation before global unless `--global` is set | [Read guidance](/cli/agent-tools/#read-installed-guidance-offline) |
+| `groundhog skill list [--global]` | List reference names from the selected installed skill | [Read guidance](/cli/agent-tools/#read-installed-guidance-offline) |
 | `groundhog docs [--foreground] [--port PORT]` | Serve the bundled site in the foreground; default port `4321`, `0` selects a free port | [Serve docs](/cli/agent-tools/#serve-local-documentation) |
 | `groundhog docs --dir PATH` | Serve a trusted local snapshot | [Snapshot override](/cli/agent-tools/#use-a-trusted-site-snapshot) |
 | `groundhog docs --background [--port PORT]` | Start or reuse a matching background server; conflicts with `--foreground` | [Serve docs](/cli/agent-tools/#serve-local-documentation) |

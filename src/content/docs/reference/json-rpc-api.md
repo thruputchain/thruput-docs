@@ -192,7 +192,7 @@ Clients should compare `networkHash` with the expected network before signing. T
 
 ### `groundhog_requestAirdrop`
 
-Request an idempotent native HOG airdrop.
+Request an idempotent native-token airdrop.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -273,7 +273,7 @@ Execute a read-only contract invocation against committed state. The invocation 
 
 ### `groundhog_getBalance`
 
-Read the latest committed native HOG balance.
+Read the latest committed native-token balance.
 
 | Parameter | Type | Description |
 | --- | --- | --- |

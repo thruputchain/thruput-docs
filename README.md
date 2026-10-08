@@ -124,7 +124,8 @@ To promote another guide:
 1. Obtain `agent-guide.md` from the explicitly selected CLI release and verify it
    against that release's `SHA256SUMS`. Do not select the latest prerelease
    automatically. For a source preview, generate/check it at the recorded commit
-    and compare it with that build's `groundhog skill show --all`.
+    and validate it with that source revision's artifact checks. Installed skill
+    output is not a CLI release artifact.
 2. Add those unchanged bytes at `public/agents/<cli-version>/agent-guide.md`.
    Retain earlier version paths. Never replace an existing version with different
    bytes; a corrected guide needs a new CLI release.

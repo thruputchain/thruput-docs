@@ -3,7 +3,7 @@ title: Project structure
 description: Understand the files, build artifacts, and SDK layers in a CLI-generated contract project.
 ---
 
-`groundhog new` creates a Cargo project with a contract, tests, compiler settings, and CLI configuration. Keep its generated dependency versions and toolchain together.
+`groundhog new` creates a minimal Cargo contract project by default. Use `groundhog new my-counter --template counter` for the counter layout below, including its example methods and tests. Keep the generated dependency versions, compiler settings, and CLI configuration together.
 
 ## Generated files
 

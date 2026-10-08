@@ -99,7 +99,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | --- | --- |
 | `prepareContractDeployment({ deployer, contract, deploymentNonce? })` | Contract hash, nonce, and predicted address; no submission |
 | `rv32Contract(artifact)` | Protocol wrapper for nonempty artifact bytes |
-| `DeploymentOptions` | Required `gasLimit` and raw HOG `amount`; optional `initializer` |
+| `DeploymentOptions` | Required `gasLimit` and native-token `amount` in base units; optional `initializer` |
 | `prepareDeployment(deployment, options)` | Unsigned deployment transaction |
 | `deployContract(deployment, options)` | Submitted hash and predicted address; signer wallet |
 | `deployContractAndWait(deployment, options, controls?)` | Successful deployment with verified address; provider form requires lifecycle controls |

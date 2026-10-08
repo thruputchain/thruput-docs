@@ -14,7 +14,7 @@ You can also explore the [full counter example on GitHub](https://github.com/gro
 Complete [CLI installation and Cargo access](/cli/install/). For deployment, use a funded Devnet account from the [CLI quickstart](/get-started/cli/).
 
 ```bash
-groundhog new counter
+groundhog new counter --template counter
 cd counter
 ```
 
@@ -74,7 +74,7 @@ groundhog deploy --profile devnet --fund 10 \
 groundhog view counter get --profile devnet
 ```
 
-Funding, deployment, and initialization happen in one transaction. `10` HOG is an example allocation, not a fixed deployment fee. Your new counter should read `10`.
+Funding, deployment, and initialization happen in one transaction. `10` native tokens is an example allocation, not a fixed deployment fee. Your new counter should read `10`.
 
 Save the printed deployment address. Part 2 uses this address and the contract spec produced by the build.
 
@@ -94,7 +94,7 @@ For isolated local work, follow [Run a local node](/cli/local-node/) and use its
 ```text
 Follow Build a counter, part 1:
 https://docs.groundhog.dev/tutorials/build-a-counter/
-Start with groundhog new counter, without cloning an examples repo.
+Start with groundhog new counter --template counter, without cloning an examples repo.
 Run the native and RV32 checks, build, and deploy using my
 configured Devnet account. Report the actual address, transaction hash,
 and read value. Keep the generated dependency configuration and report

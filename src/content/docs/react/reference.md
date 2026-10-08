@@ -68,7 +68,7 @@ description: Provider props, wallet hooks, query hooks, transaction hooks, and r
 
 | API | Inputs / result |
 | --- | --- |
-| `useBalance({ address?, query? }?)` | Native HOG balance |
+| `useBalance({ address?, query? }?)` | Native-token balance |
 | `useTokenBalance({ token?, address?, query? })` | Standard ERC-20 balance |
 | `BalanceAddress` | Hex string or SDK-branded address bytes |
 | `BalanceData` | `{ rawBalance: bigint; height: bigint }` |

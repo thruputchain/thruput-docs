@@ -3,7 +3,7 @@ title: React quickstart
 description: Display live Devnet contract data in React with a typed query and a refresh action.
 ---
 
-Build a React page that reads the HOG token's total supply from Devnet and refreshes it on demand. You do not need a wallet, the CLI, or your own contract.
+Build a React page that reads the native token's total supply from Devnet and refreshes it on demand. This experimental token has no monetary value. You do not need a wallet, the CLI, or your own contract.
 
 ## 1. Create the application
 
@@ -76,12 +76,12 @@ export default function App() {
 
   return (
     <main>
-      <h1>HOG on Devnet</h1>
+      <h1>Native token on Devnet</h1>
       {supply.isPending && <p>Reading the contract…</p>}
       {supply.error && <p role="alert">{supply.error.message}</p>}
       {supply.data && (
         <>
-          <p>Supply: {formatUnits(supply.data.value, 7)} HOG</p>
+          <p>Supply: {formatUnits(supply.data.value, 7)} native tokens</p>
           <p>Read at block: {supply.data.height.toString()}</p>
         </>
       )}
@@ -118,7 +118,7 @@ Build the Thruput React quickstart:
 https://docs.groundhog.dev/get-started/react/
 Use a React TypeScript Vite project, the latest published Thruput
 packages, and hosted Devnet. Configure package access through my environment.
-Display the HOG total supply and its read height with useContractView.
+Display the native-token total supply and its read height with useContractView.
 Include loading and error states and a Refresh button. Run the build
 and verify the actual page result. No CLI, contract deployment, or wallet
 connection is needed for this read-only example. Report package or network

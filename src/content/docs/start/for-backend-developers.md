@@ -42,8 +42,8 @@ The balance constraint works the same way. If two concurrent withdrawals togethe
 - **No ad-hoc queries.** Storage is key-value with typed values. You access data by key, not by query. An indexer provides query capabilities off-chain.
 - **No JOINs.** If you need data from two Maps, you read both explicitly.
 - **Deterministic execution.** Use block context rather than the host clock. Contract code cannot make HTTP calls or use the host's random-number generator.
-- **Storage deposits.** Stored data locks HOG according to its type and size. Deleting the data returns the deposit.
-- **Gas limits exist but cost zero.** Gas meters computation (prevents infinite loops) but no tokens are burned. Your free HOG balance provides scheduling capacity. The declared gas limit determines how much capacity the transaction uses.
+- **Storage deposits.** Stored data locks native tokens according to its type and size. Deleting the data returns the deposit.
+- **No conventional gas fees.** Gas meters computation (prevents infinite loops) but no tokens are burned. Your unlocked native-token balance provides scheduling capacity under load. The declared gas limit determines how much capacity the transaction uses.
 
 ---
 

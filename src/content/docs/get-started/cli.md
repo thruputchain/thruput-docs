@@ -1,9 +1,9 @@
 ---
 title: CLI quickstart
-description: Create a Devnet wallet, request test HOG, and inspect your first transaction from the terminal.
+description: Create a Devnet wallet, request native test tokens, and inspect your first transaction from the terminal.
 ---
 
-Create a wallet on Devnet, fund it with test HOG, and inspect the funding transaction. You do not need a contract project or a local node.
+Create a wallet on Devnet, fund it with native test tokens, and inspect the funding transaction. These tokens have no monetary value. You do not need a contract project or a local node.
 
 **Before you start:** [install the latest CLI](/cli/install/). Run these commands outside an existing Thruput project so they use your global configuration.
 
@@ -36,9 +36,9 @@ groundhog airdrop --profile devnet
 groundhog balance --profile devnet
 ```
 
-Confirm the airdrop and wait for its result. You should have a positive HOG balance. Save the transaction hash printed by the airdrop command.
+Confirm the airdrop and wait for its result. You should have a positive native-token balance. Save the transaction hash printed by the airdrop command.
 
-Devnet HOG is for testing. The faucet selects the amount; you do not need an amount flag.
+The faucet selects the test-token amount; you do not need an amount flag. CLI output currently labels the native token `HOG`.
 
 ## 4. Inspect the transaction
 
@@ -63,7 +63,8 @@ Copy this prompt into your agent:
 ```text
 Help me complete the Groundhog CLI quickstart:
 https://docs.groundhog.dev/get-started/cli/
-Use the latest CLI and read groundhog skill show cli. Set up a Devnet
+Use the latest CLI, install the groundhog skill, and read groundhog skill show cli.
+Set up a Devnet
 wallet without creating a contract project or running a local node.
 Preserve any existing keys and configuration. Request test funds,
 check the wallet balance, and inspect the airdrop transaction.

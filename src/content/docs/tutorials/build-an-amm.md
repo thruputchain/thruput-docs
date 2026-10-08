@@ -31,7 +31,7 @@ cargo test -p swap-factory --test factory create_pair_brings_up_pool --locked
 
 Open `contracts/swap-factory/src/factory.rs` and `tests/factory.rs`. Creation derives and funds three addresses, deploys the LP token, handler, and driver, initializes their relationships, and records the pair. The tests verify the resulting pool and funding rules.
 
-The factory takes funding from the caller through an allowance. It does not let arbitrary pool creators spend the factory's own HOG. Pool addresses are deterministic for the token pair and configured code hashes.
+The factory takes funding from the caller through an allowance. It does not let arbitrary pool creators spend the factory's own native tokens. Pool addresses are deterministic for the token pair and configured code hashes.
 
 **Checkpoint:** a pool is created in the test environment with its contracts connected correctly.
 

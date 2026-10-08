@@ -19,7 +19,7 @@ Help me deploy and use my first Thruput counter contract on Devnet.
    Read its index and the relevant setup and contract instructions.
 4. Configure Devnet, create a wallet, and request test funds with
    groundhog airdrop. Verify the balance before deployment.
-5. Scaffold a counter contract, build it, and run its tests.
+5. Run groundhog new counter --template counter, then build it and run its tests.
 6. Deploy and initialize the counter to 10. Call increment with 5,
    then verify that its read-only view returns 15.
 

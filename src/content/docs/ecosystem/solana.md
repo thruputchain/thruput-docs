@@ -60,7 +60,7 @@ The receiver sees the calling contract as its immediate caller. [Cross-Contract 
 | Per-user state account | Often a `Map` entry under the contract |
 | Serialized account data | Typed storage handles |
 | Account-level write conflicts | Storage-type merge rules, including compatible shared-key deltas |
-| Rent-exempt storage balance | Storage deposit backed by HOG |
+| Rent-exempt storage balance | Storage deposit backed by native tokens |
 | Compute-unit budget | Gas limit, with no token fee for gas |
 | Signer privileges passed through CPI | Immediate caller identity and explicit runtime auth tokens |
 
@@ -72,7 +72,7 @@ Thruput has no caller-supplied account array. That removes account-list construc
 
 ### Rent and Account Lifecycle
 
-Solana accounts hold a refundable minimum lamport balance for their storage. Thruput storage also requires funding: it locks HOG according to the data's type and size, and releases the deposit when data is deleted. The runtime accounts for it, but the owning address must have enough funds.
+Solana accounts hold a refundable minimum lamport balance for their storage. Thruput storage also requires funding: it locks native tokens according to the data's type and size, and releases the deposit when data is deleted. The runtime accounts for it, but the owning address must have enough funds.
 
 ### Compute Unit Budgets
 

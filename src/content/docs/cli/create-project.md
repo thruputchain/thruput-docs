@@ -8,17 +8,28 @@ Use `groundhog new` to create a Rust contract project. If this is your first set
 ## Choose a template
 
 ```bash
-groundhog new my-counter
+groundhog new my-counter --template counter
 cd my-counter
 ```
 
-The default `counter` template includes contract methods, an event, an error, and tests. To start with less example logic, use the `stub` template instead:
+The explicit `counter` template includes counter methods, an event, an error, and tests. Without `--template`, the CLI creates a minimal contract:
 
 ```bash
-groundhog new my-contract --template stub
+groundhog new my-contract
 ```
 
-Both templates include the files needed for native tests, RV32 builds, and integration tests. Keep the generated `Cargo.toml`, `rust-toolchain.toml`, and `.cargo/` configuration together. You do not need to select SDK or compiler versions yourself.
+The minimal project and named templates include the files needed for native tests, RV32 builds, and integration tests. Keep the generated `Cargo.toml`, `rust-toolchain.toml`, and `.cargo/` configuration together. You do not need to select SDK or compiler versions yourself.
+
+Discover named templates and their prerequisites without network access:
+
+```bash
+groundhog templates list
+groundhog templates show counter-app
+```
+
+`counter-app` adds a local React application, generated bindings, and a temporary browser wallet. It separates contract deployment (`npm run contract:deploy`) from frontend startup (`npm run dev`). Use [Build a counter](/tutorials/build-a-counter/) to build the application step by step instead.
+
+Run `groundhog new` without a name for interactive setup, or pass `--path PATH` to select a destination. The destination must be new or empty.
 
 ## Find the code
 

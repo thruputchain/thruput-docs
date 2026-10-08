@@ -79,7 +79,7 @@ Thruput needs no gas price estimation because the token price of gas is zero. Ga
 
 ## Throughput
 
-Your free HOG balance provides scheduling capacity. Compatible storage changes do not guarantee inclusion in the next block: admission, capacity, propagation, and expiry still matter. See [Balance-Proportional Scheduling](/how-it-works/storage-economics/#balance-proportional-scheduling) for the allocation rules.
+Your unlocked native-token balance provides scheduling capacity. Compatible storage changes do not guarantee inclusion in the next block: admission, capacity, propagation, and expiry still matter. See [Balance-Proportional Scheduling](/how-it-works/storage-economics/#balance-proportional-scheduling) for the allocation rules.
 
 ## Storage Costs
 

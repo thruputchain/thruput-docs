@@ -1,9 +1,9 @@
 ---
 title: TypeScript quickstart
-description: Connect to Devnet and read the native HOG contract with a typed TypeScript client.
+description: Connect to Devnet and read the native-token contract with a typed TypeScript client.
 ---
 
-Read the HOG token's total supply from Devnet with a typed contract call. This path needs Node.js and package access, but no CLI, signing key, or contract deployment.
+Read the native token's total supply from Devnet with a typed contract call. This experimental token has no monetary value. This path needs Node.js and package access, but no CLI, signing key, or contract deployment.
 
 ## 1. Create a project
 
@@ -36,7 +36,7 @@ async function main() {
   const hog = getContract({ binding: ERC20.v0_1, address: HOG_ADDRESS, client });
   const supply = await hog.totalSupply.view({ args: undefined });
 
-  console.log("HOG supply:", formatUnits(supply.value, 7));
+  console.log("Native-token supply:", formatUnits(supply.value, 7));
   console.log("Read at block:", supply.height.toString());
 }
 
@@ -46,7 +46,7 @@ main().catch((error: unknown) => {
 });
 ```
 
-`devnet()` selects the hosted network. The SDK includes the HOG contract's standard binding, so you do not need to generate one. `supply.value` is a typed integer; formatting it displays HOG rather than base units.
+`devnet()` selects the hosted network. The SDK includes the native-token contract's standard binding, and `HOG_ADDRESS` is its protocol constant, so you do not need to generate a binding. `supply.value` is a typed integer; formatting it displays whole-token units rather than base units.
 
 ## 3. Run it
 
@@ -54,7 +54,7 @@ main().catch((error: unknown) => {
 npx tsx src/index.ts
 ```
 
-You should see **HOG supply** and **Read at block**, each followed by a value. Run the command again to make another read. The values come from Devnet and can change; there is no fixed expected block number.
+You should see **Native-token supply** and **Read at block**, each followed by a value. Run the command again to make another read. The values come from Devnet and can change; there is no fixed expected block number.
 
 This is a read-only call. It does not request wallet permission or submit a transaction.
 
@@ -68,7 +68,7 @@ Use [Read contract data](/typescript/reads/) for arguments, caller context, and 
 Build the Thruput TypeScript quickstart:
 https://docs.groundhog.dev/get-started/typescript/
 Use the latest published SDK packages and the hosted Devnet.
-Configure package access through my environment. Create the typed HOG
+Configure package access through my environment. Create the typed native-token
 total-supply read shown in the guide and run it. Show the actual supply
 and block height, or report the exact error if the request fails.
 Do not install the Rust toolchain, deploy a contract, or create a wallet

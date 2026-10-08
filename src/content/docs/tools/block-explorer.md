@@ -11,7 +11,7 @@ Use the [Devnet explorer](https://explorer.thruput.network/) to look up transact
 2. Paste a transaction hash or address into the search field. Use the full `0x`-prefixed, 32-byte value (64 hexadecimal characters after `0x`).
 3. Select **Search**.
 
-The home page also lists recent HOG transfers. Select a transaction to inspect it, or follow an address link to view that address.
+The home page also lists recent native-token transfers. Select a transaction to inspect it, or follow an address link to view that address.
 
 ### Transactions
 
@@ -25,9 +25,9 @@ Events without a supported decoder appear as raw topics and data.
 
 ### Addresses and Tokens
 
-The address page shows the native HOG balance. For non-token addresses, it also shows recent transactions and sent or received HOG transfers. Recognized token contracts show token metadata and token transfer history. Other contracts can show their emitted events.
+The address page shows the native-token balance. For non-token addresses, it also shows recent transactions and sent or received native-token transfers. Recognized token contracts show token metadata and token transfer history. Other contracts can show their emitted events.
 
-Address transaction history combines transactions whose root invocation targets the address with HOG transfer activity. It does not cover every nested invocation or every token transfer involving the address.
+Address transaction history combines transactions whose root invocation targets the address with native-token transfer activity. It does not cover every nested invocation or every token transfer involving the address.
 
 ### Share a Result
 

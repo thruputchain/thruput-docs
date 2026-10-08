@@ -42,7 +42,7 @@ See [Authorization](/how-it-works/authorization/) for the signature preimage and
 
 ## Stage 3: Scheduling
 
-Verified transactions are queued by account with balance-proportional scheduling. When the coordinator asks for a block proposal, the mempool selects transactions from accounts whose HOGs have waited longest. See [Compute, Capacity & Storage](/how-it-works/storage-economics/) for how scheduling priority works.
+Verified transactions are queued by account with balance-proportional scheduling. When the coordinator asks for a block proposal, the mempool selects transactions from accounts whose token-backed capacity has waited longest. See [Compute, Capacity & Storage](/how-it-works/storage-economics/) for how scheduling priority works.
 
 ## Stage 4: Execution
 
