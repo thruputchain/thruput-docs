@@ -8,7 +8,7 @@ All transactions in a block read from the **same frozen snapshot**: the committe
 - Reads include the transaction's own changes and successful child calls, over the stable block snapshot.
 - Each transaction produces **deltas** (how state should change), not final state.
 
-The shared snapshot is a useful database analogy, but Thruput uses typed delta reservation rather than SQL isolation and conflict rules.
+The shared snapshot is a useful database analogy, but Stellar Thruput uses typed delta reservation rather than SQL isolation and conflict rules.
 
 `RetrocausalQueue` has separate observation rules: a consumer can observe concurrent inserts in the same block. The proposer records these observations for validator replay.
 

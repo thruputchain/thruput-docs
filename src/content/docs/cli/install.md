@@ -8,7 +8,7 @@ Install the latest `groundhog` release. The CLI selects the dependencies and com
 ## Before you start
 
 - Install the current stable Rust toolchain with [rustup](https://rustup.rs/).
-- Obtain access to the Thruput Cargo registry from your onboarding contact. Repository access alone does not grant package access.
+- Obtain access to the Stellar Thruput Cargo registry from your onboarding contact. Repository access alone does not grant package access.
 
 Check that Cargo is available:
 

@@ -31,7 +31,7 @@ The `.gitignore` excludes build output and project-local runtime state.
 
 ## Build artifacts
 
-`groundhog build` compiles the entrypoint for RV32, Thruput's 32-bit RISC-V contract target. It lowers the compiler output into an artifact the node can execute.
+`groundhog build` compiles the entrypoint for RV32, Stellar Thruput's 32-bit RISC-V contract target. It lowers the compiler output into an artifact the node can execute.
 
 For `my-counter`, the output under `target/groundhog/` includes:
 

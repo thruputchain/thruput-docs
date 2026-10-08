@@ -1,6 +1,6 @@
 ---
 title: Storage Types
-description: API reference for Thruput storage types.
+description: API reference for Stellar Thruput storage types.
 ---
 
 | Area | Links |

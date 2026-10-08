@@ -28,7 +28,7 @@ export const sections: DocumentationSection[] = [
     ],
   },
   {
-    id: 'architecture', label: 'Understand Thruput', href: '/architecture/',
+    id: 'architecture', label: 'Understand Stellar Thruput', href: '/architecture/',
     items: [
       'architecture',
       'how-it-works/architecture',

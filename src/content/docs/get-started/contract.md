@@ -1,6 +1,6 @@
 ---
 title: Contract quickstart
-description: Create, test, and deploy a Rust counter contract to Thruput Devnet.
+description: Create, test, and deploy a Rust counter contract to Stellar Thruput Devnet.
 ---
 
 Deploy a counter to Devnet, increase its value, and read the result.
@@ -63,7 +63,7 @@ The result should be **15**. You have built, tested, deployed, and called a cont
 ## Use a coding agent
 
 ```text
-Help me complete the Thruput contract quickstart:
+Help me complete the Stellar Thruput contract quickstart:
 https://docs.groundhog.dev/get-started/contract/
 Use the latest CLI, install the groundhog skill for this project, and read
 groundhog skill show contracts. Scaffold with --template counter. Check CLI setup and

@@ -116,7 +116,7 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
       .sort((a, b) => (order.get(a.url) ?? entries.length) - (order.get(b.url) ?? entries.length)) };
   }).filter(section => section.pages.length);
   const orderedPages = grouped.flatMap(section => section.pages);
-  const index = from => `# Thruput documentation\n\n${provenance(snapshot)}` +
+  const index = from => `# Stellar Thruput documentation\n\n${provenance(snapshot)}` +
     `Read a focused section or an individual page before loading the full documentation.\n\n` +
     `- [Complete documentation](${relativeLink(from, 'markdown/full.md')})\n\n` +
     grouped.map(section => `## ${section.label}\n\n` +
@@ -136,7 +136,7 @@ export async function exportMarkdown({ directory, site, snapshot, sections = [],
       section.pages.map(page => render(page, path, true)).join('\n---\n\n'));
   }
   for (const path of ['markdown/full.md', 'llms-full.txt']) {
-    await write(path, `# Thruput documentation\n\n${provenance(snapshot)}` +
+    await write(path, `# Stellar Thruput documentation\n\n${provenance(snapshot)}` +
       orderedPages.map(page => render(page, path, true)).join('\n---\n\n'));
   }
   for (const [source, target] of assets) {

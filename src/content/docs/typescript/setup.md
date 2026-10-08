@@ -1,6 +1,6 @@
 ---
 title: Package setup
-description: Configure access to Thruput's JavaScript packages for TypeScript and React applications.
+description: Configure access to Stellar Thruput's JavaScript packages for TypeScript and React applications.
 ---
 
 The TypeScript client and React library are distributed through GitHub Packages. Configure registry access once, then install the packages your application imports.
@@ -8,7 +8,7 @@ The TypeScript client and React library are distributed through GitHub Packages.
 ## Before you start
 
 - Install the current Node.js LTS release and npm.
-- Obtain access to Thruput's GitHub packages.
+- Obtain access to Stellar Thruput's GitHub packages.
 - Install the [GitHub CLI](https://cli.github.com/) and sign in with `gh auth login`.
 
 ## Give npm package access

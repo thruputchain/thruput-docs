@@ -187,7 +187,7 @@ test('system theme follows docs until a manual toggle persists across the dark h
   await page.emulateMedia({ colorScheme: 'light' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   expect(await page.evaluate(() => localStorage.getItem('starlight-theme'))).toBeNull();
-  await page.getByRole('link', { name: 'Thruput homepage' }).click();
+  await page.getByRole('link', { name: 'Stellar Thruput homepage' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.emulateMedia({ colorScheme: 'light' });
@@ -204,7 +204,7 @@ test('system theme follows docs until a manual toggle persists across the dark h
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await page.getByRole('link', { name: 'Thruput homepage' }).click();
+  await page.getByRole('link', { name: 'Stellar Thruput homepage' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   expect(await page.evaluate(() => localStorage.getItem('starlight-theme'))).toBe('light');
   await page.getByRole('link', { name: 'Get Started', exact: true }).click();
@@ -266,13 +266,13 @@ test('header is centered on homepage and full-width with 20px gutters on docs', 
   }
 });
 
-test('header and page titles use Thruput while preserving the exact CLI install prompt', async ({ page }) => {
+test('header and page titles use Stellar Thruput while preserving the exact CLI install prompt', async ({ page }) => {
   for (const route of ['/', docs]) {
     await page.goto(origin + route);
-    const brand = page.locator('header').getByRole('link', { name: 'Thruput homepage', exact: true });
-    await expect(brand).toHaveText('THRUPUT');
+    const brand = page.locator('header').getByRole('link', { name: 'Stellar Thruput homepage', exact: true });
+    await expect(brand).toHaveText('STELLAR THRUPUT');
     await expect(brand).toHaveAttribute('href', '/');
-    await expect(page).toHaveTitle(/Thruput/);
+    await expect(page).toHaveTitle(/Stellar Thruput/);
     await expect(page.locator('header').getByRole('link', { name: 'About', exact: true }))
       .toHaveAttribute('href', '/architecture/');
     if (route === '/') {

@@ -1,9 +1,9 @@
 ---
 title: Wallet Extension
-description: Install Thruput Wallet in Chrome, create a test wallet, and connect it to a Devnet app.
+description: Install the wallet for Stellar Thruput in Chrome, create a test wallet, and connect it to a Devnet app.
 ---
 
-Thruput Wallet is a Chrome extension for Devnet and Localnet. The prebuilt download needs no Node.js, Rust, or package-registry access. Use a test wallet for development.
+The Stellar Thruput wallet extension supports Devnet and Localnet. It appears as **Thruput Wallet** in Chrome. The prebuilt download needs no Node.js, Rust, or package-registry access. Use a test wallet for development.
 
 ## Download and extract
 

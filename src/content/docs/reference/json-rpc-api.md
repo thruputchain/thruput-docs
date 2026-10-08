@@ -1,6 +1,6 @@
 ---
 title: JSON-RPC API
-description: Thruput JSON-RPC methods, wire types, and error codes.
+description: Stellar Thruput JSON-RPC methods, wire types, and error codes.
 ---
 
 | API property | Value |
@@ -9,7 +9,7 @@ description: Thruput JSON-RPC methods, wire types, and error codes.
 | Compatibility | Breaking wire changes increase the major version of `groundhog_version.wireFormat` |
 | Schema | [Generated OpenRPC specification](https://github.com/groundhogchain/groundhog-rpc/blob/main/crates/json-rpc/open-rpc-spec/snapshots/groundhog-spec.json) for method signatures and field types |
 
-The Thruput gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
+The Stellar Thruput gateway exposes JSON-RPC 2.0 over HTTP. For its place in the node topology, see [Networking](/how-it-works/networking/).
 
 ## Request Format
 
@@ -44,7 +44,7 @@ The wide-integer rule applies to requests, responses, and structured error data.
 
 ## Wire Design
 
-Thruput returns JSON-native objects with typed fields. Transactions use classic XDR; contract arguments and return values use CXS. Clients use the corresponding codecs for those bytes. RPC responses themselves are JSON. See [XDR Protocol](/reference/xdr-protocol/) for the encoding boundary.
+Stellar Thruput returns JSON-native objects with typed fields. Transactions use classic XDR; contract arguments and return values use CXS. Clients use the corresponding codecs for those bytes. RPC responses themselves are JSON. See [XDR Protocol](/reference/xdr-protocol/) for the encoding boundary.
 
 Storage reads preserve the protocol value kind:
 

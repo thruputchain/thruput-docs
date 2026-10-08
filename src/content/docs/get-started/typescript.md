@@ -65,7 +65,7 @@ Use [Read contract data](/typescript/reads/) for arguments, caller context, and 
 ## Use a coding agent
 
 ```text
-Build the Thruput TypeScript quickstart:
+Build the Stellar Thruput TypeScript quickstart:
 https://docs.groundhog.dev/get-started/typescript/
 Use the latest published SDK packages and the hosted Devnet.
 Configure package access through my environment. Create the typed native-token

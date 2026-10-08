@@ -55,7 +55,7 @@ start().catch((error: unknown) => {
 });
 ```
 
-The client and query cache are created once. `WalletProvider` makes the client available to Thruput hooks; it does not connect a wallet automatically.
+The client and query cache are created once. `WalletProvider` makes the client available to Stellar Thruput hooks; it does not connect a wallet automatically.
 
 ## 3. Display the result
 
@@ -114,9 +114,9 @@ See [Read contract data](/react/reads/) for arguments and query behavior, or [Co
 ## Use a coding agent
 
 ```text
-Build the Thruput React quickstart:
+Build the Stellar Thruput React quickstart:
 https://docs.groundhog.dev/get-started/react/
-Use a React TypeScript Vite project, the latest published Thruput
+Use a React TypeScript Vite project, the latest published Stellar Thruput
 packages, and hosted Devnet. Configure package access through my environment.
 Display the native-token total supply and its read height with useContractView.
 Include loading and error states and a Refresh button. Run the build

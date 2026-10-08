@@ -1,6 +1,6 @@
-# Thruput Developer Docs
+# Stellar Thruput Developer Docs
 
-Developer documentation for the [Thruput](https://groundhog.dev) L1 blockchain. Built with [Astro](https://astro.build) + [Starlight](https://starlight.astro.build).
+Developer documentation for the [Stellar Thruput](https://groundhog.dev) blockchain. Built with [Astro](https://astro.build) + [Starlight](https://starlight.astro.build).
 
 ## Development
 

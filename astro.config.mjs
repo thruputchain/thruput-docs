@@ -13,7 +13,7 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: "Thruput",
+      title: "Stellar Thruput",
       routeMiddleware: "./src/route-middleware.ts",
       customCss: ["./src/styles/custom.css"],
       components: {
