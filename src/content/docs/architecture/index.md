@@ -5,9 +5,11 @@ sidebar:
   label: Introduction
 ---
 
-Stellar Thruput is a blockchain for smart contract applications. You write contract logic in Rust and connect applications through the TypeScript client or React library.
+Stellar Thruput is a moonshot project exploring how parallel execution can make compute abundant. Transactions record compatible changes to shared state, allowing the network to combine them without requiring sequential execution.
 
-Its central idea is that transactions can update shared state by recording compatible changes. The runtime combines those changes using rules defined by the storage type.
+The project's future is open. No decisions have been made about mainnet or its relationship to Stellar. These docs describe the development network and tools available today.
+
+You write contract logic in Rust and connect applications through the TypeScript client or React library. The runtime combines changes using rules defined by the storage type.
 
 ## Record the change
 
