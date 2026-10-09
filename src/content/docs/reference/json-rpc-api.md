@@ -5,7 +5,7 @@ description: Stellar Thruput JSON-RPC methods, wire types, and error codes.
 
 | API property | Value |
 | --- | --- |
-| Wire format | `9.0.0` |
+| Wire format | `11.1.0` |
 | Compatibility | Breaking wire changes increase the major version of `groundhog_version.wireFormat` |
 | Schema | [Generated OpenRPC specification](https://github.com/groundhogchain/groundhog-rpc/blob/main/crates/json-rpc/open-rpc-spec/snapshots/groundhog-spec.json) for method signatures and field types |
 
@@ -153,11 +153,17 @@ Get the current committed chain tip.
 | Property | Contract |
 | --- | --- |
 | Parameters | None |
-| Result | `NetworkConfigParams`, the execution parameters explicitly stated by the chain |
+| Result | `ChainConfig`: explicitly stated execution parameters, plus optional authoritative `execution` context |
 | Optional integer fields | `maxSha256Buffers`, `maxCrossInvokeDepth`, `maxNewContractsPerTx`, `maxBytestringLen`, `maxContractSizeBytes`, `maxSavepointDepth`, `maxAuthTokenDepth`, `maxRv32CodeBytes`, `maxRv32MemoryBytes` |
 | Integer encoding | These bounds are `u32` JSON numbers |
 | Missing field | Unspecified by this config, not zero and not an SDK-selected default |
-| Scope | Configured execution limits; not a general storage-cost estimator or a complete list of effective runtime defaults |
+| `execution.observedTip` | Committed `height` and `blockHash` read together with the rules |
+| `execution.configHash` | Configuration and storage-model commitment for that reading |
+| `execution.effectiveLimits` | Runtime-resolved limits; omitted fields are unavailable, not zero |
+| `execution.storageCosts` | `baseDataItemCost`, `bytestringCostPerByte`, `baseContractDeploymentCost`, `contractDeploymentCostPerByte`, `authPerKeyCost`, `rcqCostPerEntry`, `replayCacheCostPerEntry`, and `balanceCost`, in native-token base units as decimal strings |
+| Reading freshness | `execution` is fetched during the request without stale-cache fallback; later transaction inclusion may use newer rules |
+| Missing `execution` | Backend cannot supply authoritative rules; do not infer zero prices from its absence |
+| Usage | [Estimate deployment funding](/cli/deploy-and-call/#estimate-deployment-funding) |
 
 ### `groundhog_serverLimits`
 
@@ -243,7 +249,7 @@ Get wire, implementation, build, and packaging-platform versions.
 
 | Response field | Contract |
 | --- | --- |
-| `wireFormat` | Wire-format SemVer, `"9.0.0"` for this contract; clients may use it for compatibility checks |
+| `wireFormat` | Wire-format SemVer, `"11.1.0"` for this contract; clients may use it for compatibility checks |
 | `implementation` | Diagnostic implementation version |
 | `commitHash` | Diagnostic build commit or `null` |
 | `platformVersion` | Optional packaging-platform version, independent of validated release identity |

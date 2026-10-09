@@ -28,6 +28,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `mainnet(options)` | Requires an explicit endpoint |
 | `defineCluster(descriptor)` | Custom name, endpoint, hash pin, and expected capabilities |
 | `getChainTip()` / `getVersion()` | Current tip and release/wire identity |
+| `getChainConfig()` | Stated limits plus optional `execution` with `observedTip`, `configHash`, runtime-resolved limits, and exact `bigint` storage prices; absent execution context is not zero cost |
 | Usage | [Connect to a network](/typescript/connect/) |
 
 ## Exact Amounts and Common Types
