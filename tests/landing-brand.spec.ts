@@ -43,7 +43,7 @@ test('homepage preserves technical content and prompt in Markdown without UI con
   const response = await request.get(origin + '/markdown/pages/index.md');
   expect(response.ok()).toBe(true);
   const markdown = await response.text();
-  for (const text of ['Stellar Thruput is a moonshot project', 'No decisions have been made about mainnet', 'without a transaction order inside each', 'without overspending', 'Blocks still form an ordered history', 'capacity constraint', '100', '−30', '−40', '−50', 'Admitted', 'Excluded', 'No conventional gas fees', 'no monetary value', 'native tokens', 'strict_inc(amount as i128)', prompt]) expect(markdown).toContain(text);
+  for (const text of ['Stellar Thruput is a moonshot inspired by', 'It looks a decade ahead', 'Example: Three payments', 'Parallel execution. Unordered transactions.', 'Shared balances without overspending.', 'Blocks still form an ordered history', 'More compute. More throughput.', 'capacity constraint', '100', '−30', '−40', '−50', 'Admitted', 'Excluded', 'No conventional gas fees', 'available capacity allows', 'native tokens', 'strict_inc(amount as i128)', prompt]) expect(markdown).toContain(text);
   expect(markdown).not.toContain('Close prompt preview');
   expect(markdown).not.toContain('Preview setup prompt');
 });
