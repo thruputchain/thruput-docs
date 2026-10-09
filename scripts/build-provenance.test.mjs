@@ -1,11 +1,22 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { beforeEach, test } from 'node:test';
 import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import markdownExport, { buildProvenance } from './markdown-export.mjs';
+
+beforeEach(t => {
+  for (const key of ['GIT_DIR', 'GIT_WORK_TREE']) {
+    const saved = process.env[key];
+    delete process.env[key];
+    t.after(() => {
+      if (saved === undefined) delete process.env[key];
+      else process.env[key] = saved;
+    });
+  }
+});
 
 async function directory(t) {
   const root = await mkdtemp(join(tmpdir(), 'docs-provenance-'));
