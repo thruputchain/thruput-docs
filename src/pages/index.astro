@@ -4,6 +4,8 @@ import AgentPrompt from "../components/home/AgentPrompt.astro";
 import DotField from "../components/home/DotField.astro";
 import SharedState from "../components/home/SharedState.astro";
 import CounterExample from "../components/home/CounterExample.astro";
+import ValidatorScale from "../components/home/ValidatorScale.astro";
+import ExecutionScaling from "../components/home/ExecutionScaling.astro";
 import ProjectFooter from "../components/ProjectFooter.astro";
 
 const steps = [
@@ -209,6 +211,44 @@ const steps = [
             </div>
         </section>
 
+        <section class="home-section" aria-labelledby="validator-architecture">
+            <div class="home-container architecture-layout">
+                <div class="split architecture-intro">
+                    <div class="section-copy">
+                        <p class="eyebrow">03 / Architecture</p>
+                        <h2 id="validator-architecture">
+                            One validator.<br />Many machines.
+                        </h2>
+                        <p>
+                            A Thruput validator is itself a distributed system.
+                            An internal RPC system connects scheduling,
+                            authentication, and smart-contract execution across
+                            machines.
+                        </p>
+                    </div>
+                    <div class="section-copy">
+                        <p>
+                            Need more execution capacity? Add executor machines.
+                            The goal is to make throughput a hardware-sizing
+                            question: start with the work your application needs,
+                            then size the compute to match.
+                        </p>
+                        <p>
+                            Authentication and smart-contract execution use this
+                            model today. Extending it to state is part of the
+                            longer-term plan.
+                        </p>
+                        <a class="text-link" href="/how-it-works/architecture/">
+                            Explore the architecture{" "}
+                            <span aria-hidden="true">↗</span>
+                        </a>
+                    </div>
+                </div>
+                <ValidatorScale />
+                <ExecutionScaling />
+            </div>
+        </section>
+
         <section
             class="home-section developer-section"
             aria-labelledby="developer-experience"
@@ -216,7 +256,7 @@ const steps = [
             <div class="home-container">
                 <div class="split">
                     <div class="section-copy">
-                        <p class="eyebrow">03 / From contract to application</p>
+                        <p class="eyebrow">04 / From contract to application</p>
                         <h2 id="developer-experience">
                             Write Rust. Build something you can use.
                         </h2>
@@ -357,6 +397,13 @@ const steps = [
         grid-template-columns: minmax(0, 1fr);
         gap: 2.5rem;
         align-items: center;
+    }
+    .architecture-layout {
+        display: grid;
+        gap: 1.75rem;
+    }
+    .architecture-intro {
+        align-items: start;
     }
     .section-copy {
         display: flex;
