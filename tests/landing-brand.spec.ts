@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
+import { docsText } from '../scripts/docs-routing.mjs';
 import { readFileSync } from 'node:fs';
 
 const origin = 'http://127.0.0.1:4322';
-const prompt = readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8').match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
+const prompt = docsText(readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8').match(/```text\r?\n([\s\S]*?)\r?\n```/)![1]);
 
 for (const width of [320, 1280]) {
   test(`prompt preview is complete, keyboard accessible, and copyable at ${width}px`, async ({ page, context }, info) => {
@@ -28,7 +29,7 @@ for (const width of [320, 1280]) {
     await dialog.getByRole('button', { name: 'Copy prompt', exact: true }).click();
     await expect(dialog.getByRole('button', { name: 'Copied', exact: true })).toBeVisible();
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(prompt);
-    await expect(dialog.getByRole('link', { name: /Follow the guided quickstart/ })).toHaveAttribute('href', '/get-started/contract/');
+    await expect(dialog.getByRole('link', { name: /Follow the guided quickstart/ })).toHaveAttribute('href', '/docs/get-started/contract/');
     await page.screenshot({ path: info.outputPath('prompt-preview.png') });
     await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
