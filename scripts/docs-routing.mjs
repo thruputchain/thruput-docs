@@ -17,16 +17,11 @@ export function docsId({ entry, data }) {
   return `${docsPrefix.slice(1)}${docsPrefix ? '/' : ''}${slug}`;
 }
 
-export function docsText(text) {
-  return text.replaceAll('https://thruput.network/docs/', `https://thruput.network${docsPrefix}/`);
-}
-
 // Keep authored links and offline snapshot routes independent of hosted routing.
 export function remarkDocsRoutes() {
   return tree => visit(tree, node => {
     if (node.type === 'link' || node.type === 'image' || node.type === 'definition') {
-      node.url = docsText(docsPath(node.url));
+      node.url = docsPath(node.url);
     }
-    if (node.type === 'text' || node.type === 'code') node.value = docsText(node.value);
   });
 }
