@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit';
 
-export const docsPrefix = process.env.GROUNDHOG_DOCS_SNAPSHOT ? '' : '/docs';
+export const docsPrefix = process.env.THRUPUT_DOCS_SNAPSHOT ? '' : '/docs';
 const docsRoots = new Set(['architecture', 'get-started', 'start', 'cli', 'contracts', 'typescript', 'react', 'guides', 'tools', 'reference', 'tutorials', 'programming-model', 'how-it-works', 'ecosystem']);
 
 export function docsPath(path) {
@@ -18,8 +18,7 @@ export function docsId({ entry, data }) {
 }
 
 export function docsText(text) {
-  if (!docsPrefix) return text;
-  return text.replaceAll('https://docs.groundhog.dev/', `https://thruput.network${docsPrefix}/`);
+  return text.replaceAll('https://thruput.network/docs/', `https://thruput.network${docsPrefix}/`);
 }
 
 // Keep authored links and offline snapshot routes independent of hosted routing.

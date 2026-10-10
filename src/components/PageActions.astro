@@ -10,7 +10,7 @@ const rawPrompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
 const prompt = rawPrompt && docsText(rawPrompt);
 ---
 
-<page-actions data-markdown-url={markdownUrl} data-local-snapshot={process.env.GROUNDHOG_DOCS_SNAPSHOT ? 'true' : undefined} data-pagefind-ignore>
+<page-actions data-markdown-url={markdownUrl} data-local-snapshot={process.env.THRUPUT_DOCS_SNAPSHOT ? 'true' : undefined} data-pagefind-ignore>
     <details>
       <summary><Bot width="16" height="16" aria-hidden="true" /><span>Agent tools</span><Icon name="down-caret" size="1rem" /></summary>
       <div class="options">
@@ -74,7 +74,7 @@ const prompt = rawPrompt && docsText(rawPrompt);
             if (button.dataset.copy === 'link') text = markdownUrl;
             else if (button.dataset.copy === 'prompt') {
               text = this.querySelector<HTMLTemplateElement>('[data-task-prompt]')!.content.textContent!;
-              if (this.dataset.localSnapshot) text = text.replaceAll('https://docs.groundhog.dev/', `${location.origin}/`);
+              if (this.dataset.localSnapshot) text = text.replaceAll('https://thruput.network/', `${location.origin}/`);
             } else {
               const response = await fetch(markdownUrl, { signal: controller.signal });
               if (!response.ok || response.headers.get('content-type')?.includes('text/html')) {
