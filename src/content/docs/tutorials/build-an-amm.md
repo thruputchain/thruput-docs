@@ -3,7 +3,7 @@ title: Build an AMM
 description: Build and exercise a queued constant-product AMM, including liquidity, swaps, request outcomes, and RV32 tests.
 ---
 
-Build the AMM contract suite in [groundhog-examples](https://github.com/groundhogchain/groundhog-examples). This guide creates pools, adds and removes liquidity, and executes swaps through its native and RV32 test environments. You will also verify that a failed queued request does not become a false success.
+Build the AMM contract suite in [groundhog-examples](https://github.com/thruputchain/thruput-examples). This guide creates pools, adds and removes liquidity, and executes swaps through its native and RV32 test environments. You will also verify that a failed queued request does not become a false success.
 
 Read [Build a token](/tutorials/build-a-token/) first. Complete [CLI and Cargo setup](/cli/install/). Commands run from the examples repository root with its checked-in manifests and lockfile.
 
