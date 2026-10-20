@@ -3,7 +3,7 @@ title: Run a local node
 description: Start an isolated development chain, select its accounts, and preserve or inspect local state.
 ---
 
-Use a local node for disposable development and RPC tests. For a first hosted deployment, follow the [Devnet contract quickstart](/get-started/contract/).
+Use a local node for disposable development and RPC tests. For a first hosted deployment, follow the [Futurenet contract quickstart](/get-started/contract/).
 
 ## Start the node
 
