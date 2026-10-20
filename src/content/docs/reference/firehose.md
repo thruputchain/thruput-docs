@@ -8,7 +8,7 @@ description: Hosted devnet WebSocket subscriptions for committed block records, 
 | Hosted devnet endpoint | `wss://firehose.thruput.network` |
 | Transport | JSON-RPC 2.0 over WebSocket with TLS. Browsers connect directly without a CORS preflight |
 | Access | No authentication. Public chain data. Experimental, no SLA |
-| Usage | [Consume the Firehose](/tutorials/consume-the-firehose/) |
+| Usage | [Consume the Firehose](/guides/consume-the-firehose/) |
 | Scope | Separate from the JSON-RPC gateway |
 
 ## Methods

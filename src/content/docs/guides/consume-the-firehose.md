@@ -60,13 +60,16 @@ For a browser application, store output and an inclusive replay height together 
 
 ## Run the Node consumer
 
-Download [consume.mts](/examples/firehose/consume.mts). It uses Node built-ins, including WebSocket. Use Node 22.18 or newer; no npm install is needed.
+Use [consume-firehose.ts](https://github.com/thruputchain/thruput-examples/blob/main/examples/typescript/consume-firehose.ts) from the examples repository. Use Node 22.18 or newer. Clone the repository if you do not already have it, then install its dependencies and run from the repository root:
 
 ```bash
-node --experimental-strip-types consume.mts
+git clone https://github.com/thruputchain/thruput-examples.git
+cd thruput-examples
+npm install
+npm run example:consume-firehose
 # Optional configuration:
 FIREHOSE_URL=wss://firehose.thruput.network OUTPUT_DIR=./my-output \
-  node --experimental-strip-types consume.mts
+  npm run example:consume-firehose
 ```
 
 Run one consumer per output directory on a filesystem supporting file and directory sync and atomic rename. A new directory subscribes at tip, meaning the next publication after registration. It does not request genesis or replay the current tip.

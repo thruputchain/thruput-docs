@@ -92,12 +92,18 @@ export const sections: DocumentationSection[] = [
     ],
   },
   {
+    id: 'tutorials', label: 'Tutorials', href: '/tutorials/',
+    items: [
+      'tutorials',
+      'tutorials/build-a-counter', 'tutorials/work-with-thruput-from-typescript',
+      'tutorials/build-a-counter-with-react', 'tutorials/connect-a-wallet-to-your-app',
+    ],
+  },
+  {
     id: 'guides', label: 'Guides', href: '/guides/',
     items: [
       'guides',
-      'tutorials/build-a-counter', 'tutorials/work-with-thruput-from-typescript',
-      'tutorials/build-a-counter-with-react', 'tutorials/connect-a-wallet-to-your-app',
-      'tutorials/build-a-token', 'tutorials/build-an-amm', 'tutorials/consume-the-firehose',
+      'guides/build-a-token', 'guides/build-an-amm', 'guides/consume-the-firehose',
     ],
   },
   {
