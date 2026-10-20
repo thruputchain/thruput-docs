@@ -44,7 +44,8 @@ Profile selection checks, in order:
 3. Project `default_profile`
 4. Global `default_profile`
 
-If none selects a profile, commands that require one fail. The name `default` has no special fallback meaning.
+If none selects a profile, network commands fail. Offline builds and tests can
+use a scaffold's local overlay without a selected default. The name `default` has no special fallback meaning.
 
 <span id="devnet"></span>
 
@@ -60,6 +61,9 @@ New installations create only the `futurenet` hosted profile. To add it to an
 older installation, rerun `thruput init`, then select it with
 `thruput config use futurenet --global`. Profile names are distinct; the network
 alias does not copy wallets or contract aliases between profiles.
+Older CLIs do not recognize `network = "futurenet"` and can fail to update a
+global config containing it. Upgrade those CLIs or keep their configuration
+separate.
 
 `config new --network futurenet` stores only the supplied fields. A project
 overlay inherits omitted endpoints from the same-named global profile.

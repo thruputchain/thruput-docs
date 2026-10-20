@@ -15,6 +15,10 @@ Keep this terminal running. The CLI starts its managed `hog-devnode` and exposes
 
 The CLI records the active endpoint and runtime manifest so commands using a local profile can find the node.
 
+The node funds the selected project/global key. If local and Futurenet profiles
+use different keys, run `THRUPUT_PROFILE=local thruput node` so startup uses the
+key selected by local commands. `--key NAME` explicitly selects a stored key.
+
 ## Select a local account
 
 From another terminal in your project:
