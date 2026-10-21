@@ -24,7 +24,7 @@ ws.addEventListener('message', ({ data }) => console.log(JSON.parse(data)));
 
 Browsers can connect directly; WebSocket connections do not use a CORS preflight. A page's own Content Security Policy must permit the endpoint.
 
-This first snippet only inspects messages. Close it with `ws.close()` before running a consumer. There is one subscription per connection, at most 8 concurrent connections per client IP, and 64 active subscribers globally.
+This first snippet only inspects messages. Close it with `ws.close()` before running a consumer. There is one subscription per connection, at most 8 concurrent connections per client IP, and 12 active subscribers globally.
 
 ## Process and acknowledge
 
@@ -106,7 +106,9 @@ On `below_window`, restore application state from another source or explicitly a
 
 ## Keep up with delivery
 
-The live send plus ACK deadline defaults to 5 seconds. A full live queue or expired live deadline demotes the subscriber to archive catch-up. An outstanding operation gets one additional 10-second catch-up deadline before `catchup_timeout`. Growing lag over the 30-second progress window terminates with `catchup_falling_behind`.
+On the hosted devnet the live send plus ACK deadline is 60 seconds. A full live queue or expired live deadline demotes the subscriber to archive catch-up. An outstanding operation gets one additional 60-second catch-up deadline before `catchup_timeout`. Growing lag over the 120-second progress window terminates with `catchup_falling_behind`.
+
+Blocks can be up to about 16 MB (about 32 MB of hex). A client must sustain roughly the chain's record rate to keep up during a large-block burst; one that cannot falls behind and is closed with `catchup_falling_behind`, and can resume from its saved cursor.
 
 Keep processing bounded and inspect [API errors, limits, and close reasons](/reference/firehose/) before retrying. `firehose_stats` reports active subscribers and process counters; sent counts measure transport enqueue, not completed application work.
 

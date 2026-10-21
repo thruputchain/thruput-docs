@@ -109,18 +109,21 @@ description: Hosted devnet WebSocket subscriptions for committed block records, 
 | --- | --- |
 | Connections per client IP | 8 |
 | Subscriptions per connection | 1 |
-| Global active subscribers | 64 |
+| Global active subscribers | 12 |
+| Largest deliverable block record | 20 MiB |
 | Serve request window | 42,428 blocks |
 
-| Service flag (v0.29.2) | Default | Effect |
-| --- | ---: | --- |
-| `--max-subscribers` | `64` | Global subscription cap; also connection cap |
-| `--subscriber-queue` | `8` | Maximum queued live blocks per subscriber |
-| `--subscriber-queue-bytes` | `2097152` | Maximum raw bytes in a live queue |
-| `--max-record-bytes` | `4194304` | Maximum deliverable raw record; ingestion can accept larger records |
-| `--live-timeout-ms` | `5000` | Live send plus ACK deadline before demotion |
-| `--catchup-timeout-ms` | `10000` | Archive read deadline and, separately, archive send plus ACK deadline |
-| `--catchup-progress-ms` | `30000` | Window for checking whether archive lag grows |
+| Service flag | Release default | Hosted devnet | Effect |
+| --- | ---: | ---: | --- |
+| `--max-subscribers` | `64` | `12` | Global subscription cap; also connection cap |
+| `--subscriber-queue` | `8` | `8` | Maximum queued live blocks per subscriber |
+| `--subscriber-queue-bytes` | `2097152` | `2097152` | Maximum raw bytes in a live queue |
+| `--max-record-bytes` | `4194304` | `20971520` | Maximum deliverable raw record; ingestion can accept larger records |
+| `--live-timeout-ms` | `5000` | `60000` | Live send plus ACK deadline before demotion |
+| `--catchup-timeout-ms` | `10000` | `60000` | Archive read deadline and, separately, archive send plus ACK deadline |
+| `--catchup-progress-ms` | `30000` | `120000` | Window for checking whether archive lag grows |
+
+Devnet blocks reach about 16 MB, which is about 32 MB of hex in a notification. The hosted record limit and deadlines are raised so those blocks are delivered; the subscriber cap is lowered to bound serve's memory.
 
 ## Statistics
 
