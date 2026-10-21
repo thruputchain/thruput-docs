@@ -123,8 +123,6 @@ description: Hosted devnet WebSocket subscriptions for committed block records, 
 | `--catchup-timeout-ms` | `10000` | `60000` | Archive read deadline and, separately, archive send plus ACK deadline |
 | `--catchup-progress-ms` | `30000` | `120000` | Window for checking whether archive lag grows |
 
-Devnet blocks reach about 16 MB, which is about 32 MB of hex in a notification. The hosted record limit and deadlines are raised so those blocks are delivered; the subscriber cap is lowered to bound serve's memory.
-
 ## Statistics
 
 | Result field | Meaning |
