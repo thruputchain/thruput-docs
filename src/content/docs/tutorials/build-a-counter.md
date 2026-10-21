@@ -18,7 +18,7 @@ thruput new counter --template counter
 cd counter
 ```
 
-Keep the generated manifest and toolchain settings. Open `src/implementation.rs`. Use the Balance-based storage and methods below. If your installed CLI generates an NNInt counter, replace its storage import, field, and methods with these versions. Keep the surrounding contract, event, and error declarations.
+Keep the generated manifest and toolchain settings. Open `src/implementation.rs`. The scaffold includes the Balance-based counter used by this guide; focus on its storage and these methods.
 
 ## Store a relative count
 
@@ -109,7 +109,6 @@ For isolated local work, follow [Run a local node](/cli/local-node/) and use its
 Follow Build a counter, part 1:
 https://thruput.network/docs/tutorials/build-a-counter/
 Start with thruput new counter --template counter, without cloning an examples repo.
-Use the tutorial's Balance storage and methods if the installed scaffold uses NNInt.
 Run the native and RV32 checks, build, and read the deployment estimate.
 Add the documented storage allowance to the minimum and deploy with that
 explicit total using my configured Devnet account. Initialize atomically to 10.
