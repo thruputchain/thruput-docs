@@ -19,7 +19,9 @@ Help me deploy and use my first Stellar Thruput counter contract on Devnet.
    Read its index and the relevant setup and contract instructions.
 4. Configure Devnet, create a wallet, and request test funds with
    thruput airdrop. Verify the balance before deployment.
-5. Run thruput new counter --template counter, then build it and run its tests.
+5. Run thruput new counter --template counter. Use the Balance implementation
+   from /docs/tutorials/build-a-counter/ if the installed scaffold uses NNInt,
+   then build it and run its tests.
 6. Deploy and initialize the counter to 10. Call increment with 5,
    then verify that its read-only view returns 15.
 
