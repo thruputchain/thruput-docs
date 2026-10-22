@@ -37,7 +37,7 @@ Both methods check bounds during execution and record relative changes. The runt
 For per-account amounts, combine Balance with a Map:
 
 ```rust
-use thruput_sdk::storage::{Balance, Map};
+use thruput_sdk::{storage::{Balance, Map}, ContractAddress};
 
 #[derive(Debug)]
 #[thruput_sdk::storage]
@@ -101,7 +101,7 @@ Continue with [NNInt and concurrent updates](/programming-model/nnint/) for the 
 Key-value store. Different keys use independent storage locations. Same-key behavior follows the value type's rules. Other shared writes or storage-funding limits can still prevent the complete transactions from landing together.
 
 ```rust
-use thruput_sdk::storage::{Balance, Map};
+use thruput_sdk::{storage::{Balance, Map}, ContractAddress};
 
 #[derive(Debug)]
 #[thruput_sdk::storage]
@@ -186,7 +186,7 @@ Consumption is staged on the handle and written when the handle is flushed or dr
 Ordered collection. Each element is an independent storage slot. Internally backed by a `Map<u32, S>` for elements and a length counter.
 
 ```rust
-use thruput_sdk::storage::{Vector, Node, Value};
+use thruput_sdk::{storage::{Vector, Node, Value}, Storage};
 
 #[derive(Storage)]
 pub struct Item {
@@ -227,7 +227,7 @@ Use Vector for ordered collections where elements are accessed by index. Wrap co
 Typed storage slot. Stores any CXS-serializable value. Conflict semantics are the same as Bytestring: concurrent writes of the same value commute, different values conflict.
 
 ```rust
-use thruput_sdk::storage::Value;
+use thruput_sdk::{storage::Value, ContractAddress};
 
 #[derive(Debug)]
 #[thruput_sdk::storage]
