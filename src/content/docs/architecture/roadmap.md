@@ -29,7 +29,7 @@ Partitioning state across multiple HogDB shards within each validator is the pla
 
 ### Post-quantum signatures
 
-Each address can register multiple keys, and authorization is abstracted over the signature scheme, so users can add or revoke keys without changing addresses. Ed25519 is supported on Devnet. ML-DSA-65 (FIPS 204) verification has landed in the core engine and will reach Devnet in a later release. Account and validator key migration still need design, and more schemes may follow as they are standardized. Threat-model, performance, and migration-design reviews would help.
+Each address can register multiple keys, and authorization is abstracted over the signature scheme, so users can add or revoke keys without changing addresses. Ed25519 and ML-DSA-65 (FIPS 204) are supported. Validator key migration still needs design, and more schemes may follow as they are standardized. Threat-model, performance, and migration-design reviews would help.
 
 ## Exploring
 
