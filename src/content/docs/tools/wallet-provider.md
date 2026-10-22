@@ -101,7 +101,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | --- | --- |
 | Root identity | Transaction root address and complete pubkey claim match the selected account |
 | Signed bytes | Preserve unsigned transaction byte-for-byte |
-| Signature | Exactly one Ed25519 signature with public-key ID zero |
+| Signature | Exactly one Ed25519 signature with public-key ID zero; provider accounts are Ed25519 only, so ML-DSA-65 pubkey accounts cannot connect through a provider |
 | Preimage | `cxs(DomainSeparator("Transaction")) \|\| networkHash \|\| txs(transaction)` |
 | Verification | Strict Ed25519 with ZIP-215 disabled; public key and signature point R are non-small-order and prime-order |
 | Signing | Sign the preimage directly, without an extra pre-hash |

@@ -34,6 +34,18 @@ export const wallet = createWalletClient({ client, account });
 
 Keep the key in the process's secret configuration, not browser code or committed files.
 
+For an ML-DSA-65 account, use the same kind of 32-byte seed with `MlDsa65Signer`:
+
+```ts
+import { MlDsa65Signer, createPubkeyAccount, fromHex0x } from "@thruputchain/client";
+
+export const account = createPubkeyAccount({
+  signer: MlDsa65Signer.fromSeed(fromHex0x(secret)),
+});
+```
+
+One seed gives a different account under each scheme. ML-DSA-65 keys have no StrKey form, and an ML-DSA-65 signed transaction is about 5 KB larger than an Ed25519 one.
+
 <span id="request-devnet-funds"></span>
 
 ## Request Futurenet funds
