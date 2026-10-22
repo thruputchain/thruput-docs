@@ -102,9 +102,9 @@ export function developmentWallet() {
 ```ts title="read.ts"
 import { client, contract, Counter } from "./chain.js";
 
-const result = await Counter.v0_1.get.view({ client, contract });
+const result = await Counter.v0_1.get.view({ client, address: contract });
 console.log("Counter:", result.value.toString());
-console.log("Read at block:", result.height.toString());
+console.log("Read at block:", result.stateBlockHeight.toString());
 ```
 
 ```bash
@@ -120,14 +120,13 @@ export COUNTER_SIGNING_PRIVATE_KEY="$(node -e 'process.stdout.write("0x" + requi
 Keep this terminal environment for funding and the server. A persistent account should load its existing seed from secret configuration. Never put this key in a browser file or a `VITE_` variable.
 
 ```ts title="fund.ts"
-import { toHex0x } from "@thruputchain/client";
+import { toBase58 } from "@thruputchain/client";
 import { developmentWallet } from "./chain.js";
 
 const wallet = developmentWallet();
 const funding = await wallet.requestAirdrop();
-if (funding.status.result !== "ok") throw new Error("Funding did not execute successfully");
-console.log("Development signer:", toHex0x(wallet.account.address));
-console.log("Funding transaction:", toHex0x(funding.txHash));
+console.log("Development signer:", toBase58(wallet.account.address));
+console.log("Funding transaction:", toBase58(funding.transactionHash));
 ```
 
 ```bash
@@ -145,7 +144,7 @@ import { client, contract, Counter, developmentWallet, rpcUrl } from "./chain.js
 
 const wallet = process.env.COUNTER_SIGNING_PRIVATE_KEY ? developmentWallet() : null;
 const allowed = new Set([
-  "getVersionInfo", "getNetworkInfo", "getChainTip", "simulateInvocation",
+  "getVersionInfo", "getNetworkInfo", "getServerLimits", "getChainTip", "simulateInvocation",
   "getBalance", "getTransactionStatus", "getTransactionReceipt",
   "sendTransaction",
 ]);
