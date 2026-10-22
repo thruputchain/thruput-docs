@@ -47,12 +47,12 @@ The binding provides typed methods and decodes the contract's results. Regenerat
 
 ## Configure the client
 
-Get the network hash for the deployment with [`groundhog_networkInfo`](/reference/json-rpc-api/#groundhog_networkinfo):
+Get the network hash for the deployment with [`getNetworkInfo`](/reference/json-rpc-api/#getnetworkinfo):
 
 ```bash
 curl -s https://rpc.thruput.network \
   -H 'content-type: application/json' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"groundhog_networkInfo"}'
+  -d '{"jsonrpc":"2.0","id":1,"method":"getNetworkInfo","params":{}}'
 ```
 
 Futurenet resets can change this hash, so fetch it again after a reset.
@@ -69,8 +69,8 @@ These public values identify one deployment. A different network needs its own e
 
 ```ts title="chain.ts"
 import {
-  addressFromHex, createThruputClient, createPubkeyAccount, createWalletClient,
-  defineCluster, fromHex0x, hashFromHex, networkHash, PrivateKeySigner,
+  addressFromBase58, createThruputClient, createPubkeyAccount, createWalletClient,
+  defineCluster, fromHex0x, hashFromBase58, networkHash, PrivateKeySigner,
 } from "@thruputchain/client";
 import { Counter } from "./src/contracts/counter.js";
 
@@ -81,11 +81,11 @@ function required(name: string) {
 }
 
 export const rpcUrl = required("RPC_URL");
-export const contract = addressFromHex(required("COUNTER_ADDRESS"));
+export const contract = addressFromBase58(required("COUNTER_ADDRESS"));
 export const client = await createThruputClient({
   cluster: defineCluster({
     rpcUrl,
-    networkHash: networkHash(hashFromHex(required("NETWORK_HASH"))),
+    networkHash: networkHash(hashFromBase58(required("NETWORK_HASH"))),
     capabilities: ["airdrop"],
   }),
 });
@@ -145,9 +145,9 @@ import { client, contract, Counter, developmentWallet, rpcUrl } from "./chain.js
 
 const wallet = process.env.COUNTER_SIGNING_PRIVATE_KEY ? developmentWallet() : null;
 const allowed = new Set([
-  "groundhog_networkInfo", "groundhog_chainTip", "groundhog_view",
-  "groundhog_getBalance", "groundhog_getTransactionStatus",
-  "groundhog_getTransactionReceipt", "groundhog_sendRawTransaction",
+  "getVersionInfo", "getNetworkInfo", "getChainTip", "simulateInvocation",
+  "getBalance", "getTransactionStatus", "getTransactionReceipt",
+  "sendTransaction",
 ]);
 function json(response: ServerResponse, status: number, value: unknown) {
   response.writeHead(status, { "Content-Type": "application/json", "Cache-Control": "no-store" });
