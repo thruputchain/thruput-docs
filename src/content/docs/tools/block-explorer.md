@@ -8,7 +8,7 @@ Use the [Futurenet explorer](https://explorer.thruput.network/) to look up trans
 ## Look Up a Transaction or Address
 
 1. Open the [Futurenet explorer](https://explorer.thruput.network/).
-2. Paste the full transaction hash or address into the search field. Use unprefixed base58 and preserve its case. The value must decode to 32 bytes.
+2. Paste the transaction hash or address into the search field.
 3. Select **Search**.
 
 The home page also lists recent native-token transfers. Select a transaction to inspect it, or follow an address link to view that address.

@@ -33,9 +33,9 @@ export function parseIdentifiers(addressText: string, transactionText: string) {
 }
 ```
 
-`addressFromBase58` and `hashFromBase58` require exactly 32 decoded bytes. `parseAddress(text)` also accepts a `C` StrKey address for human input. RPC and [wallet provider](/tools/wallet-provider/#canonical-data-and-limits) identifiers remain base58 regardless of display preferences.
+Both parsers require 32 decoded bytes. `parseAddress(text)` also accepts a `C` StrKey address.
 
-Signed transaction bytes and calldata stay `0x`-prefixed hex; use `toHex0x` and `fromHex0x` for them. Raw event topics, storage keys, and other opaque byte fields also retain hex. Choose the encoding by the field's meaning, not its byte length.
+Use `toHex0x` and `fromHex0x` for signed transaction bytes, calldata, raw event topics, and storage keys. These opaque byte fields stay `0x`-prefixed hex.
 
 Use `gasAmount(500_000n)` for a typed gas budget. A gas amount is a computation limit, not a native-token amount.
 
