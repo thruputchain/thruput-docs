@@ -223,7 +223,7 @@ for item in &self.items {
 }
 ```
 
-Different indices are independent and never conflict (same as Map). Same-index writes follow the element type's rules. Pushes and pops write the length with an exclusive lock, so only one structural change per vector lands per block.
+Different indices are independent and never conflict (same as Map). Same-index writes follow the element type's rules. Pushes and pops write the length with an exclusive lock, so only one transaction per block can change a vector's length. That transaction can push or pop several times.
 
 Use Vector for ordered collections where elements are accessed by index. Wrap compound structs in `Node<T>` so storage derivation works through the nesting. For hot concurrent writes, Map with application-managed keys is more parallelism-friendly than Vector with pushes.
 
@@ -259,7 +259,7 @@ Use `Value<T>` for typed single-slot storage. Use `Bytestring` when you need raw
 | Signed delta or explicit integer base | NNInt | Signed deltas merge and `set` controls the base. |
 | Cap or limit that spans transactions | CapacityConstraint | The runtime enforces the limit across the block; a snapshot read cannot. |
 | `INSERT INTO ... (key, value)` with unique keys | Map | Different keys are independent. |
-| Ordered list, accessed by index | Vector | Per-element independence. One push or pop per vector per block. |
+| Ordered list, accessed by index | Vector | Per-element independence. One transaction per vector per block can push or pop. |
 | Store a typed value | Value\<T\> | Typed Bytestring. Same conflict rules. |
 | `col = absolute_value` (raw bytes) | Bytestring | Accept that concurrent writes conflict. |
 | Append to a log or work queue | RCQ\<T\> | Inserts merge. One consumer per queue per block. |

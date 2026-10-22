@@ -10,7 +10,7 @@ Read this page first, then [Storage Types](/programming-model/storage-types/). I
 ## Rules That Cause Bugs
 
 - **Reads are not checked at commit.** A decision based on a value that another transaction can change in the same block can be stale. See [Snapshot Isolation](#snapshot-isolation).
-- **Decreases must fit the snapshot.** All decreases admitted to one `Balance` or `NNInt` in a block must fit within its start-of-block value. Same-block credits do not count. See [Merged Deltas](#merged-deltas).
+- **Decreases must fit the base.** All decreases admitted to one `Balance` or `NNInt` in a block must fit within the base value. For `Balance` and ordinary `NNInt` updates, the base is the start-of-block snapshot; an explicit `NNInt::set_add` uses the base it sets. Same-block credits do not count. See [Merged Deltas](#merged-deltas) and [NNInt](/programming-model/nnint/).
 - **Excluded is not failed.** An excluded transaction can be resubmitted unchanged. A transaction whose root call aborts, reverts, or runs out of gas is committed and its nonce is consumed. See [Exclusion](#exclusion).
 - **Absolute writes merge only when equal.** Two `Value`, `Bytestring`, or `NNInt::set` writes to one key land together only when they write the same value. See [Storage Types](/programming-model/storage-types/#choosing-a-type).
 - **Some operations allow one writer per block.** One transaction per block can consume from a queue, push or pop a `Vector`, or hold an exclusive write on a key. See [RCQ](/programming-model/storage-types/#rcqt--retrocausalqueue) and [Exclusive Writes](/programming-model/storage-types/#exclusive-writes).
