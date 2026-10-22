@@ -12,8 +12,6 @@ description: Stellar Thruput native JSON-RPC methods, wire types, and error code
 
 ## Request Format
 
-Methods take one named-parameter object. Methods without parameters accept `{}`, `[]`, `null`, or omitted `params`; clients send `{}`.
-
 ```json
 {
   "jsonrpc": "2.0",
@@ -25,7 +23,8 @@ Methods take one named-parameter object. Methods without parameters accept `{}`,
 
 | Request rule | Contract |
 | --- | --- |
-| Parameter shape | A JSON object. Positional arrays, wrapped objects, and unknown fields return `-32602` |
+| Parameter shape | One named-parameter object. Positional arrays, wrapped objects, and unknown fields return `-32602` |
+| No-parameter methods | Accept `{}`, `[]`, `null`, or omitted `params`; clients send `{}` |
 | Method names | Unprefixed core names. Optional groups use `faucet_` and `dev_` prefixes |
 | Discovery | `getVersionInfo.supportedMethods` lists the methods that this endpoint registered. An unlisted method returns `Method not found` (`-32601`) |
 | Field names | camelCase in requests, responses, and error data |
@@ -38,10 +37,10 @@ Methods take one named-parameter object. Methods without parameters accept `{}`,
 | Signed transactions, calldata, entrypoints, return and abort data, storage keys and bytes, event topics and data, cursors, client nonces, upgrade entries | `0x`-prefixed lowercase hex with an even number of digits |
 | 64-bit and wider integers: heights, nanosecond timestamps, gas, counts, balances, amounts | Canonical decimal string, including `"0"` |
 | Smaller bounded integers: protocol versions, page limits, event sequence numbers, key IDs, weights | JSON number |
-
-Choose the encoding by field meaning, not by byte length. A raw event topic stays hex even when its decoded value is an address or hash. Decimal strings reject numeric JSON, leading zeros, `+`, negative zero, whitespace, fractions, exponents, and overflow. Transactions use classic XDR; contract arguments and return values use CXS. See [XDR Protocol](/reference/xdr-protocol/).
-
-Tagged unions use a discriminator field such as `status`, `result`, `kind`, or `attemptStatus`. Clients must accept unknown tag values (for example `other` or `unknown`) without treating them as success or absence.
+| Encoding choice | By field meaning, not byte length. A raw event topic stays hex even when its decoded value is an address or hash |
+| Decimal string rejects | Numeric JSON, leading zeros, `+`, negative zero, whitespace, fractions, exponents, overflow |
+| Binary payloads | Transactions use classic XDR; contract arguments and return values use CXS. See [XDR Protocol](/reference/xdr-protocol/) |
+| Tagged unions | Discriminator field such as `status`, `result`, `kind`, or `attemptStatus`. Accept unknown tag values (for example `other` or `unknown`) without treating them as success or absence |
 
 ## JSON-RPC Arrays
 
@@ -297,7 +296,7 @@ Usage: [Read related values from one snapshot](/typescript/reads/#read-related-v
 | `filters` | array | 1 to 5 filters. OR across filters |
 | `filters[].addresses` | base58 array | 1 to 5 contract addresses |
 | `filters[].topics` | object | Optional `topic0`, `topic1`, `topic2`: up to 16 32-byte hex values each. AND across positions, OR within one. Omitted or empty is a wildcard |
-| `start` | object | First page only; see [Pagination](#pagination) |
+| `start` | object | First page only; see [Pagination](/reference/json-rpc-api/#pagination) |
 | `cursor` | hex | Later pages only |
 | `limit` | number | Optional page size |
 
@@ -317,7 +316,7 @@ Event identity is `transactionHash` plus `sequenceNumber`. Usage: [Read events](
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `address` | base58 | Root invocation target |
-| `start`, `cursor`, `limit` | | See [Pagination](#pagination) |
+| `start`, `cursor`, `limit` | | See [Pagination](/reference/json-rpc-api/#pagination) |
 
 **Returns:** `TransactionRefPage` with `transactions[]` of `{ transactionHash, blockHeight }`, plus `nextCursor` and the serving bounds. Internal calls and incoming transfers do not match. Hydrate a reference with `getTransactionReceipt`.
 
@@ -355,7 +354,7 @@ An unavailable or corrupt index returns an error, not `null`. The index can lag 
 | --- | --- | --- |
 | `blockHeight` | decimal string | Committed block height |
 | `start` | object | First page only: `{ "order": "ascending" }` or `{ "order": "descending" }` |
-| `cursor`, `limit` | | See [Pagination](#pagination) |
+| `cursor`, `limit` | | See [Pagination](/reference/json-rpc-api/#pagination) |
 
 **Returns:** `TransactionRefPage`. References are ordered by unsigned transaction-hash bytes, not execution order. An empty page does not prove that the block exists; use `getBlockByHeight`.
 
