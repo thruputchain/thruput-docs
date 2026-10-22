@@ -10,10 +10,6 @@ description: Stellar Thruput native JSON-RPC methods, wire types, and error code
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/how-it-works/networking/) |
 
-:::caution[Hosted Futurenet]
-The hosted endpoint at `https://rpc.thruput.network` still reports wire format `11.2.0`. It serves the earlier `groundhog_*` methods with `0x` hex identifiers, not the methods on this page. Wire 14 clients (CLI `0.33.0`, `@thruputchain/client` `0.22`) reject it. Call `getVersionInfo` to check an endpoint before you use it.
-:::
-
 ## Request Format
 
 Methods take one named-parameter object. Methods without parameters accept `{}`, `[]`, `null`, or omitted `params`; clients send `{}`.
