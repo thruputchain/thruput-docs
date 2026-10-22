@@ -20,6 +20,8 @@ An ordinary stored key can also use its native account without a saved binding. 
 
 ### ML-DSA-65 keys
 
+ML-DSA-65 keys require CLI `0.30.0` or later. Check with `thruput --version`.
+
 ```bash
 thruput keys generate carol --scheme mldsa65
 thruput airdrop carol --profile futurenet

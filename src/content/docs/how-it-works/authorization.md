@@ -87,6 +87,8 @@ pubkey_hash = sha256(cxs(DomainSeparator("PublicKey")) || cxs(PublicKey))
 
 The `PublicKey` encoding includes its scheme, so the same key bytes under Ed25519 and ML-DSA-65 give different addresses. The full key travels in `SignedTransaction.pubkey_claim_key`.
 
+This derivation also changed Ed25519 addresses. A pubkey-account address saved before the Futurenet reset that introduced ML-DSA-65 does not match the same key now. Derive the address again from the key and update saved addresses.
+
 hogd accepts the claim only when:
 
 - the derived address equals the root invocation's `invoked_address`;
