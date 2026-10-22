@@ -47,11 +47,21 @@ The binding provides typed methods and decodes the contract's results. Regenerat
 
 ## Configure the client
 
-Create `.env`. Set `COUNTER_ADDRESS` to the deployment address from part 1 and use the endpoint and network hash for that deployment:
+Get the network hash for the deployment with [`groundhog_networkInfo`](/reference/json-rpc-api/#groundhog_networkinfo):
+
+```bash
+curl -s https://rpc.thruput.network \
+  -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"groundhog_networkInfo"}'
+```
+
+Devnet resets can change this hash, so fetch it again after a reset.
+
+Create `.env`. Set `NETWORK_HASH` to the `networkHash` value from the response and `COUNTER_ADDRESS` to the deployment address from part 1:
 
 ```dotenv title=".env"
 RPC_URL=https://rpc.thruput.network
-NETWORK_HASH=0xabb9cdbc56285d0e71c9845273ca06211fedf7ee2f58c43cfac6060f9402aa0f
+NETWORK_HASH=<network-hash>
 COUNTER_ADDRESS=<your-deployed-counter-address>
 ```
 
