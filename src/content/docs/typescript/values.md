@@ -33,19 +33,9 @@ export function parseIdentifiers(addressText: string, transactionText: string) {
 }
 ```
 
-`parseAddress(text)` also accepts a `C` StrKey address. Signed transaction bytes and calldata stay `0x`-prefixed hex; use `toHex0x` and `fromHex0x` for them. For identifiers that existing application data stores as hex:
+`addressFromBase58` and `hashFromBase58` require exactly 32 decoded bytes. `parseAddress(text)` also accepts a `C` StrKey address for human input. RPC and [wallet provider](/tools/wallet-provider/#canonical-data-and-limits) identifiers remain base58 regardless of display preferences.
 
-```ts
-import { addressFromHex, hashFromHex, toHex0x } from "@thruputchain/client";
-
-export function parseInputs(addressText: string, transactionText: string) {
-  const address = addressFromHex(addressText);
-  const txHash = hashFromHex(transactionText);
-  return { address, txHash, displayAddress: toHex0x(address) };
-}
-```
-
-These inputs use `0x`-prefixed hex. Provider session identifiers use a different wire format: 32 bytes in unprefixed base58. Convert explicitly when crossing the [wallet provider](/tools/wallet-provider/#canonical-data-and-limits) boundary.
+Signed transaction bytes and calldata stay `0x`-prefixed hex; use `toHex0x` and `fromHex0x` for them. Raw event topics, storage keys, and other opaque byte fields also retain hex. Choose the encoding by the field's meaning, not its byte length.
 
 Use `gasAmount(500_000n)` for a typed gas budget. A gas amount is a computation limit, not a native-token amount.
 
