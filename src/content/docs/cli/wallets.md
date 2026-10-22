@@ -22,7 +22,7 @@ An ordinary stored key can also use its native account without a saved binding. 
 
 ```bash
 thruput keys generate carol --scheme mldsa65
-thruput airdrop carol --profile devnet
+thruput airdrop carol --profile futurenet
 ```
 
 An ML-DSA-65 key always uses its native account. `balance`, `transfer`, `tx`, and `call` work the same way as with Ed25519 keys. These commands are Ed25519 only:

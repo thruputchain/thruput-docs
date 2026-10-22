@@ -55,7 +55,7 @@ curl -s https://rpc.thruput.network \
   -d '{"jsonrpc":"2.0","id":1,"method":"groundhog_networkInfo"}'
 ```
 
-Devnet resets can change this hash, so fetch it again after a reset.
+Futurenet resets can change this hash, so fetch it again after a reset.
 
 Create `.env`. Set `NETWORK_HASH` to the `networkHash` value from the response and `COUNTER_ADDRESS` to the deployment address from part 1:
 
