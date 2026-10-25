@@ -40,9 +40,9 @@ Follow the prompt to back up your recovery phrase in **Settings**. Keep the phra
 
 Check the network dropdown. New wallets start on **Devnet**; existing wallets keep their saved selection.
 
-Open **Assets** and click **Request test HOG**, the wallet's label for native test tokens. Wait for the balance to update. These tokens have no monetary value. They fund storage deposits and provide scheduling capacity under load; there are no conventional gas fees.
+Open **Assets** and click **Request test tokens**. Wait for the balance to update. These tokens have no monetary value. They fund storage deposits and provide scheduling capacity under load; there are no conventional gas fees.
 
-![Wallet showing the Devnet selector, Assets tab, and Request test HOG button](/images/wallet/wallet-devnet.png)
+![Wallet showing the Devnet selector, Assets tab, and Request test tokens button](/images/wallet/wallet-devnet.png)
 
 | Network | RPC endpoint | Use |
 | --- | --- | --- |

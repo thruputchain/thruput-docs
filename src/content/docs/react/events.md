@@ -12,7 +12,7 @@ Compose the TypeScript client's event actions with TanStack Query. Generated bin
 ```tsx
 import { toBase58 } from "@thruputchain/client";
 import { groundhog_erc20_if } from "@thruputchain/client/contracts";
-import { HOG_ADDRESS } from "@thruputchain/protocol";
+import { NATIVE_TOKEN_ADDRESS } from "@thruputchain/protocol";
 import { getClientQueryKey, useClient } from "@thruputchain/react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -21,10 +21,10 @@ const { TransferEvent } = groundhog_erc20_if.v0_1.events;
 export function RecentTransfers() {
   const client = useClient();
   const transfers = useQuery({
-    queryKey: [...getClientQueryKey(client), "app", "recent-hog-transfers"],
+    queryKey: [...getClientQueryKey(client), "app", "recent-native-token-transfers"],
     queryFn: ({ signal }) => client.getContractEvents({
       event: TransferEvent,
-      addresses: [HOG_ADDRESS],
+      addresses: [NATIVE_TOKEN_ADDRESS],
       start: { order: "descending", anchor: { kind: "atEnd" } },
       limit: 20,
     }, { signal }),
