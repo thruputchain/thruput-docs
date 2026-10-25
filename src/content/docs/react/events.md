@@ -5,8 +5,6 @@ description: Use the public client and TanStack Query to display typed contract 
 
 Compose the TypeScript client's event actions with TanStack Query. Generated bindings provide filtering and decoding; React components provide loading, empty, error, and refresh states.
 
-<span id="display-recent-hog-transfers"></span>
-
 ## Display recent native-token transfers
 
 ```tsx
