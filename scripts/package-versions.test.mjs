@@ -11,7 +11,7 @@ test('docs pin one version of each @thruputchain package', () => {
   const versions = {};
   for (const page of pages(join(root, 'src/content/docs'))) {
     const text = readFileSync(page, 'utf8');
-    for (const [, name, version] of text.matchAll(/(@thruputchain\/[a-z-]+)[@ ]v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g)) {
+    for (const [, name, version] of text.matchAll(/(@thruputchain\/[a-z-]+)(?:@|`? `?)v?(\d+\.\d+\.\d+(?:-[\w.]+)?)/g)) {
       (versions[name] ??= {})[version] ??= [];
       versions[name][version].push(relative(root, page));
     }

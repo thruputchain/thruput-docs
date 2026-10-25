@@ -4,10 +4,9 @@
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const shellFences = new Set(['bash', 'sh', 'shell', 'zsh', 'console', 'shellsession']);
-const separators = new Set(['&&', '||', ';', '|', '`']);
+const shellFences = new Set(['bash', 'sh', 'shell', 'zsh', 'fish', 'console', 'shellsession']);
 
-/** Split a shell line into words and operators. Keeps `<...>` placeholders whole and drops optional `[...]` brackets. */
+/** Split a shell line into words (strings) and operators (`{ op }`). Keeps `<...>` placeholders whole and drops optional `[...]` brackets. */
 export function tokenize(line) {
   const tokens = [];
   let word = '';
@@ -32,11 +31,11 @@ export function tokenize(line) {
     } else if (/\s/.test(c)) {
       flush();
     } else if (line.startsWith('$(', i)) {
-      flush(); tokens.push('$('); i++;
+      flush(); tokens.push({ op: '$(' }); i++;
     } else if (line.startsWith('&&', i) || line.startsWith('||', i)) {
-      flush(); tokens.push(line.slice(i, i + 2)); i++;
+      flush(); tokens.push({ op: line.slice(i, i + 2) }); i++;
     } else if (';|()`'.includes(c)) {
-      flush(); tokens.push(c);
+      flush(); tokens.push({ op: c });
     } else {
       word += c;
     }
@@ -57,16 +56,17 @@ export function invocations(line) {
   const stack = [];
   let segment = [];
   for (const token of tokenize(line)) {
-    if (token.startsWith('"') && token.includes('$(')) found.push(...invocations(token.slice(1, -1)));
-    if (token === '$(' || token === '(') {
-      stack.push({ segment, substitution: token === '$(' });
+    const op = token.op;
+    if (!op && token.startsWith('"') && token.includes('$(')) found.push(...invocations(token.slice(1, -1)));
+    if (op === '$(' || op === '(') {
+      stack.push({ segment, substitution: op === '$(' });
       segment = [];
-    } else if (token === ')' && stack.length) {
+    } else if (op === ')' && stack.length) {
       finish(segment);
       const outer = stack.pop();
       segment = outer.segment;
       if (outer.substitution) segment.push('$SUB');
-    } else if (separators.has(token)) {
+    } else if (op) {
       finish(segment);
       segment = [];
     } else {
@@ -88,7 +88,9 @@ export function checkInvocation(args, commands) {
   let expectValue = false;
   for (const arg of args) {
     if (arg === '--') break;
-    if (expectValue) { expectValue = false; continue; }
+    // clap rejects a flag in place of a value, so a following flag is checked as a flag.
+    if (expectValue && !/^-[-A-Za-z0-9]/.test(arg)) { expectValue = false; continue; }
+    expectValue = false;
     const node = commands[path];
     const where = `\`thruput${path ? ` ${path}` : ''}\``;
     if (/^--[A-Za-z]/.test(arg)) {
@@ -108,12 +110,13 @@ export function checkInvocation(args, commands) {
     }
     const subcommands = Object.entries(node.subcommands);
     if (positional || !subcommands.length) { positional = true; continue; }
+    // Built-in `help` takes the same command path, so `thruput help keys ls` is checked as `thruput keys ls`.
+    if (arg === 'help') continue;
     const match = subcommands.find(([name, aliases]) => name === arg || aliases.includes(arg));
     if (match) {
       path = path ? `${path} ${match[0]}` : match[0];
     } else {
-      // Built-in `help` takes command names, which are not checked.
-      if (arg !== 'help' && !placeholder(arg)) problems.push(`unknown subcommand ${arg} for ${where}`);
+      if (!placeholder(arg)) problems.push(`unknown subcommand ${arg} for ${where}`);
       positional = true;
     }
   }

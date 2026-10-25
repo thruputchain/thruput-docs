@@ -28,10 +28,11 @@ test('command extraction handles prompts, env prefixes, continuations, pipes, an
     'thruput deploy --fund $(thruput balance) --yes', '```',
     'Run `thruput tx show <HASH> [--json]` or `cargo build`.',
     'Then ``thruput keys ls && P=local thruput keys "ls"``.',
+    '```fish', "echo '&&' thruput removed; thruput build -p ';' --yes", '```',
   ].join('\n');
   assert.deepEqual([...docCommands(page)].map(c => c.args), [
     ['keys', 'ls'], ['deploy', '--fund', '10'], ['--version'], ['balance'], ['deploy', '--fund', '$SUB', '--yes'],
-    ['tx', 'show', '<HASH>', '--json'], ['keys', 'ls'], ['keys', 'ls'],
+    ['tx', 'show', '<HASH>', '--json'], ['keys', 'ls'], ['keys', 'ls'], ['build', '-p', ';', '--yes'],
   ]);
 });
 
@@ -50,6 +51,8 @@ test('invocation check reports unknown subcommands and flags', () => {
   ]);
   assert.deepEqual(checkInvocation(['--json', 'removed'], commands), ['unknown subcommand removed for `thruput`']);
   assert.deepEqual(checkInvocation(['keys', 'ls', '-V'], commands), ['unknown flag -V for `thruput keys ls`']);
+  assert.deepEqual(checkInvocation(['keys', '--profile', '--removed'], commands), ['unknown flag --removed for `thruput keys`']);
+  assert.deepEqual(checkInvocation(['help', 'keys', 'removed'], commands), ['unknown subcommand removed for `thruput keys`']);
 });
 
 test('docs use only commands and flags the target CLI accepts', () => {
