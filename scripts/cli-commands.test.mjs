@@ -8,39 +8,48 @@ import { parseHelp, surfacePath } from './cli-surface.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-test('help parsing captures subcommands, aliases, and flags', () => {
+test('help parsing captures subcommands, aliases, flags, and value flags', () => {
   const help = [
     'Manage keys', '', 'Usage: thruput keys <COMMAND>', '', 'Commands:',
     '  generate  Generate a key', '  ls        List stored keys [alias: list]', '  help      Print help', '',
-    'Options:', '  -y, --yes      Confirm [aliases: --force, -f]', '      --json     JSON output', '  -h, --help     Print help',
+    'Options:', '  -y, --yes      Confirm [aliases: --force, -f]', '  -p, --package <PACKAGE>', '  -h, --help     Print help', '',
+    'Global options:', '      --json     JSON output',
   ].join('\n');
   assert.deepEqual(parseHelp(help), {
     subcommands: { generate: [], ls: ['list'] },
-    flags: ['--force', '--help', '--json', '--yes', '-f', '-h', '-y'],
+    flags: ['--force', '--help', '--json', '--package', '--yes', '-f', '-h', '-p', '-y'],
+    values: ['--package', '-p'],
   });
 });
 
-test('command extraction handles prompts, env prefixes, continuations, and pipes', () => {
+test('command extraction handles prompts, env prefixes, continuations, pipes, and substitutions', () => {
   const page = [
-    '```bash', '$ thruput keys ls', 'FOO=1 thruput deploy \\', '  --fund 10 | jq .', 'echo "$(thruput --version)"', '```',
+    '```bash', '$ thruput keys ls', 'FOO=1 thruput deploy \\', '  --fund 10 | jq .', 'echo "$(thruput --version)"',
+    'thruput deploy --fund $(thruput balance) --yes', '```',
     'Run `thruput tx show <HASH> [--json]` or `cargo build`.',
+    'Then ``thruput keys ls && P=local thruput keys "ls"``.',
   ].join('\n');
   assert.deepEqual([...docCommands(page)].map(c => c.args), [
-    ['keys', 'ls'], ['deploy', '--fund', '10'], ['--version'], ['tx', 'show', '<HASH>', '--json'],
+    ['keys', 'ls'], ['deploy', '--fund', '10'], ['--version'], ['balance'], ['deploy', '--fund', '$SUB', '--yes'],
+    ['tx', 'show', '<HASH>', '--json'], ['keys', 'ls'], ['keys', 'ls'],
   ]);
 });
 
 test('invocation check reports unknown subcommands and flags', () => {
   const commands = {
-    '': { subcommands: { keys: [] }, flags: ['--json'] },
-    keys: { subcommands: { ls: ['list'] }, flags: [] },
-    'keys ls': { subcommands: {}, flags: ['-a', '-b'] },
+    '': { subcommands: { keys: [] }, flags: ['--json', '-V'], values: [] },
+    keys: { subcommands: { ls: ['list'] }, flags: ['--json', '--profile', '-p'], values: ['--profile', '-p'] },
+    'keys ls': { subcommands: {}, flags: ['--json', '-a', '-b'], values: [] },
   };
-  assert.deepEqual(checkInvocation(['keys', 'list', '--json', '-ab'], commands), []);
-  assert.deepEqual(checkInvocation(['keys', '<COMMAND>'], commands), []);
+  for (const ok of [
+    ['keys', 'list', '--json', '-ab'], ['keys', '<COMMAND>'], ['--json', 'keys', 'ls'], ['help', 'keys'],
+    ['keys', '--profile', 'local', 'ls'], ['keys', '-plocal', 'ls'], ['keys', '--profile=local', 'ls'],
+  ]) assert.deepEqual(checkInvocation(ok, commands), [], ok.join(' '));
   assert.deepEqual(checkInvocation(['keys', 'show', 'alice', '--all'], commands), [
     'unknown subcommand show for `thruput keys`', 'unknown flag --all for `thruput keys`',
   ]);
+  assert.deepEqual(checkInvocation(['--json', 'removed'], commands), ['unknown subcommand removed for `thruput`']);
+  assert.deepEqual(checkInvocation(['keys', 'ls', '-V'], commands), ['unknown flag -V for `thruput keys ls`']);
 });
 
 test('docs use only commands and flags the target CLI accepts', () => {

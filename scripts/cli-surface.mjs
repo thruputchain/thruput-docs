@@ -11,10 +11,11 @@ export const surfacePath = fileURLToPath(new URL('./cli-surface.json', import.me
 
 const aliasList = text => (text.match(/\[alias(?:es)?: ([^\]]+)\]/)?.[1] ?? '').split(',').map(s => s.trim()).filter(Boolean);
 
-/** Parse one `--help` page into subcommands and flags (long and short, including aliases). */
+/** Parse one `--help` page into subcommands, flags (long and short, including aliases), and the flags that take a value. */
 export function parseHelp(help) {
   const subcommands = {};
   const flags = new Set();
+  const values = new Set();
   let section = '';
   for (const line of help.split('\n')) {
     const heading = line.match(/^([A-Z][A-Za-z ]*):\s*$/);
@@ -23,13 +24,15 @@ export function parseHelp(help) {
       const command = line.match(/^ {2}([a-z][a-z0-9-]*)\s/);
       if (command && command[1] !== 'help') subcommands[command[1]] = aliasList(line);
     } else if (/[Oo]ptions$/.test(section)) {
-      const option = line.match(/^ {2,6}(-[A-Za-z0-9])?(?:, )?(--[a-z0-9][a-z0-9-]*)?/);
-      if (option?.[1]) flags.add(option[1]);
-      if (option?.[2]) flags.add(option[2]);
-      for (const alias of aliasList(line)) flags.add(alias);
+      const option = line.match(/^ {2,6}(-[A-Za-z0-9])?(?:, )?(--[a-z0-9][a-z0-9-]*)?([ =]\[?<)?/);
+      const names = [option?.[1], option?.[2], ...aliasList(line)].filter(Boolean);
+      for (const name of names) {
+        flags.add(name);
+        if (option[3]) values.add(name);
+      }
     }
   }
-  return { subcommands, flags: [...flags].sort() };
+  return { subcommands, flags: [...flags].sort(), values: [...values].sort() };
 }
 
 /** Walk every subcommand's help through the given CLI binary. */

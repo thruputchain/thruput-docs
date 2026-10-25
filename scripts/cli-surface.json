@@ -42,7 +42,8 @@
         "-V",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "new": {
       "subcommands": {},
@@ -58,6 +59,10 @@
         "--template",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--path",
+        "--template"
       ]
     },
     "templates": {
@@ -77,7 +82,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "docs": {
       "subcommands": {
@@ -99,6 +105,10 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--dir",
+        "--port"
       ]
     },
     "skill": {
@@ -120,7 +130,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "init": {
       "subcommands": {},
@@ -135,7 +146,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "status": {
       "subcommands": {},
@@ -150,6 +162,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "config": {
@@ -172,7 +187,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain": {
       "subcommands": {
@@ -194,7 +210,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "build": {
       "subcommands": {},
@@ -216,6 +233,14 @@
         "-p",
         "-q",
         "-v"
+      ],
+      "values": [
+        "--bindings",
+        "--package",
+        "--profile",
+        "--stack-size",
+        "--target-dir",
+        "-p"
       ]
     },
     "test": {
@@ -250,6 +275,19 @@
         "-p",
         "-q",
         "-v"
+      ],
+      "values": [
+        "--hog-devnode-version",
+        "--hogd-protocol",
+        "--match-test",
+        "--network-config",
+        "--node-arg",
+        "--package",
+        "--profile",
+        "--skip",
+        "--target-dir",
+        "--test-threads",
+        "-p"
       ]
     },
     "deploy": {
@@ -283,6 +321,21 @@
         "-p",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--alias",
+        "--artifact",
+        "--fund",
+        "--init",
+        "--init-arg",
+        "--init-gas-limit",
+        "--package",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--target-dir",
+        "--wallet",
+        "-p"
       ]
     },
     "call": {
@@ -310,6 +363,16 @@
         "-p",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--gas-limit",
+        "--package",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--target-dir",
+        "--wallet",
+        "-p"
       ]
     },
     "transfer": {
@@ -333,6 +396,12 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--from",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "airdrop": {
@@ -356,6 +425,12 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--amount",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "balance": {
@@ -373,6 +448,11 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "view": {
@@ -395,6 +475,16 @@
         "-h",
         "-p",
         "-q"
+      ],
+      "values": [
+        "--calldata",
+        "--from",
+        "--package",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--target-dir",
+        "-p"
       ]
     },
     "storage": {
@@ -412,6 +502,11 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "node": {
@@ -445,6 +540,25 @@
         "-h",
         "-q",
         "-v"
+      ],
+      "values": [
+        "--block-driver",
+        "--block-interval-ms",
+        "--bootstrap-accounts",
+        "--contract-artifacts-dir",
+        "--data-dir",
+        "--hog-devnode-binary",
+        "--hog-devnode-version",
+        "--hogd-protocol",
+        "--host",
+        "--init-network-hash",
+        "--initial-account-tokens",
+        "--key",
+        "--network-config",
+        "--port",
+        "--ramdb-bytes",
+        "--rpc-batch-concurrency",
+        "--rpc-max-connections"
       ]
     },
     "chain": {
@@ -462,7 +576,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "keys": {
       "subcommands": {
@@ -485,7 +600,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "wallet": {
       "subcommands": {
@@ -506,7 +622,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "codegen": {
       "subcommands": {
@@ -522,7 +639,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "tx": {
       "subcommands": {
@@ -541,7 +659,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "events": {
       "subcommands": {
@@ -559,7 +678,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "token": {
       "subcommands": {
@@ -575,7 +695,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "completion": {
       "subcommands": {},
@@ -589,7 +710,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "templates list": {
       "subcommands": {},
@@ -603,7 +725,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "templates show": {
       "subcommands": {},
@@ -617,7 +740,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "docs export": {
       "subcommands": {},
@@ -633,6 +757,10 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--dir",
+        "--output"
       ]
     },
     "docs status": {
@@ -647,7 +775,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "docs stop": {
       "subcommands": {},
@@ -661,7 +790,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "skill install": {
       "subcommands": {},
@@ -679,6 +809,9 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--agent"
       ]
     },
     "skill update": {
@@ -696,7 +829,8 @@
         "-h",
         "-q",
         "-y"
-      ]
+      ],
+      "values": []
     },
     "skill show": {
       "subcommands": {},
@@ -711,7 +845,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "skill list": {
       "subcommands": {},
@@ -726,7 +861,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "config get": {
       "subcommands": {},
@@ -741,7 +877,8 @@
         "--sources",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "config profiles": {
       "subcommands": {},
@@ -755,7 +892,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "config new": {
       "subcommands": {},
@@ -777,6 +915,13 @@
         "--use",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--default-key",
+        "--faucet-url",
+        "--network",
+        "--network-hash",
+        "--rpc-url"
       ]
     },
     "config rm": {
@@ -797,7 +942,8 @@
         "-h",
         "-q",
         "-y"
-      ]
+      ],
+      "values": []
     },
     "config set": {
       "subcommands": {},
@@ -814,6 +960,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "config unset": {
@@ -831,6 +980,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "config use": {
@@ -847,7 +999,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain install": {
       "subcommands": {},
@@ -861,7 +1014,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain list": {
       "subcommands": {},
@@ -875,7 +1029,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain use": {
       "subcommands": {},
@@ -889,7 +1044,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain clean": {
       "subcommands": {},
@@ -903,7 +1059,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "toolchain which": {
       "subcommands": {},
@@ -917,7 +1074,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "chain dump": {
       "subcommands": {},
@@ -937,6 +1095,10 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--data-dir",
+        "--output"
       ]
     },
     "chain restore": {
@@ -957,6 +1119,10 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--data-dir",
+        "--input"
       ]
     },
     "keys generate": {
@@ -972,6 +1138,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--scheme"
       ]
     },
     "keys import": {
@@ -986,7 +1155,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "keys ls": {
       "subcommands": {},
@@ -1000,7 +1170,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "keys export": {
       "subcommands": {},
@@ -1019,6 +1190,9 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--format"
       ]
     },
     "keys use": {
@@ -1033,7 +1207,8 @@
         "--show-cargo-commands",
         "-h",
         "-q"
-      ]
+      ],
+      "values": []
     },
     "keys rm": {
       "subcommands": {},
@@ -1051,7 +1226,8 @@
         "-h",
         "-q",
         "-y"
-      ]
+      ],
+      "values": []
     },
     "wallet ls": {
       "subcommands": {},
@@ -1066,6 +1242,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "wallet use": {
@@ -1081,6 +1260,9 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "wallet create": {
@@ -1106,6 +1288,14 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--key",
+        "--name",
+        "--prefund",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "wallet rm": {
@@ -1125,6 +1315,9 @@
         "-h",
         "-q",
         "-y"
+      ],
+      "values": [
+        "--profile"
       ]
     },
     "codegen ts": {
@@ -1141,6 +1334,10 @@
         "-h",
         "-o",
         "-q"
+      ],
+      "values": [
+        "--output",
+        "-o"
       ]
     },
     "tx show": {
@@ -1158,6 +1355,11 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "tx list": {
@@ -1177,6 +1379,13 @@
         "--show-cargo-commands",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--cursor",
+        "--limit",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
       ]
     },
     "events list": {
@@ -1201,6 +1410,18 @@
         "--topic2",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--cursor",
+        "--event",
+        "--limit",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--spec",
+        "--topic0",
+        "--topic1",
+        "--topic2"
       ]
     },
     "token transfers": {
@@ -1223,6 +1444,16 @@
         "--to",
         "-h",
         "-q"
+      ],
+      "values": [
+        "--account",
+        "--cursor",
+        "--from",
+        "--limit",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--to"
       ]
     }
   }

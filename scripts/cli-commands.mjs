@@ -1,18 +1,20 @@
 // Find `thruput ...` commands in docs Markdown and check them against the recorded
 // CLI surface (scripts/cli-surface.json). Catches renamed or removed subcommands and flags.
+// Scans shell fences and inline code. `text` fences hold prose (agent prompts) and are skipped.
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const shellFences = new Set(['bash', 'sh', 'shell', 'zsh', 'console', 'shellsession']);
-const operators = new Set(['&&', '||', ';', '|', '$(', '`', '(', ')']);
+const separators = new Set(['&&', '||', ';', '|', '`']);
 
-/** Split a shell line into words, keeping quotes and `<...>` placeholders whole and dropping optional `[...]` brackets. */
+/** Split a shell line into words and operators. Keeps `<...>` placeholders whole and drops optional `[...]` brackets. */
 export function tokenize(line) {
   const tokens = [];
   let word = '';
   const flush = () => {
     word = word.replace(/^\[+/, '').replace(/\]+(\.\.\.)?$/, '');
-    if (word) tokens.push(word);
+    const quoted = word.match(/^(["'])([^"'$]*)\1$/);
+    if (word) tokens.push(quoted ? quoted[2] : word);
     word = '';
   };
   for (let i = 0; i < line.length; i++) {
@@ -43,19 +45,36 @@ export function tokenize(line) {
   return tokens;
 }
 
-/** Find each `thruput` invocation in a line and return its arguments. */
+/** Find each `thruput` invocation in a line and return its arguments. A `$(...)` substitution becomes one `$SUB` argument. */
 export function invocations(line) {
   const found = [];
-  let segment = [];
-  for (const token of [...tokenize(line), ';']) {
-    if (token.startsWith('"') && token.includes('$(')) found.push(...invocations(token.slice(1, -1)));
-    if (!operators.has(token)) { segment.push(token); continue; }
+  const finish = segment => {
     let start = 0;
     if (segment[0] === '$') start++;
     while (/^[A-Z_][A-Z0-9_]*=/.test(segment[start] ?? '')) start++;
     if (segment[start] === 'thruput') found.push(segment.slice(start + 1));
-    segment = [];
+  };
+  const stack = [];
+  let segment = [];
+  for (const token of tokenize(line)) {
+    if (token.startsWith('"') && token.includes('$(')) found.push(...invocations(token.slice(1, -1)));
+    if (token === '$(' || token === '(') {
+      stack.push({ segment, substitution: token === '$(' });
+      segment = [];
+    } else if (token === ')' && stack.length) {
+      finish(segment);
+      const outer = stack.pop();
+      segment = outer.segment;
+      if (outer.substitution) segment.push('$SUB');
+    } else if (separators.has(token)) {
+      finish(segment);
+      segment = [];
+    } else {
+      segment.push(token);
+    }
   }
+  finish(segment);
+  for (const { segment: outer } of stack.reverse()) finish(outer);
   return found;
 }
 
@@ -63,34 +82,40 @@ const placeholder = word => /^(<.*>|\$|[A-Z][A-Z0-9_]*$|\.\.\.)/.test(word);
 
 /** Return problems with one invocation, or an empty list when the CLI accepts its shape. */
 export function checkInvocation(args, commands) {
-  const globals = new Set(commands[''].flags);
   const problems = [];
   let path = '';
   let positional = false;
-  let previousFlag = false;
+  let expectValue = false;
   for (const arg of args) {
     if (arg === '--') break;
+    if (expectValue) { expectValue = false; continue; }
     const node = commands[path];
-    if (/^--?[A-Za-z]/.test(arg)) {
+    const where = `\`thruput${path ? ` ${path}` : ''}\``;
+    if (/^--[A-Za-z]/.test(arg)) {
       const flag = arg.split('=')[0];
-      const known = f => node.flags.includes(f) || globals.has(f);
-      const bundled = /^-[A-Za-z]{2,}$/.test(flag) && [...flag.slice(1)].every(c => known(`-${c}`));
-      if (!known(flag) && !bundled) problems.push(`unknown flag ${flag} for \`thruput${path ? ` ${path}` : ''}\``);
-      previousFlag = !arg.includes('=');
+      if (!node.flags.includes(flag)) problems.push(`unknown flag ${flag} for ${where}`);
+      expectValue = node.values.includes(flag) && !arg.includes('=');
+      continue;
+    }
+    if (/^-[A-Za-z0-9]/.test(arg)) {
+      // A short flag, a bundle such as `-qy`, or a short flag with an attached value such as `-pmy-counter`.
+      for (let i = 1; i < arg.length; i++) {
+        const flag = `-${arg[i]}`;
+        if (!node.flags.includes(flag)) { problems.push(`unknown flag ${flag} for ${where}`); break; }
+        if (node.values.includes(flag)) { expectValue = i === arg.length - 1; break; }
+      }
       continue;
     }
     const subcommands = Object.entries(node.subcommands);
-    if (!positional && !previousFlag && subcommands.length) {
-      const match = subcommands.find(([name, aliases]) => name === arg || aliases.includes(arg));
-      if (match) path = path ? `${path} ${match[0]}` : match[0];
-      else {
-        if (!placeholder(arg)) problems.push(`unknown subcommand ${arg} for \`thruput${path ? ` ${path}` : ''}\``);
-        positional = true;
-      }
-    } else if (!previousFlag) {
+    if (positional || !subcommands.length) { positional = true; continue; }
+    const match = subcommands.find(([name, aliases]) => name === arg || aliases.includes(arg));
+    if (match) {
+      path = path ? `${path} ${match[0]}` : match[0];
+    } else {
+      // Built-in `help` takes command names, which are not checked.
+      if (arg !== 'help' && !placeholder(arg)) problems.push(`unknown subcommand ${arg} for ${where}`);
       positional = true;
     }
-    previousFlag = false;
   }
   return problems;
 }
@@ -114,8 +139,8 @@ export function* docCommands(markdown) {
       for (const args of invocations(pending)) yield { line: i + 1, args };
       pending = '';
     } else {
-      for (const [, code] of text.matchAll(/(?<!`)`([^`]+)`(?!`)/g)) {
-        if (/^thruput(\s|$)/.test(code)) yield { line: i + 1, args: tokenize(code).slice(1) };
+      for (const [, , code] of text.matchAll(/(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)/g)) {
+        for (const args of invocations(code)) yield { line: i + 1, args };
       }
     }
   }
