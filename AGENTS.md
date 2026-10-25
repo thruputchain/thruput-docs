@@ -26,7 +26,7 @@ Key rules:
 - `strict_inc(delta)` and `inc(delta)` can merge when their resolved bases match. `strict_inc` loads the current base for early underflow and overflow checks. `inc` skips that snapshot read.
 - Gas costs zero tokens. Root transactions use the declared gas limit for scheduling capacity. There is no unused-gas refund path.
 - Say "gas price estimation" when discussing other-chain pain. The problem is price volatility, not usage prediction.
-- An excluded transaction is not committed and its replay nonce is not consumed. Do not say excluded transactions return to the mempool. A committed abort, revert, or out-of-gas fault consumes the nonce.
+- Exclusion from a proposal does not commit the transaction or consume its replay nonce. It does not guarantee automatic mempool requeue. The scheduler can requeue transactions when a nomination is abandoned or a different proposal commits. A committed abort, revert, or out-of-gas fault consumes the nonce.
 - Do not equate exclusion with a guaranteed `retry` status. `retry` reports scheduler processing failure; `recentFailure` is an advisory proposal-attempt diagnostic and can also accompany another status. A timeout, `unknown`, or `recentFailure` alone does not prove nonexecution or authorize replacement. Resume observation using the original hash and network. When resubmission is appropriate, use the same signed transaction while it remains valid. Receipt polling does not resubmit automatically.
 
 ## Content Rules
