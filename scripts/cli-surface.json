@@ -1,0 +1,1229 @@
+{
+  "cli": "thruput 0.39.0 (commit fbad74b2)",
+  "commands": {
+    "": {
+      "subcommands": {
+        "new": [],
+        "templates": [],
+        "docs": [],
+        "skill": [],
+        "init": [],
+        "status": [],
+        "config": [],
+        "toolchain": [],
+        "build": [],
+        "test": [],
+        "deploy": [],
+        "call": [],
+        "transfer": [],
+        "airdrop": [],
+        "balance": [],
+        "view": [],
+        "storage": [],
+        "node": [],
+        "chain": [],
+        "keys": [],
+        "wallet": [],
+        "codegen": [],
+        "tx": [],
+        "events": [],
+        "token": [],
+        "completion": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--version",
+        "-V",
+        "-h",
+        "-q"
+      ]
+    },
+    "new": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--path",
+        "--quiet",
+        "--show-cargo-commands",
+        "--template",
+        "-h",
+        "-q"
+      ]
+    },
+    "templates": {
+      "subcommands": {
+        "list": [
+          "ls"
+        ],
+        "show": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "docs": {
+      "subcommands": {
+        "export": [],
+        "status": [],
+        "stop": []
+      },
+      "flags": [
+        "--background",
+        "--dir",
+        "--foreground",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--port",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "skill": {
+      "subcommands": {
+        "install": [],
+        "update": [],
+        "show": [],
+        "list": [
+          "ls"
+        ]
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "init": {
+      "subcommands": {},
+      "flags": [
+        "--generate-key",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "status": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "config": {
+      "subcommands": {
+        "get": [],
+        "profiles": [],
+        "new": [],
+        "rm": [],
+        "set": [],
+        "unset": [],
+        "use": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain": {
+      "subcommands": {
+        "install": [],
+        "list": [
+          "ls"
+        ],
+        "use": [],
+        "clean": [],
+        "which": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "build": {
+      "subcommands": {},
+      "flags": [
+        "--bindings",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--package",
+        "--profile",
+        "--quiet",
+        "--show-cargo-commands",
+        "--stack-size",
+        "--target-dir",
+        "--verbose",
+        "-h",
+        "-p",
+        "-q",
+        "-v"
+      ]
+    },
+    "test": {
+      "subcommands": {},
+      "flags": [
+        "--fail-fast",
+        "--help",
+        "--hog-devnode-version",
+        "--hogd-protocol",
+        "--integration",
+        "--json",
+        "--match-test",
+        "--network-config",
+        "--no-capture",
+        "--no-ui",
+        "--node-arg",
+        "--non-interactive",
+        "--offline",
+        "--package",
+        "--profile",
+        "--quiet",
+        "--rerun",
+        "--show-cargo-commands",
+        "--show-output",
+        "--skip",
+        "--target-dir",
+        "--test-threads",
+        "--verbose",
+        "--watch",
+        "--workspace",
+        "-h",
+        "-p",
+        "-q",
+        "-v"
+      ]
+    },
+    "deploy": {
+      "subcommands": {},
+      "flags": [
+        "--alias",
+        "--artifact",
+        "--dry-run",
+        "--estimate",
+        "--force",
+        "--fund",
+        "--help",
+        "--init",
+        "--init-arg",
+        "--init-gas-limit",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--package",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--target-dir",
+        "--wallet",
+        "--yes",
+        "-f",
+        "-h",
+        "-p",
+        "-q",
+        "-y"
+      ]
+    },
+    "call": {
+      "subcommands": {},
+      "flags": [
+        "--dry-run",
+        "--force",
+        "--gas-limit",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--package",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--target-dir",
+        "--wallet",
+        "--yes",
+        "-f",
+        "-h",
+        "-p",
+        "-q",
+        "-y"
+      ]
+    },
+    "transfer": {
+      "subcommands": {},
+      "flags": [
+        "--dry-run",
+        "--force",
+        "--from",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "airdrop": {
+      "subcommands": {},
+      "flags": [
+        "--amount",
+        "--dry-run",
+        "--force",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "balance": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "view": {
+      "subcommands": {},
+      "flags": [
+        "--calldata",
+        "--from",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--package",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--target-dir",
+        "-h",
+        "-p",
+        "-q"
+      ]
+    },
+    "storage": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "node": {
+      "subcommands": {},
+      "flags": [
+        "--block-driver",
+        "--block-interval-ms",
+        "--bootstrap-accounts",
+        "--contract-artifacts-dir",
+        "--data-dir",
+        "--help",
+        "--hog-devnode-binary",
+        "--hog-devnode-version",
+        "--hogd-protocol",
+        "--host",
+        "--init-network-hash",
+        "--initial-account-tokens",
+        "--json",
+        "--key",
+        "--network-config",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--port",
+        "--quiet",
+        "--ramdb-bytes",
+        "--rpc-batch-concurrency",
+        "--rpc-max-connections",
+        "--show-cargo-commands",
+        "--verbose",
+        "-h",
+        "-q",
+        "-v"
+      ]
+    },
+    "chain": {
+      "subcommands": {
+        "dump": [],
+        "restore": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "keys": {
+      "subcommands": {
+        "generate": [],
+        "import": [],
+        "ls": [
+          "list"
+        ],
+        "export": [],
+        "use": [],
+        "rm": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "wallet": {
+      "subcommands": {
+        "ls": [
+          "list"
+        ],
+        "use": [],
+        "create": [],
+        "rm": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "codegen": {
+      "subcommands": {
+        "ts": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "tx": {
+      "subcommands": {
+        "show": [],
+        "list": [
+          "ls"
+        ]
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "events": {
+      "subcommands": {
+        "list": [
+          "ls"
+        ]
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "token": {
+      "subcommands": {
+        "transfers": []
+      },
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "completion": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "templates list": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "templates show": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "docs export": {
+      "subcommands": {},
+      "flags": [
+        "--dir",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--output",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "docs status": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "docs stop": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "skill install": {
+      "subcommands": {},
+      "flags": [
+        "--agent",
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "skill update": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "skill show": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "skill list": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "config get": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--sources",
+        "-h",
+        "-q"
+      ]
+    },
+    "config profiles": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "config new": {
+      "subcommands": {},
+      "flags": [
+        "--default-key",
+        "--faucet-url",
+        "--global",
+        "--help",
+        "--json",
+        "--network",
+        "--network-hash",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--project",
+        "--quiet",
+        "--rpc-url",
+        "--show-cargo-commands",
+        "--use",
+        "-h",
+        "-q"
+      ]
+    },
+    "config rm": {
+      "subcommands": {},
+      "flags": [
+        "--force",
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--project",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "config set": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--project",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "config unset": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--project",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "config use": {
+      "subcommands": {},
+      "flags": [
+        "--global",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--project",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain install": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain list": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain use": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain clean": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "toolchain which": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "chain dump": {
+      "subcommands": {},
+      "flags": [
+        "--data-dir",
+        "--force",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--output",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "chain restore": {
+      "subcommands": {},
+      "flags": [
+        "--data-dir",
+        "--force",
+        "--help",
+        "--input",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "keys generate": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--scheme",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "keys import": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "keys ls": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "keys export": {
+      "subcommands": {},
+      "flags": [
+        "--force",
+        "--format",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "keys use": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "keys rm": {
+      "subcommands": {},
+      "flags": [
+        "--force",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "wallet ls": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "wallet use": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "wallet create": {
+      "subcommands": {},
+      "flags": [
+        "--dry-run",
+        "--force",
+        "--help",
+        "--json",
+        "--key",
+        "--name",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--prefund",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "wallet rm": {
+      "subcommands": {},
+      "flags": [
+        "--force",
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--show-cargo-commands",
+        "--yes",
+        "-f",
+        "-h",
+        "-q",
+        "-y"
+      ]
+    },
+    "codegen ts": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--output",
+        "--quiet",
+        "--show-cargo-commands",
+        "-h",
+        "-o",
+        "-q"
+      ]
+    },
+    "tx show": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "tx list": {
+      "subcommands": {},
+      "flags": [
+        "--cursor",
+        "--help",
+        "--json",
+        "--limit",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ]
+    },
+    "events list": {
+      "subcommands": {},
+      "flags": [
+        "--cursor",
+        "--event",
+        "--help",
+        "--json",
+        "--limit",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--spec",
+        "--topic0",
+        "--topic1",
+        "--topic2",
+        "-h",
+        "-q"
+      ]
+    },
+    "token transfers": {
+      "subcommands": {},
+      "flags": [
+        "--account",
+        "--cursor",
+        "--from",
+        "--help",
+        "--json",
+        "--limit",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "--to",
+        "-h",
+        "-q"
+      ]
+    }
+  }
+}
