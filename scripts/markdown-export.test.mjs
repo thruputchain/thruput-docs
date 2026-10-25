@@ -136,3 +136,12 @@ test('snapshot pages cite their hosted docs URL', () => {
   assert.equal(hostedDocsUrl('https://thruput.network/guides/build-a-token/'), 'https://thruput.network/docs/guides/build-a-token/');
   assert.equal(hostedDocsUrl('https://thruput.network/docs/cli/install/'), 'https://thruput.network/docs/cli/install/');
 });
+
+test('snapshot exports cite hosted URLs on pages and bundles', async t => {
+  const directory = await fixture(t, '<p>Home</p>');
+  await exportMarkdown({ directory, site, snapshot, routePrefix: '' });
+  const source = path => readFile(join(directory, 'markdown', path), 'utf8');
+  assert.ok((await source('pages/contracts/start.md')).includes(`Source: <${site}docs/contracts/start/>`));
+  assert.ok((await source('full.md')).includes(`Source: <${site}docs/contracts/start/>`));
+  assert.ok((await source('pages/index.md')).includes(`Source: <${site}>`));
+});
