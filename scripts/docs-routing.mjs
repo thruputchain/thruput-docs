@@ -14,8 +14,7 @@ export function logicalDocsPath(path) {
 /** The hosted URL of a docs page. Snapshot builds serve pages without the `/docs` prefix. */
 export function hostedDocsUrl(url) {
   const result = new URL(url);
-  const path = logicalDocsPath(result.pathname);
-  result.pathname = path === '/' ? '/docs/' : docsPath(path, '/docs');
+  result.pathname = docsPath(logicalDocsPath(result.pathname), '/docs');
   return result.href;
 }
 

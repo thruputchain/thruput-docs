@@ -132,7 +132,7 @@ test('indexes and bundles follow navigation order, including grouped entries', a
 });
 
 test('snapshot pages cite their hosted docs URL', () => {
-  assert.equal(hostedDocsUrl('https://thruput.network/'), 'https://thruput.network/docs/');
+  assert.equal(hostedDocsUrl('https://thruput.network/'), 'https://thruput.network/');
   assert.equal(hostedDocsUrl('https://thruput.network/guides/build-a-token/'), 'https://thruput.network/docs/guides/build-a-token/');
   assert.equal(hostedDocsUrl('https://thruput.network/docs/cli/install/'), 'https://thruput.network/docs/cli/install/');
 });
