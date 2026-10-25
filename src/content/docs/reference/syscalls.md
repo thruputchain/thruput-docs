@@ -106,7 +106,7 @@ Returns the length of the calldata supplied to the invocation associated with th
 
 Errors: none beyond the universal `Fault` / `NoSyscall`.
 
-Returns the calldata supplied to the invocation associated with the current call frame, and the number N of auth tokens supplied to it. Auth-token ids are local to each call frame. The supplied tokens are the current frame's ids `0..N-1`, in the order the caller listed them. `written_len` is the full calldata length. A `written_len` greater than the `buffer` length means the output was truncated.
+Returns the calldata and the number N of auth tokens supplied to the invocation associated with the current call frame. Auth-token ids are local to each frame; the supplied tokens are ids `0..N-1`.
 
 ## Logging
 
@@ -210,9 +210,12 @@ Returns the contract address of the current call frame.
 | in | `revert_frame` | `bool` |
 | in | `returned_auth_token_ids` | `[u8]` (span, interpreted as `[u32]`) |
 
-Errors: none beyond the universal `Fault` / `NoSyscall`. Does not return to the caller (terminates execution of the current guest invocation).
+Errors:
+- `Fault` (the current frame faults, like `Exit`) if the buffer is longer than `max_return_buffer_len`, a frame marked for revert returns auth tokens, or the auth-token id list is longer than `max_auth_tokens`, malformed, duplicated, or names tokens the current frame does not own.
 
-Returns data and a set of auth-token ids from the current call frame and optionally marks the frame for revert. The caller reads the return buffer with `GetReturnedBuffer`. The current frame faults with a deterministic error, like `Exit`, if the buffer is longer than `max_return_buffer_len`, if a frame marked for revert returns auth tokens, or if the returned auth-token id list is longer than `max_auth_tokens`, malformed, duplicated, or names tokens the current frame does not own.
+Does not return to the caller (terminates execution of the current guest invocation).
+
+Returns data and a set of auth-token ids from the current call frame and optionally marks the frame for revert. The return buffer is made available to the caller via `GetReturnedBuffer`.
 
 ### GetReturnedBuffer
 
@@ -230,7 +233,7 @@ Returns data and a set of auth-token ids from the current call frame and optiona
 Errors:
 - `NoReturnBufferAvailable` if no return buffer is available: the most recent subcall faulted (for example by trapping or calling `Exit`), or no subcall has been made in this frame.
 
-Returns the return buffer from the most recent subcall that ended with `Return`, including a `Return` that marked the frame for revert. `written_len` is the full buffer length. A `written_len` greater than the `buffer` length means the output was truncated. Also returns the auth tokens that subcall returned. They join the current frame as ids `returned_auth_token_start` through `returned_auth_token_start + returned_auth_token_count - 1`, in the order the subcall listed them.
+Returns the return buffer and the returned auth tokens from the most recent subcall that ended with `Return`. The tokens join the current frame as ids `returned_auth_token_start` to `returned_auth_token_start + returned_auth_token_count - 1`.
 
 ### Exit
 
