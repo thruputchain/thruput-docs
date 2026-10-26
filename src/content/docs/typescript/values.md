@@ -35,13 +35,7 @@ export function parseIdentifiers(addressText: string, transactionText: string) {
 
 Both parsers require 32 decoded bytes.
 
-:::note[Upcoming Z address format]
-Z address support targets the next client release. The currently documented
-`@thruputchain/client` version `0.24.0` uses C address StrKeys. Use base58 with
-released clients until you upgrade to a Z-capable version.
-:::
-
-With Z support, `parseAddress(text)` also accepts a Thruput
+`parseAddress(text)` also accepts a Thruput
 `Z` StrKey address. `addressToStrkey(address)` formats address bytes with the Z
 prefix. Stellar C addresses are rejected. Z does not distinguish local, test, and
 production networks; select the intended cluster. Ed25519 public keys and seeds

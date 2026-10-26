@@ -38,12 +38,6 @@ description: TypeScript client entry points, common operations, and links to foc
 
 ## Exact Amounts and Common Types
 
-:::note[Upcoming Z address format]
-The Z address entries below target the next client release. The currently
-documented client `0.24.0` uses C address StrKeys. Base58 identifiers work with
-both formats.
-:::
-
 | API | Result / rule |
 | --- | --- |
 | `parseUnits(text, decimals)` | Exact signed `bigint`; rejects malformed input and excess precision |
