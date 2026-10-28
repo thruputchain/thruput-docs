@@ -1,6 +1,7 @@
 // Run with: node scripts/generate-social-image.mjs
 // Requires the Playwright Chromium browser: pnpm exec playwright install chromium
 import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 
@@ -45,7 +46,7 @@ try {
     </body></html>`);
   await page.evaluate(() => document.fonts.ready);
   const image = await page.screenshot();
-  await sharp(image).png({ compressionLevel: 9 }).toFile(new URL('public/images/thruput-social.png', root).pathname);
+  await sharp(image).png({ compressionLevel: 9 }).toFile(fileURLToPath(new URL('public/images/thruput-social.png', root)));
 } finally {
   await browser.close();
 }
