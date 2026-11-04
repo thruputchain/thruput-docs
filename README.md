@@ -7,7 +7,8 @@ offline documentation for the Thruput CLI.
 
 ## Run locally
 
-Use Node.js 22 and the pnpm version specified in [package.json](package.json).
+Use Node.js 22.23.4 or newer within Node 22, and the pnpm version specified in
+[package.json](package.json).
 
 ```sh
 pnpm install --frozen-lockfile
