@@ -1,5 +1,5 @@
 {
-  "cli": "thruput 0.42.0 (commit e422d971)",
+  "cli": "thruput 0.43.0 (commit unavailable)",
   "commands": {
     "": {
       "subcommands": {
@@ -20,6 +20,7 @@
         "balance": [],
         "view": [],
         "storage": [],
+        "inspect": [],
         "node": [],
         "chain": [],
         "keys": [],
@@ -504,6 +505,30 @@
         "-q"
       ],
       "values": [
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
+      ]
+    },
+    "inspect": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--output",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ],
+      "values": [
+        "--output",
         "--profile",
         "--rpc-url",
         "--runtime-manifest"
@@ -1323,20 +1348,26 @@
     "codegen ts": {
       "subcommands": {},
       "flags": [
+        "--address",
         "--help",
         "--json",
         "--no-ui",
         "--non-interactive",
         "--offline",
         "--output",
+        "--profile",
         "--quiet",
+        "--rpc-url",
         "--show-cargo-commands",
         "-h",
         "-o",
         "-q"
       ],
       "values": [
+        "--address",
         "--output",
+        "--profile",
+        "--rpc-url",
         "-o"
       ]
     },

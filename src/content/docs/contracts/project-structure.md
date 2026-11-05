@@ -35,10 +35,10 @@ The `.gitignore` excludes build output and project-local runtime state.
 
 For `my-counter`, the output under `target/thruput/` includes:
 
-- `my_counter.rv32a`: deployable contract artifact.
+- `my_counter.rv32a`: deployable contract artifact with its embedded spec.
 - `my_counter.rv32.json`: lowering metadata.
-- `my_counter.spec.xdr`: binary contract specification.
-- `my_counter.spec.json`: readable contract specification.
+- `my_counter.spec.xdr`: binary export of the contract spec.
+- `my_counter.spec.json`: readable export of the contract spec.
 
 The specification describes the contract interface and supports [TypeScript binding generation](/tools/typescript-bindings/).
 

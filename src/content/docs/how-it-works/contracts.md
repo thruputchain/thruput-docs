@@ -13,7 +13,7 @@ User contracts compile to RV32, Project Thruput's 32-bit RISC-V contract target.
 
 ### RV32 Contracts
 
-`thruput build` compiles the contract's RV32 entrypoint wrapper for `riscv32im-unknown-none-elf`, lowers that ELF into a deployable `.rv32a` artifact, and finalizes its contract-spec sidecars.
+`thruput build` compiles the contract's RV32 entrypoint wrapper for `riscv32im-unknown-none-elf`, lowers that ELF into a deployable `.rv32a` artifact, and embeds the canonical contract spec. It also exports the spec as binary XDR and readable JSON.
 
 For a crate named `counter`, the default build writes:
 
@@ -25,6 +25,8 @@ target/thruput/counter.spec.json
 ```
 
 The `.rv32a` file is the executable contract artifact. `thruput deploy` wraps those bytes in the protocol's `Contract::kRv32` variant before signing and submitting the deploy transaction.
+
+The embedded spec describes the contract interface and is stored outside guest memory. Tools can retrieve it from the deployed artifact for [inspection](/cli/deploy-and-call/#inspect-a-contract) and [binding generation](/cli/codegen/).
 
 Deployment must satisfy the network's limits on attached contract size, RV32 code, guest memory, and new contracts per transaction. Client and gateway submission limits also apply. Use the selected network's configuration rather than assuming a fixed maximum.
 
@@ -69,7 +71,7 @@ SHA256(XDR(Contract::kRv32 {
 }))
 ```
 
-This is not just the SHA256 hash of the raw `.rv32a` bytes. The XDR wrapper and `kRv32` type tag are part of the hash preimage.
+The hash covers the complete artifact, including its embedded spec, plus the XDR wrapper and `kRv32` type tag. Changing the spec changes the contract hash even if the executable code stays the same.
 
 ### DeployContract Syscall
 
