@@ -18,14 +18,19 @@ The home page also lists recent native-token transfers. Select a transaction to 
 The transaction page shows:
 
 - Transaction status and, once committed, block height and execution result.
-- Receipt events, including decoded token transfers, mints, and burns where supported.
-- Raw receipt data for debugging.
+- Decoded methods and arguments when retained input and supported contract metadata are available.
+- Receipt events decoded from contract specs, including token transfers, mints, and burns where supported.
+- Raw input and receipt data for debugging.
 
 Events without a supported decoder appear as raw topics and data.
+
+Requested child calls describe the transaction input, not proof of execution or child outcomes. Current contract metadata does not establish historical code identity.
 
 ### Addresses and Tokens
 
 The address page shows the native-token balance. For non-token addresses, it also shows recent transactions and sent or received native-token transfers. Recognized token contracts show token metadata and token transfer history. Other contracts can show their emitted events.
+
+Contract details show the current contract identity and, when an embedded spec is available, its methods, events, errors, and types. Native contracts are identified without an embedded RV32 spec.
 
 Address transaction history combines transactions whose root invocation targets the address with native-token transfer activity. It does not cover every nested invocation or every token transfer involving the address.
 

@@ -84,6 +84,8 @@ description: Thruput CLI commands, common options, and links to task instruction
 | `deploy --fund minimum` | Fund a fresh deployment's balance-item deposit and code collateral; leaves no free balance and cannot include initialization | [Minimum funding](/cli/deploy-and-call/#estimate-deployment-funding) |
 | `deploy --init METHOD --init-arg VALUE` | Initialize atomically with deployment | [Initialization](/cli/deploy-and-call/#include-initialization) |
 | `deploy --artifact PATH --alias NAME` | Select an artifact and saved alias | [Deployment](/cli/deploy-and-call/#deploy-an-artifact) |
+| `inspect CONTRACT [--json]` | Read deployment details and the embedded spec | [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) |
+| `inspect CONTRACT --output FILE` | Export the embedded spec as JSON | Replaces the file only when a supported spec is available |
 | `call CONTRACT METHOD [ARGS...]` | Submit a signed contract invocation | [Calls](/cli/deploy-and-call/#submit-a-call) |
 | `view CONTRACT METHOD [ARGS...]` | Run a sandboxed read without submitting | [Views](/cli/deploy-and-call/#read-without-submitting) |
 | `storage CONTRACT KEY` | Read a raw committed storage item | [Views and storage](/cli/deploy-and-call/#read-without-submitting) |
@@ -106,7 +108,8 @@ description: Thruput CLI commands, common options, and links to task instruction
 | Command | Input/output | Usage |
 | --- | --- | --- |
 | `build --bindings ts` | Contract build plus generated bindings | [Generate bindings](/cli/codegen/) |
-| `codegen ts SPEC -o FILE` | Canonical `.spec.xdr` to TypeScript; stdout if output is omitted | [Write into an app](/cli/codegen/#write-bindings-into-an-application) |
+| `codegen ts SOURCE -o FILE` | `.spec.xdr` or `.rv32a` to TypeScript; stdout if output is omitted | [Write into an app](/cli/codegen/#write-bindings-into-an-application) |
+| `codegen ts --address CONTRACT -o FILE` | Deployed spec to TypeScript; supports `--profile` and `--rpc-url` | [Generate from an address](/cli/codegen/#generate-from-a-deployed-contract) |
 
 ## Skills and Local Documentation
 

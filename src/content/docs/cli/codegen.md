@@ -1,11 +1,11 @@
 ---
 title: Generate TypeScript bindings
-description: Generate typed application bindings from a built contract's canonical specification.
+description: Generate typed application bindings from a contract build or deployed address.
 ---
 
 Generate bindings from the same contract build you deploy. Bindings provide method descriptors, argument types, result decoders, and declared event and error types.
 
-Use Thruput CLI 0.29.0 or newer for applications that import the private `@thruputchain` npm packages. Older generators emit the previous package namespace.
+Generated bindings use the public `@thruputchain` npm packages.
 
 ## Generate during a build
 
@@ -26,7 +26,18 @@ thruput codegen ts target/thruput/my_counter.spec.xdr \
   --output web/src/contracts/my-counter.ts
 ```
 
-Replace `my_counter` with your artifact's name and the output directory with your application's location. `codegen ts` accepts `.spec.xdr`, not the readable `.spec.json` or the deployable `.rv32a` file.
+Replace `my_counter` with your artifact's name and the output directory with your application's location. `codegen ts` accepts `.spec.xdr` or a `.rv32a` artifact with an embedded spec. The readable `.spec.json` is not a codegen input.
+
+## Generate from a deployed contract
+
+```bash
+thruput codegen ts --address my-counter --profile futurenet \
+  --output web/src/contracts/my-counter.ts
+```
+
+Use a saved alias, base58 address, or Thruput `Z` StrKey. The CLI retrieves the deployed artifact, verifies its hash, and reads its embedded spec. Use `--rpc-url URL` to override the profile endpoint.
+
+Provide exactly one file or `--address`. A supported spec is required. Retrieval or validation errors leave an existing output file unchanged. Without `--output`, bindings go to stdout.
 
 ## Keep code and deployment aligned
 
