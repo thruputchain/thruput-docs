@@ -1,26 +1,47 @@
 ---
 import { docsPath, logicalDocsPath } from '../../scripts/docs-routing.mjs';
-import Bot from '../assets/bot.svg';
 import { Icon } from '@astrojs/starlight/components';
+import CopyIcon from './CopyIcon.astro';
+import PageAction from './PageAction.astro';
+import { pageActionLinks } from '../page-action-links';
 const route = logicalDocsPath(Astro.url.pathname).replace(/^\/|\/$/g, '');
 const markdownUrl = `/markdown/pages/${route || 'index'}.md`;
 const body = Astro.locals.starlightRoute.entry.body ?? '';
 const agentSection = body.split(/^## (?:Work with an agent|Use a coding agent)\s*$/m)[1]?.split(/^## /m)[0];
 const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
+const snapshot = Boolean(process.env.THRUPUT_DOCS_SNAPSHOT);
+const providers = Astro.site && !snapshot
+  ? pageActionLinks(Astro.locals.starlightRoute.entry.data.title, new URL(markdownUrl, Astro.site))
+  : undefined;
 ---
 
-<page-actions data-markdown-url={markdownUrl} data-local-snapshot={process.env.THRUPUT_DOCS_SNAPSHOT ? 'true' : undefined} data-pagefind-ignore>
+<page-actions data-markdown-url={markdownUrl} data-local-snapshot={snapshot ? 'true' : undefined} data-pagefind-ignore>
+  <div class="split-button">
+    <button class="copy-page" type="button" data-copy="page" hidden aria-describedby="copy-page-description">
+      <span class="copy-icon"><CopyIcon /></span><span class="copied-icon"><Icon name="approve-check" size="1rem" /></span>
+      <span data-label>Copy page</span>
+    </button>
+    <span id="copy-page-description" class="sr-only">Copy this page as Markdown</span>
     <details>
-      <summary><Bot width="16" height="16" aria-hidden="true" /><span>Agent tools</span><Icon name="down-caret" size="1rem" /></summary>
+      <summary aria-label="More page actions"><span class="fallback-label">Page actions</span><Icon name="down-caret" size="1rem" /></summary>
       <div class="options">
-        <button type="button" data-copy="page" hidden><span data-label>Copy page</span><Icon name="approve-check" size="1rem" /></button>
-        <button type="button" data-copy="link" hidden><span data-label>Copy link for an agent</span><Icon name="approve-check" size="1rem" /></button>
-        {prompt && <button type="button" data-copy="prompt" hidden><span data-label>Copy task prompt</span><Icon name="approve-check" size="1rem" /></button>}
-        <a href={markdownUrl}>View Markdown</a>
-        <a href={docsPath('/start/build-with-an-agent/')}>Set up your agent</a>
-        <p class="feedback" role="status" aria-live="polite"></p>
+        <div class="action-group">
+          <PageAction id="page-copy" label="Copy page" description="Copy this page as Markdown" icon="copy" copy="page" />
+          <PageAction id="page-markdown" label="View Markdown" description="Read the plain-text version" icon="document" href={markdownUrl} external />
+          <PageAction id="page-link" label="Copy Markdown link" description="Share this page with an agent" icon="link" copy="link" />
+        </div>
+        {providers && <div class="action-group">
+          <PageAction id="page-chatgpt" label="Open in ChatGPT" description="Ask about this page" icon="comment" href={providers.chatgpt} external />
+          <PageAction id="page-claude" label="Open in Claude" description="Ask about this page" icon="comment-alt" href={providers.claude} external />
+        </div>}
+        <div class="action-group">
+          {prompt && <PageAction id="page-prompt" label="Copy task prompt" description="Start this task in your coding agent" icon="pencil" copy="prompt" />}
+          <PageAction id="page-setup" label="Set up your agent" description="Install the Thruput skill" icon="setting" href={docsPath('/start/build-with-an-agent/')} />
+        </div>
       </div>
     </details>
+  </div>
+  <p class="feedback" role="status" aria-live="polite" aria-atomic="true"></p>
   {prompt && <template data-task-prompt>{prompt}</template>}
   <dialog aria-labelledby="manual-copy-title" aria-describedby="manual-copy-help">
     <div class="manual-copy">
@@ -43,27 +64,58 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
       let lastAction: HTMLElement | null = null;
       const details = this.querySelector('details')!;
       const summary = this.querySelector('summary')!;
+      const options = this.querySelector<HTMLElement>('.options')!;
       const feedback = this.querySelector<HTMLElement>('[role="status"]')!;
       const dialog = this.querySelector('dialog')!;
       const textarea = this.querySelector('textarea')!;
       const buttons = this.querySelectorAll<HTMLButtonElement>('[data-copy]');
+      // The top layer keeps the panel above Starlight's isolated article and sidebar.
+      options.popover = 'manual';
+      const closeOptions = () => {
+        details.open = false;
+        options.hidePopover();
+      };
+      const positionOptions = () => {
+        if (!details.open) {
+          options.hidePopover();
+          return;
+        }
+        if (!options.matches(':popover-open')) options.showPopover();
+        const rect = this.getBoundingClientRect();
+        const height = Math.min(options.scrollHeight, window.innerHeight - 32);
+        const top = Math.max(16, Math.min(rect.bottom + 8, window.innerHeight - height - 16));
+        const left = Math.max(16, Math.min(rect.right - options.offsetWidth, window.innerWidth - options.offsetWidth - 16));
+        options.style.setProperty('--options-top', `${top}px`);
+        options.style.setProperty('--options-left', `${left}px`);
+      };
+      this.setAttribute('data-ready', '');
+      summary.addEventListener('click', event => {
+        event.preventDefault();
+        details.open = !details.open;
+        positionOptions();
+      }, { signal: controller.signal });
+      details.addEventListener('toggle', positionOptions, { signal: controller.signal });
+      window.addEventListener('resize', positionOptions, { signal: controller.signal });
+      document.addEventListener('scroll', event => {
+        if (event.target instanceof Node && options.contains(event.target)) return;
+        positionOptions();
+      }, { signal: controller.signal, capture: true, passive: true });
       const labels = new Map([...buttons].map(button => [button, button.querySelector('[data-label]')!.textContent!]));
       const setLabel = (button: HTMLButtonElement, label: string) => {
         button.querySelector('[data-label]')!.textContent = label;
         button.toggleAttribute('data-copied', label === 'Copied');
       };
       const markdownUrl = new URL(this.dataset.markdownUrl!, location.origin).href;
-      const notify = (message: string, error = false) => {
+      const notify = (message: string) => {
         window.clearTimeout(timer);
         feedback.textContent = message;
-        feedback.toggleAttribute('data-error', error);
       };
       buttons.forEach(button => {
         button.hidden = false;
         button.addEventListener('click', async () => {
           if (busy) return;
           busy = true;
-          lastAction = summary;
+          lastAction = button.closest('details') ? summary : button;
           buttons.forEach(item => setLabel(item, labels.get(item)!));
           buttons.forEach(item => item.setAttribute('aria-disabled', 'true'));
           setLabel(button, 'Copying…');
@@ -92,7 +144,7 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
                 feedback.textContent = '';
               }, 2_500);
             } catch {
-              details.open = false;
+              closeOptions();
               textarea.value = text;
               dialog.showModal();
               textarea.focus();
@@ -100,7 +152,7 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
               notify('Copy the selected text manually.');
             }
           } catch {
-            if (!controller.signal.aborted) notify('Could not load Markdown. Try again or use View Markdown.', true);
+            if (!controller.signal.aborted) notify('');
           } finally {
             busy = false;
             if (!button.hasAttribute('data-copied')) setLabel(button, labels.get(button)!);
@@ -111,15 +163,15 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
       this.addEventListener('keydown', event => {
         if (event.key === 'Escape' && details.open) {
           event.preventDefault();
-          details.open = false;
+          closeOptions();
           summary.focus();
         }
       }, { signal: controller.signal });
       document.addEventListener('click', event => {
-        if (event.target instanceof Node && !details.contains(event.target)) details.open = false;
+        if (event.target instanceof Node && !this.contains(event.target)) closeOptions();
       }, { signal: controller.signal });
       this.addEventListener('focusout', event => {
-        if (event.relatedTarget instanceof Node && !this.contains(event.relatedTarget)) details.open = false;
+        if (event.relatedTarget instanceof Node && !this.contains(event.relatedTarget)) closeOptions();
       }, { signal: controller.signal });
       dialog.addEventListener('close', () => lastAction?.focus(), { signal: controller.signal });
     }
@@ -131,21 +183,28 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
 
 <style>
   page-actions { display: block; position: relative; flex-shrink: 0; font: 400 1rem/1.5 var(--sl-font); }
-  button, summary, .options a { color: var(--brand-foreground); font: inherit; cursor: pointer; }
+  button, summary { color: var(--brand-foreground); font: inherit; cursor: pointer; }
   button, summary { border: 1px solid var(--brand-border); border-radius: .25rem; background: var(--brand-background); padding: .375rem .75rem; }
   [hidden] { display: none !important; }
-  button:hover, summary:hover, .options a:hover { background: var(--brand-surface); }
+  button:hover, summary:hover { background: var(--brand-surface); }
   button[aria-disabled='true'] { cursor: wait; }
-  summary { display: flex; align-items: center; gap: .5rem; list-style: none; padding-inline-start: .75rem; }
+  .split-button { display: flex; }
+  .copy-page { display: flex; align-items: center; gap: .5rem; padding-inline-start: .5rem; border-radius: .375rem 0 0 .375rem; font-weight: 500; }
+  .copy-page [data-label] { min-width: 5.5rem; text-align: start; }
+  .copy-icon, .copied-icon { display: flex; }
+  .copied-icon, [data-copied] .copy-icon { display: none; }
+  [data-copied] .copied-icon { display: flex; color: var(--brand-success); }
+  summary { display: flex; align-items: center; justify-content: center; gap: .5rem; height: 100%; list-style: none; }
+  [data-ready] summary { width: 2.25rem; padding: .375rem; border-inline-start: 0; border-radius: 0 .375rem .375rem 0; }
+  [data-ready] .fallback-label { display: none; }
   summary::-webkit-details-marker { display: none; }
   summary :global(svg) { flex-shrink: 0; }
-  .options { position: absolute; z-index: 10; inset-inline-start: 0; top: calc(100% + .5rem); width: min(18rem, calc(100vw - 3rem)); padding: .375rem; border: 1px solid var(--brand-border); border-radius: .375rem; background: var(--brand-background); }
-  .options button, .options a { display: block; width: 100%; text-align: start; border: 0; border-radius: .25rem; padding: .5rem .75rem; text-decoration: none; }
-  .options button { display: flex; align-items: center; gap: .5rem; }
-  .options button :global(svg) { display: none; flex-shrink: 0; }
-  .options button[data-copied] :global(svg) { display: block; }
+  details[open] summary :global(svg) { transform: rotate(180deg); }
+  .options { position: absolute; z-index: 20; inset-inline-start: 0; top: calc(100% + .5rem); width: min(20rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); overflow-y: auto; overscroll-behavior: contain; padding: .5rem; border: 1px solid color-mix(in srgb, var(--brand-foreground) 14%, transparent); border-radius: .5rem; background: var(--brand-surface); }
+  [data-ready] .options { position: fixed; margin: 0; inset: auto; left: var(--options-left); top: var(--options-top); }
+  :global(:root[data-theme='light']) .options { box-shadow: 0 8px 24px rgb(0 0 0 / .1); }
+  .action-group + .action-group { margin-top: .375rem; padding-top: .375rem; border-top: 1px solid color-mix(in srgb, var(--brand-foreground) 10%, transparent); }
   .feedback { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); margin: 0; }
-  .feedback[data-error] { position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: .25rem .75rem; color: var(--brand-muted); }
   dialog { max-width: min(44rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); padding: 1.5rem; border: 1px solid var(--brand-border); border-radius: .375rem; background: var(--brand-background); color: var(--brand-foreground); }
   dialog::backdrop { background: rgb(0 0 0 / .6); }
   .manual-copy { display: flex; flex-direction: column; gap: 1rem; }
@@ -156,5 +215,6 @@ const prompt = agentSection?.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
     page-actions { font-size: .875rem; }
     .options { inset-inline-start: auto; inset-inline-end: 0; }
   }
-  @media (pointer: coarse) { button, summary, .options a { min-height: 3rem; } }
+  @media (pointer: coarse) { button, summary { min-height: 3rem; } [data-ready] summary { width: 3rem; } }
+  @media print { page-actions { display: none; } }
 </style>

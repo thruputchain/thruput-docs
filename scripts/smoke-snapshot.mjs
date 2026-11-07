@@ -90,7 +90,8 @@ try {
   await page.locator('main h1').waitFor();
   const actions = page.locator('page-actions');
   await actions.locator('summary').click();
-  await actions.getByRole('button', { name: 'Copy link for an agent' }).click();
+  assert.equal(await actions.getByRole('link', { name: /Open in (ChatGPT|Claude)/ }).count(), 0);
+  await actions.getByRole('button', { name: 'Copy Markdown link' }).click();
   await page.waitForFunction(() => document.querySelector('page-actions [role="status"]')?.textContent === 'Copied');
   assert.equal(await page.evaluate(() => navigator.clipboard.readText()), `${origin}/markdown/pages/tutorials/build-a-counter.md`);
   await actions.getByRole('button', { name: 'Copy task prompt' }).click();
