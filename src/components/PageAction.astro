@@ -1,0 +1,57 @@
+---
+import type { ComponentProps } from 'astro/types';
+import { Icon } from '@astrojs/starlight/components';
+import CopyIcon from './CopyIcon.astro';
+
+interface Props {
+  id: string;
+  label: string;
+  description: string;
+  icon: ComponentProps<typeof Icon>['name'] | 'copy';
+  copy?: 'page' | 'link' | 'prompt';
+  href?: string;
+  external?: boolean;
+}
+
+const { id, label, description, icon, copy, href, external } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class="page-action"
+  type={href ? undefined : 'button'}
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  data-copy={copy}
+  hidden={copy ? true : undefined}
+  aria-labelledby={`${id}-label`}
+  aria-describedby={`${id}-description`}
+>
+  <span class="action-icon" aria-hidden="true">
+    <span class="default-icon">{icon === 'copy' ? <CopyIcon /> : <Icon name={icon} size="1rem" />}</span>
+    {copy && <span class="success-icon"><Icon name="approve-check" size="1rem" /></span>}
+  </span>
+  <span class="action-text">
+    <span class="action-title"><span id={`${id}-label`} data-label>{label}</span>{external && <Icon name="external" size=".875rem" />}</span>
+    <span class="action-description" id={`${id}-description`}>{description}{external && <span class="sr-only"> (opens in a new tab)</span>}</span>
+  </span>
+</Tag>
+
+<style>
+  .page-action { display: flex; align-items: start; gap: .75rem; width: 100%; min-height: 3.5rem; padding: .625rem .5rem; border: 0; border-radius: .25rem; background: transparent; color: var(--brand-foreground); font: inherit; text-align: start; text-decoration: none; cursor: pointer; }
+  [hidden] { display: none !important; }
+  .page-action:hover, .page-action:focus-visible { background: color-mix(in srgb, var(--brand-foreground) 6%, transparent); }
+  .page-action:focus-visible { outline-offset: -2px; }
+  .page-action[aria-disabled='true'] { cursor: wait; }
+  .action-icon { display: grid; flex-shrink: 0; width: 1rem; height: 1.5rem; align-items: center; color: var(--brand-muted); }
+  .default-icon, .success-icon { grid-area: 1 / 1; display: flex; }
+  .success-icon { visibility: hidden; color: var(--brand-success); }
+  [data-copied] .default-icon { visibility: hidden; }
+  [data-copied] .success-icon { visibility: visible; }
+  .action-text { display: grid; gap: .125rem; min-width: 0; }
+  .action-title { display: flex; align-items: center; gap: .375rem; font-weight: 500; }
+  .action-title :global(svg) { flex-shrink: 0; color: var(--brand-muted); }
+  .action-description { color: var(--brand-muted); }
+  @media (min-width: 40rem) { .action-description { font-size: .8125rem; } }
+</style>
