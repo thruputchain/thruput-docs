@@ -68,6 +68,8 @@ thruput call my-counter increment 5 --profile futurenet
 
 This signs and submits a transaction. Method names and typed arguments use the contract spec. Without metadata, an explicit entrypoint and raw calldata are required; use generated metadata for normal development.
 
+Named calls use the local project's contract metadata, not metadata fetched from the target contract. The CLI does not bundle native-token metadata. Use `thruput balance` and `thruput transfer` for native balances and transfers. For other methods, use the standard `ERC20.v0_1` TypeScript binding with `NATIVE_TOKEN_ADDRESS`; see [Send transactions](/typescript/transactions/).
+
 Use `--gas-limit` when the call needs a different execution budget. The sender must have the corresponding scheduling capacity; gas itself has no token fee.
 
 ## Read without submitting
