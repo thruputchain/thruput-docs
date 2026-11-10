@@ -4,6 +4,7 @@ import { once } from 'node:events';
 import { request as httpRequest } from 'node:http';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
+import { chromium, expect } from '@playwright/test';
 
 const binary = process.argv[2];
 if (!binary) throw new Error('Usage: node scripts/smoke-host-routing.mjs /path/to/caddy');
@@ -56,10 +57,42 @@ try {
   assert.match(await home.text(), /href="https:\/\/www\.thruput\.network\/"/);
   const docs = await request('www.thruput.network', '/docs/cli/install/');
   assert.equal(docs.status, 200);
+  assert.match(docs.headers.get('content-type'), /^text\/html\b/);
   assert.match(await docs.text(), /https:\/\/www\.thruput\.network\/docs\/cli\/install\//);
   assert.equal((await request('www.thruput.network', '/missing-page')).status, 404);
-  assert.equal((await request('www.thruput.network', '/markdown/pages/cli/install.md')).status, 200);
-  console.log('Caddy public access, canonical host redirects, query preservation, static routing, and 404 checks passed.');
+  assert.equal((await request('www.thruput.network', '/markdown/pages/missing-page.md')).status, 404);
+  for (const path of ['/markdown/pages/get-started.md', '/markdown/pages/cli/install.md', '/markdown/index.md', '/markdown/full.md', '/agent-guide.md']) {
+    const response = await request('www.thruput.network', path);
+    assert.equal(response.status, 200, path);
+    assert.equal(response.headers.get('content-type'), 'text/plain; charset=utf-8', path);
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff', path);
+    assert.ok((await response.text()).includes('# '), path);
+  }
+  const manifest = await request('www.thruput.network', '/markdown/manifest.json');
+  assert.equal(manifest.status, 200);
+  assert.match(manifest.headers.get('content-type'), /^application\/json\b/);
+
+  const browser = await chromium.launch();
+  try {
+    const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] });
+    const page = await context.newPage();
+    await page.goto(origin + '/docs/get-started/');
+    const actions = page.locator('page-actions');
+    await actions.locator('.copy-page').click();
+    await expect(actions.getByRole('status')).toHaveText('Copied');
+    const markdown = await (await request('www.thruput.network', '/markdown/pages/get-started.md')).text();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), markdown);
+    await actions.locator('summary').click();
+    const popupPromise = page.waitForEvent('popup');
+    await actions.getByRole('link', { name: 'View Markdown', exact: true }).click();
+    const popup = await popupPromise;
+    await popup.waitForLoadState();
+    assert.equal(popup.url(), origin + '/markdown/pages/get-started.md');
+    assert.equal(await popup.locator('body').innerText(), markdown);
+  } finally {
+    await browser.close();
+  }
+  console.log('Caddy host routing, Markdown headers, clipboard copying, plain-text viewing, and 404 checks passed.');
 } finally {
   server.kill('SIGTERM');
   await stopped;

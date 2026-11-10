@@ -43,6 +43,12 @@
 		redir @aliasHosts https://www.thruput.network{uri} 308
 
 		try_files {path} {path}.html {path}/index.html
+		# Show Markdown as source, even when it starts with an HTML anchor.
+		@markdown {
+			path *.md
+			file {path}
+		}
+		header @markdown Content-Type "text/plain; charset=utf-8"
 		file_server {
 			hide .git
 			hide .env*
