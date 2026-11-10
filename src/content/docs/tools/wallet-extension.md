@@ -41,4 +41,4 @@ Download and extract a newer build into the same folder. Click **Reload** on the
 | Chrome cannot find the manifest | Select the extracted folder that directly contains `manifest.json`. |
 | The app does not detect a wallet | Enable the extension, allow it on the site, and refresh the app tab. |
 
-For application integration, see the [TypeScript integration](/tools/wallet-integration/) or [React wallet hooks](/react/wallets/).
+For application integration, see the [TypeScript integration](/typescript/wallet-integration/) or [React wallet hooks](/react/wallets/).

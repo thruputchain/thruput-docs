@@ -45,9 +45,9 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Smart Contracts', '/docs/contracts/debugging/', 'Debug a contract'],
     ['Smart Contracts', '/docs/contracts/events/', 'Events'],
     ['Smart Contracts', '/docs/contracts/client-bindings/', 'Generate client bindings'],
-    ['Smart Contracts', '/docs/programming-model/nnint/', 'NNInt and concurrent updates'],
-    ['Smart Contracts', '/docs/programming-model/storage-types/', 'Storage Types'],
-    ['Smart Contracts', '/docs/how-it-works/contracts/', 'Contract artifacts and addresses'],
+    ['Smart Contracts', '/docs/contracts/nnint/', 'NNInt and concurrent updates'],
+    ['Smart Contracts', '/docs/contracts/storage-types/', 'Storage Types'],
+    ['Smart Contracts', '/docs/contracts/artifacts-and-addresses/', 'Contract artifacts and addresses'],
     ['Tutorials', '/docs/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
     ['Tutorials', '/docs/tutorials/work-with-thruput-from-typescript/', 'Build a counter, part 2: TypeScript'],
     ['Tutorials', '/docs/tutorials/build-a-counter-with-react/', 'Build a counter, part 3: React'],
@@ -55,10 +55,10 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['Guides', '/docs/guides/build-a-token/', 'Build a token'],
     ['Guides', '/docs/guides/build-an-amm/', 'Build an AMM'],
     ['Guides', '/docs/guides/consume-the-firehose/', 'Consume the Firehose'],
-    ['TypeScript', '/docs/tools/typescript-bindings/', 'Use contract bindings'],
-    ['TypeScript', '/docs/tools/typescript-sdk/', 'Client API reference'],
-    ['TypeScript', '/docs/tools/wallet-integration/', 'Connect a wallet'],
-    ['TypeScript', '/docs/tools/wallet-provider/', 'Wallet provider reference'],
+    ['TypeScript', '/docs/typescript/bindings/', 'Use contract bindings'],
+    ['TypeScript', '/docs/typescript/reference/sdk/', 'Client API reference'],
+    ['TypeScript', '/docs/typescript/wallet-integration/', 'Connect a wallet'],
+    ['TypeScript', '/docs/typescript/reference/wallet-provider/', 'Wallet provider reference'],
     ['TypeScript', '/docs/typescript/connect/', 'Connect to a network'],
     ['TypeScript', '/docs/typescript/values/', 'Addresses and amounts'],
     ['TypeScript', '/docs/typescript/reads/', 'Read contract data'],
@@ -79,21 +79,21 @@ test('entry pages keep site navigation separate from expandable documentation se
     ['React', '/docs/react/transactions/', 'Send transactions'],
     ['React', '/docs/react/transaction-status/', 'Track transaction results'],
     ['React', '/docs/react/reference/', 'React API reference'],
-    ['Smart Contracts', '/docs/reference/sdk-macros/', 'SDK Macros'],
+    ['Smart Contracts', '/docs/contracts/reference/sdk-macros/', 'SDK Macros'],
     ['TypeScript', '/docs/typescript/setup/', 'Package setup'],
     ['Smart Contracts', '/docs/contracts/project-structure/', 'Project structure'],
     ['Tools', '/docs/tools/faucet/', 'Faucet'],
     ['Tools', '/docs/tools/block-explorer/', 'Explorer'],
     ['Tools', '/docs/tools/wallet-extension/', 'Wallet Extension'],
-    ['Understand Project Thruput', '/docs/how-it-works/architecture/', 'System Overview'],
-    ['Understand Project Thruput', '/docs/how-it-works/execution-model/', 'Parallel Execution'],
-    ['Understand Project Thruput', '/docs/how-it-works/transaction-lifecycle/', 'Transaction Lifecycle'],
-    ['Understand Project Thruput', '/docs/how-it-works/storage-economics/', 'Compute, Capacity & Storage'],
-    ['Understand Project Thruput', '/docs/how-it-works/consensus/', 'Consensus'],
-    ['Understand Project Thruput', '/docs/how-it-works/networking/', 'Networking'],
-    ['Understand Project Thruput', '/docs/start/for-blockchain-developers/', 'For Blockchain Developers'],
-    ['Understand Project Thruput', '/docs/start/for-backend-developers/', 'For Backend Developers'],
-    ['Smart Contracts', '/docs/programming-model/execution/', 'Contract Execution'],
+    ['Understand Project Thruput', '/docs/architecture/system-overview/', 'System Overview'],
+    ['Understand Project Thruput', '/docs/architecture/execution-model/', 'Parallel Execution'],
+    ['Understand Project Thruput', '/docs/architecture/transaction-lifecycle/', 'Transaction Lifecycle'],
+    ['Understand Project Thruput', '/docs/architecture/storage-economics/', 'Compute, Capacity & Storage'],
+    ['Understand Project Thruput', '/docs/architecture/consensus/', 'Consensus'],
+    ['Understand Project Thruput', '/docs/architecture/networking/', 'Networking'],
+    ['Understand Project Thruput', '/docs/architecture/coming-from/blockchain/', 'For Blockchain Developers'],
+    ['Understand Project Thruput', '/docs/architecture/coming-from/backend/', 'For Backend Developers'],
+    ['Smart Contracts', '/docs/contracts/execution/', 'Contract Execution'],
   ]) {
     const response = await page.goto(origin + path);
     expect(response?.status()).toBe(200);
@@ -125,13 +125,13 @@ test('entry pages keep site navigation separate from expandable documentation se
 test('deep links open their section and tutorials and guides have separate sections', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   for (const [path, label] of [
-    ['/docs/reference/storage-types/', 'Smart Contracts'],
-    ['/docs/tools/typescript-bindings/', 'TypeScript'],
+    ['/docs/contracts/reference/storage-types/', 'Smart Contracts'],
+    ['/docs/typescript/bindings/', 'TypeScript'],
     ['/docs/tutorials/build-a-counter/', 'Tutorials'],
     ['/docs/guides/build-an-amm/', 'Guides'],
-    ['/docs/start/build-with-an-agent/', 'Get Started'],
+    ['/docs/get-started/build-with-an-agent/', 'Get Started'],
     ['/docs/tutorials/connect-a-wallet-to-your-app/', 'Tutorials'],
-    ['/docs/start/for-blockchain-developers/', 'Understand Project Thruput'],
+    ['/docs/architecture/coming-from/blockchain/', 'Understand Project Thruput'],
     ['/docs/tools/faucet/', 'Tools'],
     ['/docs/tools/block-explorer/', 'Tools'],
   ]) {
@@ -204,15 +204,20 @@ test('the old getting-started URL reaches the contract quickstart', async ({ pag
 
 test('migrated guides preserve old URLs and fragments', async ({ page }) => {
   for (const [oldPath, newPath, fragment] of [
+    ['/docs/programming-model/storage-types/', '/docs/contracts/storage-types/', 'balance'],
+    ['/start/build-with-an-agent/', '/docs/get-started/build-with-an-agent/', ''],
+    ['/docs/reference/storage-types/', '/docs/contracts/reference/storage-types/', 'balance'],
+    ['/docs/tools/typescript-sdk/', '/docs/typescript/reference/sdk/', ''],
     ['/docs/reference/error-handling/', '/docs/contracts/errors/', 'defining-errors'],
     ['/docs/reference/cross-contract-calls/', '/docs/contracts/cross-contract-calls/', 'gas-limits'],
-    ['/docs/programming-model/advanced/', '/docs/programming-model/storage-types/', 'exclusive-writes'],
-    ['/docs/programming-model/advanced/', '/docs/programming-model/storage-types/', 'lock-requests'],
-    ['/docs/programming-model/advanced/', '/docs/programming-model/nnint/', 'negative-set-values'],
+    ['/docs/programming-model/advanced/', '/docs/contracts/storage-types/', 'exclusive-writes'],
+    ['/docs/programming-model/advanced/', '/docs/contracts/storage-types/', 'lock-requests'],
+    ['/docs/programming-model/advanced/', '/docs/contracts/nnint/', 'negative-set-values'],
   ]) {
-    await page.goto(origin + oldPath + '#' + fragment);
-    await expect(page).toHaveURL(origin + newPath + '#' + fragment);
-    await expect(page.locator(`[id="${fragment}"]`)).toBeVisible();
+    const suffix = '?via=legacy' + (fragment ? '#' + fragment : '');
+    await page.goto(origin + oldPath + suffix);
+    await expect(page).toHaveURL(origin + newPath + suffix);
+    if (fragment) await expect(page.locator(`[id="${fragment}"]`)).toBeVisible();
   }
 });
 
@@ -221,7 +226,7 @@ test('a deep link reveals its active page after another section was collapsed', 
   await page.goto(origin + '/docs/typescript/');
   await sectionGroup(page, 'TypeScript').locator(':scope > summary').click();
   await expect(sectionGroup(page, 'TypeScript')).not.toHaveAttribute('open', '');
-  await page.goto(origin + '/docs/tools/typescript-bindings/');
+  await page.goto(origin + '/docs/typescript/bindings/');
   await expect(page.locator('.sidebar a[aria-current="page"]')).toBeVisible();
 });
 

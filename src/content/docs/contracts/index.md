@@ -16,23 +16,23 @@ Use the [CLI section](/cli/) for build and deployment commands.
 ## Work on a contract
 
 - [Define methods and interfaces](/contracts/methods/).
-- [Choose storage types](/programming-model/storage-types/) for your data.
-- [Authorize calls](/how-it-works/authorization/).
+- [Choose storage types](/contracts/storage-types/) for your data.
+- [Authorize calls](/contracts/authorization/).
 - [Define and handle errors](/contracts/errors/).
 - [Emit and test events](/contracts/events/).
 - [Call another contract](/contracts/cross-contract-calls/).
-- [Choose a test mode and write tests](/programming-model/testing/).
+- [Choose a test mode and write tests](/contracts/testing/).
 - [Debug a contract](/contracts/debugging/).
 - [Generate client bindings](/contracts/client-bindings/) for application developers.
 
 ## Understand the programming model
 
-Read [Contract Execution](/programming-model/execution/) first for snapshots, merged changes, and the rules that cause bugs. Then read [Storage Types](/programming-model/storage-types/), starting with [Balance](/programming-model/storage-types/#balance) for nonnegative counts and amounts. Continue with [NNInt and concurrent updates](/programming-model/nnint/) to understand the underlying signed deltas, explicit bases, and merge rules. [Exclusive writes](/programming-model/storage-types/#exclusive-writes) and [invocation frames](/how-it-works/invocation-frames/) cover other storage and call constraints.
+Read [Contract Execution](/contracts/execution/) first for snapshots, merged changes, and the rules that cause bugs. Then read [Storage Types](/contracts/storage-types/), starting with [Balance](/contracts/storage-types/#balance) for nonnegative counts and amounts. Continue with [NNInt and concurrent updates](/contracts/nnint/) to understand the underlying signed deltas, explicit bases, and merge rules. [Exclusive writes](/contracts/storage-types/#exclusive-writes) and [invocation frames](/contracts/invocation-frames/) cover other storage and call constraints.
 
-Read [Contract artifacts and addresses](/how-it-works/contracts/) to understand code hashes, deployment addresses, and immutability.
+Read [Contract artifacts and addresses](/contracts/artifacts-and-addresses/) to understand code hashes, deployment addresses, and immutability.
 
 ## Look up an API
 
-Use the [storage API tables](/reference/storage-types/), [SDK macros](/reference/sdk-macros/), [syscalls](/reference/syscalls/), and [generated Rust API docs](/tools/rust-api-docs/).
+Use the [storage API tables](/contracts/reference/storage-types/), [SDK macros](/contracts/reference/sdk-macros/), [syscalls](/contracts/reference/syscalls/), and [generated Rust API docs](/contracts/reference/rust-api-docs/).
 
 For larger worked examples, visit [Guides](/guides/).

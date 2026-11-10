@@ -3,7 +3,7 @@ title: Networking
 description: "Node topology, component registration, and how transactions reach the mempool."
 ---
 
-The [System Overview](/how-it-works/architecture/#components) maps the main components. This page explains how they find each other and communicate.
+The [System Overview](/architecture/system-overview/#components) maps the main components. This page explains how they find each other and communicate.
 
 ## Topology
 
@@ -17,7 +17,7 @@ Separately, the **RPC gateway** (`hog-gateway`) provides external API access. It
 
 Within the execution layer, no component discovers peers independently. The mempool is the registry for intra-node communication. When a component registers, it gets back the addresses of everything else it needs to talk to.
 
-The coordinator manages inter-node consensus and transaction gossip using its configured peers and quorum sets. See [Consensus](/how-it-works/consensus/) for how coordinators reach agreement.
+The coordinator manages inter-node consensus and transaction gossip using its configured peers and quorum sets. See [Consensus](/architecture/consensus/) for how coordinators reach agreement.
 
 ## Component Registration
 
@@ -66,15 +66,15 @@ Clients submit transactions and query state through the public gateway.
 
 **JSON-RPC gateway.** Exposes JSON-RPC 2.0 over HTTP and routes requests to the relevant execution-layer service. See [JSON-RPC API](/reference/json-rpc-api/) for the method reference.
 
-**Wallet integration.** Wallets sign transactions client-side and submit them through the JSON-RPC gateway. See [Wallet Integration](/tools/wallet-integration/) for the application-facing flow.
+**Wallet integration.** Wallets sign transactions client-side and submit them through the JSON-RPC gateway. See [Wallet Integration](/typescript/wallet-integration/) for the application-facing flow.
 
 ## Transaction Flow
 
-Client submissions reach the scheduler through the gateway; peer-gossiped transactions arrive through the coordinator. The coordinator then drives proposal, validation, and commit through the interfaces above. Follow [Transaction Lifecycle](/how-it-works/transaction-lifecycle/) for the complete sequence and its possible outcomes.
+Client submissions reach the scheduler through the gateway; peer-gossiped transactions arrive through the coordinator. The coordinator then drives proposal, validation, and commit through the interfaces above. Follow [Transaction Lifecycle](/architecture/transaction-lifecycle/) for the complete sequence and its possible outcomes.
 
 ## Related Documentation
 
-- [Consensus](/how-it-works/consensus/): How the coordinator reaches agreement with peers
-- [Parallel Execution](/how-it-works/execution-model/): How transactions execute against snapshots and produce deltas
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): The six stages from submission to commit
-- [System Overview](/how-it-works/architecture/): The component map
+- [Consensus](/architecture/consensus/): How the coordinator reaches agreement with peers
+- [Parallel Execution](/architecture/execution-model/): How transactions execute against snapshots and produce deltas
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/): The six stages from submission to commit
+- [System Overview](/architecture/system-overview/): The component map

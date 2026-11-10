@@ -5,7 +5,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 
 | Audience | Entry point |
 | --- | --- |
-| Application developers | [Connect a wallet](/tools/wallet-integration/), [Send transactions](/typescript/transactions/) |
+| Application developers | [Connect a wallet](/typescript/wallet-integration/), [Send transactions](/typescript/transactions/) |
 | Wallet and bridge implementers | Provider contract `2.0.0`; requirements below apply at the wallet boundary |
 | Complete signatures | [Generated client API](https://client-ts.thruput.network/) |
 | Imports | Wire types and validators: `/provider`; application adapter: `/wallet` |
@@ -201,7 +201,7 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | New approval | Clears the previous approval after local transaction validation; refusal does not restore it |
 | Execution controls | Required `onSigned` persistence callback; optional `wait` settings and cancellation signal |
 | Cleanup | No automatic reconnect/retry, UI deadline, or provider-request cancellation; late results cannot reactivate or submit |
-| Usage | [Connect a wallet](/tools/wallet-integration/), [Send transactions](/typescript/transactions/) |
+| Usage | [Connect a wallet](/typescript/wallet-integration/), [Send transactions](/typescript/transactions/) |
 
 ## Design References
 

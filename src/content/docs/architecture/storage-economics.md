@@ -44,7 +44,7 @@ Native tokens transferred between accounts enter the recipient's scheduling queu
 
 ## Storage: Refundable Deposits
 
-When your contract adds data to the ledger, it locks native tokens according to the [storage type](/programming-model/storage-types/) and size of the data. Delete the data and the deposit is returned to the address that held it. This is a deposit, not a burn.
+When your contract adds data to the ledger, it locks native tokens according to the [storage type](/contracts/storage-types/) and size of the data. Delete the data and the deposit is returned to the address that held it. This is a deposit, not a burn.
 
 Deleting unused state frees native tokens for other storage or scheduling capacity.
 
@@ -56,7 +56,7 @@ Every contract has a native-token balance that represents its unlocked (free) to
 - **Modifying existing data** adjusts the deposit up or down based on the size difference.
 - **Deleting data** returns the locked native tokens to the contract's free balance.
 
-If an address does not have enough unlocked native tokens to cover a storage change, reservation can fail for insufficient funds. That attempt is excluded from the proposal. Exclusion does not guarantee automatic requeue or a `retry` status. This differs from a committed contract abort, whose result is recorded with its contract changes discarded. See [Exclusion, requeue, and resubmission](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission).
+If an address does not have enough unlocked native tokens to cover a storage change, reservation can fail for insufficient funds. That attempt is excluded from the proposal. Exclusion does not guarantee automatic requeue or a `retry` status. This differs from a committed contract abort, whose result is recorded with its contract changes discarded. See [Exclusion, requeue, and resubmission](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission).
 
 Your contract does not calculate storage costs or manage deposits manually. The runtime handles it as part of the normal transaction commit process.
 
@@ -89,8 +89,8 @@ The intent is to let a contract provide scheduling capacity for its callers. Tha
 
 ## Related Documentation
 
-- [Contract Execution](/programming-model/execution/): Contract-writing rules for execution and gas
-- [Parallel Execution](/how-it-works/execution-model/): How compatible state changes are admitted
-- [System Overview](/how-it-works/architecture/): The component map
-- [Storage Types Reference](/reference/storage-types/): API for the typed primitives that storage deposits back
+- [Contract Execution](/contracts/execution/): Contract-writing rules for execution and gas
+- [Parallel Execution](/architecture/execution-model/): How compatible state changes are admitted
+- [System Overview](/architecture/system-overview/): The component map
+- [Storage Types Reference](/contracts/reference/storage-types/): API for the typed primitives that storage deposits back
 - [Contract quickstart](/get-started/contract/): Deploy your first contract

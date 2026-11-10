@@ -48,7 +48,7 @@ pub fn decrement(&mut self, amount: u64) {
 }
 ```
 
-Both methods take a nonnegative amount. `increase` checks for overflow, and `decrease` fails during execution if this invocation would take the count below zero. Both record deltas that can merge across compatible concurrent transactions within bounds. See [Balance](/programming-model/storage-types/#balance) for checked and lazy updates.
+Both methods take a nonnegative amount. `increase` checks for overflow, and `decrease` fails during execution if this invocation would take the count below zero. Both record deltas that can merge across compatible concurrent transactions within bounds. See [Balance](/contracts/storage-types/#balance) for checked and lazy updates.
 
 `Balance::get` returns zero for missing storage and preserves other storage errors:
 
@@ -60,7 +60,7 @@ pub fn get(&self) -> u64 {
 
 `initialize` adds its initial amount. It is an ordinary method, so call it once during this deployment flow. This teaching counter allows any caller to update it. Leave the extra scaffold event and error methods in place; the app does not need them.
 
-Balance uses the same mergeable integer storage as NNInt. Once you understand the Balance API, read [NNInt and concurrent updates](/programming-model/nnint/) for signed deltas, explicit bases, and the underlying merge rules.
+Balance uses the same mergeable integer storage as NNInt. Once you understand the Balance API, read [NNInt and concurrent updates](/contracts/nnint/) for signed deltas, explicit bases, and the underlying merge rules.
 
 ## Run both test modes
 

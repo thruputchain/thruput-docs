@@ -13,7 +13,14 @@ downloads keep their root URLs. Offline snapshots omit the `/docs` prefix.
 [astro.config.mjs](astro.config.mjs) configures the site;
 [src/navigation.ts](src/navigation.ts) owns the documentation navigation.
 [scripts/docs-routing.mjs](scripts/docs-routing.mjs) handles hosted and snapshot
-paths. Preserve existing page URLs and legacy fragment redirects when moving content.
+paths. Page URLs follow their section and nested group in the sidebar.
+When moving a page, add its old slug to
+[scripts/legacy-docs-routes.mjs](scripts/legacy-docs-routes.mjs) and update internal links.
+The build uses this map for static redirect pages and `dist/docs-redirects.caddy`.
+Caddy imports that file to return HTTP 301 redirects for old root paths,
+`/docs` paths, and individual Markdown exports. Query strings and unchanged
+fragments are preserved. Keep existing fragment-specific redirect pages: browsers
+must resolve those maps because HTTP requests do not include URL fragments.
 
 [Caddyfile](Caddyfile) serves the built files, redirects alias hosts to
 `www.thruput.network`, and serves the site and Markdown exports without authentication.
@@ -58,7 +65,7 @@ code examples remain unchanged in snapshots.
 
 Maintain each task prompt in its page's `## Work with an agent` text block.
 The landing page's setup prompt comes from
-[src/content/docs/start/build-with-an-agent.md](src/content/docs/start/build-with-an-agent.md).
+[src/content/docs/get-started/build-with-an-agent.md](src/content/docs/get-started/build-with-an-agent.md).
 [public/agent-guide.md](public/agent-guide.md) directs readers to that workflow
 and the skill maintained in
 [thruputchain/agent-skills](https://github.com/thruputchain/agent-skills).

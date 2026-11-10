@@ -31,7 +31,7 @@ impl Counter {
 
 `#[thruput_sdk::storage]` assigns each field a storage path. The field is a handle to persisted data, not an in-memory integer that you must save manually. `#[contract]` generates entrypoints, a `CounterClient`, and interface metadata.
 
-`Balance::get()` gives the never-written counter a zero default while preserving other storage errors. `increase` records a relative change and checks for overflow. Start with [Balance](/programming-model/storage-types/#balance) for nonnegative counts and amounts; use [NNInt](/programming-model/nnint/) when you need signed deltas or an explicit base.
+`Balance::get()` gives the never-written counter a zero default while preserving other storage errors. `increase` records a relative change and checks for overflow. Start with [Balance](/contracts/storage-types/#balance) for nonnegative counts and amounts; use [NNInt](/contracts/nnint/) when you need signed deltas or an explicit base.
 
 ## Expose methods
 
@@ -57,7 +57,7 @@ pub trait CounterApi {
 
 This generates `CounterApiClient`. Mark the trait implementation with `#[contract]` too. Declare `throws` and `emits` on the trait definition, not again on its implementation.
 
-For a self-contained contract, the inherent implementation in the first example is enough. The [macro reference](/reference/sdk-macros/#contract) lists parameters and reserved method names.
+For a self-contained contract, the inherent implementation in the first example is enough. The [macro reference](/contracts/reference/sdk-macros/#contract) lists parameters and reserved method names.
 
 ## Define argument and return types
 
@@ -69,7 +69,7 @@ pub struct CounterSummary {
 }
 ```
 
-`#[contract_type]` supplies serialization and spec metadata. Use `Value<T>` when plain data must persist; choose other [storage types](/programming-model/storage-types/) for other update patterns.
+`#[contract_type]` supplies serialization and spec metadata. Use `Value<T>` when plain data must persist; choose other [storage types](/contracts/storage-types/) for other update patterns.
 
 ## Initialize and generate bindings
 

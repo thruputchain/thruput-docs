@@ -5,8 +5,8 @@ description: API reference for Project Thruput storage types.
 
 | Area | Links |
 |------|-------|
-| Type choice and conflict semantics | [Storage guidance](/programming-model/storage-types/) |
-| Generated type, guard, and trait APIs | [`thruput_sdk::storage`](https://docs.rs/thruput-sdk/latest/thruput_sdk/storage/index.html), [Rust API Docs](/tools/rust-api-docs/) |
+| Type choice and conflict semantics | [Storage guidance](/contracts/storage-types/) |
+| Generated type, guard, and trait APIs | [`thruput_sdk::storage`](https://docs.rs/thruput-sdk/latest/thruput_sdk/storage/index.html), [Rust API Docs](/contracts/reference/rust-api-docs/) |
 | Encoding | CXS; serialization traits retain the names `ReadXDR` and `WriteXDR` |
 
 ## Balance
@@ -19,7 +19,7 @@ description: API reference for Project Thruput storage types.
 | Negative amount | Rejected with `NonNegativeIntUnderflow` |
 | Operations | No absolute `set` or signed adjustment |
 | Traits | `Deletable` |
-| Usage | [Balance guidance](/programming-model/storage-types/#balance), [Counter tutorial](/tutorials/build-a-counter/) |
+| Usage | [Balance guidance](/contracts/storage-types/#balance), [Counter tutorial](/tutorials/build-a-counter/) |
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
@@ -42,7 +42,7 @@ description: API reference for Project Thruput storage types.
 | Decrement | Negative `inc` or `strict_inc` argument |
 | Exclusive writes | Handle from `Map::at_mut_exclusive`, `delete_exclusive`, or `non_negative_int_set_exclusive` in `thruput_sdk::sys_exn::nnint`; no handle `set_exclusive` method |
 | Traits | `Deletable` |
-| Usage | [Merged deltas](/programming-model/execution/#merged-deltas), [NNInt and concurrent updates](/programming-model/nnint/) |
+| Usage | [Merged deltas](/contracts/execution/#merged-deltas), [NNInt and concurrent updates](/contracts/nnint/) |
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
@@ -273,4 +273,4 @@ description: API reference for Project Thruput storage types.
 | --- | --- |
 | `thruput_sdk::sys_exn::flags` | Throwing versions, re-exported at crate root |
 | `thruput_sdk::sys_result::flags` | Non-throwing versions returning `Result` |
-| Usage | [Lock requests](/programming-model/storage-types/#lock-requests) |
+| Usage | [Lock requests](/contracts/storage-types/#lock-requests) |

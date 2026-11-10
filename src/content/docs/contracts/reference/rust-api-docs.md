@@ -39,7 +39,7 @@ Run this from the generated contract project.
 
 ## How to Use These Docs
 
-- Start with [Testing](/programming-model/testing/) to choose native, artifact, or RPC tests.
-- Use [storage API tables](/reference/storage-types/) for common operations and [storage guidance](/programming-model/storage-types/) to choose a type.
-- Use [SDK Macros](/reference/sdk-macros/) for parameters and generated items.
+- Start with [Testing](/contracts/testing/) to choose native, artifact, or RPC tests.
+- Use [storage API tables](/contracts/reference/storage-types/) for common operations and [storage guidance](/contracts/storage-types/) to choose a type.
+- Use [SDK Macros](/contracts/reference/sdk-macros/) for parameters and generated items.
 - Follow Rustdoc source links when you need the implementation behind an API.

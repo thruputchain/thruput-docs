@@ -33,8 +33,8 @@ Thruput address inputs accept base58 or a checksummed Thruput `Z` StrKey. Stella
 | `#[contracterror]` and `Result<T, E>` returns | [`#[contract_exception]`](/contracts/errors/); exported methods throw instead of returning `Result` |
 | `#[contractevent]` types, or the older `env.events().publish` | Declared [typed events](/contracts/events/) emitted with `log_event`. Topic 0 is the event's signature, not static symbols; up to two fields can be marked as topics. |
 | `env.ledger().timestamp()` (Unix seconds) and `env.ledger().sequence()` | `get_block_timepoint()` (Unix nanoseconds, fixed for the block) and `get_block_height()` |
-| `update_current_contract_wasm` | Deployed contracts are [immutable](/how-it-works/contracts/); deploy a new contract at a new address |
-| `Env` tests with `mock_auths` and `env.auths()` | [`TestEnvironment`](/programming-model/testing/) transactions with explicit callers and `env.advance_block()`, run natively and as RV32 guests |
+| `update_current_contract_wasm` | Deployed contracts are [immutable](/contracts/artifacts-and-addresses/); deploy a new contract at a new address |
+| `Env` tests with `mock_auths` and `env.auths()` | [`TestEnvironment`](/contracts/testing/) transactions with explicit callers and `env.advance_block()`, run natively and as RV32 guests |
 
 Generated Thruput projects set `overflow-checks = false` in their release profile, while the Soroban examples set `true`. Plain `+` that panics on overflow in a Soroban build wraps in the RV32 guest, even though native tests still panic. Use checked arithmetic and throw a typed exception where the source relied on that panic. Test the overflow path in the RV32 guest.
 
@@ -75,7 +75,7 @@ Here, `Amount` is `i128`. The excerpt simplifies error handling: the example tok
 
 [Build a token](/guides/build-a-token/) covers the complete example: initialization, supply policy, error mapping, allowances, and events.
 
-Thruput tokens use native contract interfaces. The SDK's `thruput-sep41` client adapter provides familiar token operations over supported ERC20 interfaces. It uses Thruput caller authorization, native events, and Thruput block heights for approval expiry. See [Rust API Docs](/tools/rust-api-docs/) for exact signatures and the [adapter's API comments](https://github.com/thruputchain/thruput-sdk-rs/blob/main/standard-impls/thruput-sep41/src/lib.rs) for its requirements and differences.
+Thruput tokens use native contract interfaces. The SDK's `thruput-sep41` client adapter provides familiar token operations over supported ERC20 interfaces. It uses Thruput caller authorization, native events, and Thruput block heights for approval expiry. See [Rust API Docs](/contracts/reference/rust-api-docs/) for exact signatures and the [adapter's API comments](https://github.com/thruputchain/thruput-sdk-rs/blob/main/standard-impls/thruput-sep41/src/lib.rs) for its requirements and differences.
 
 The adapter does not provide Soroban ABI compatibility. Moving assets between Stellar and Thruput through a bridge is a separate integration. Each bridge defines its supported assets and transfer guarantees.
 
@@ -133,7 +133,7 @@ Mallory cannot name Alice as the payer through this method. Mallory's separate c
 
 This port changes the authorization policy. An allowance is a persistent spending budget. It usually does not bind a recipient. A Soroban authorization tree can bind the operation, recipient, amount, and child calls. Use a narrower grant interface when the application needs authority for one operation only.
 
-For such interfaces, Thruput's `Signed<T>` is a typed runtime auth-token handle, not an off-chain signature or a durable bearer token. Pass it explicitly. The receiving contract must check the consumed minter and payload against its policy. See [caller identity and auth tokens](/how-it-works/authorization/).
+For such interfaces, Thruput's `Signed<T>` is a typed runtime auth-token handle, not an off-chain signature or a durable bearer token. Pass it explicitly. The receiving contract must check the consumed minter and payload against its policy. See [caller identity and auth tokens](/contracts/authorization/).
 
 ### Several parties authorizing one operation
 
@@ -152,24 +152,24 @@ A port can store a grant for each party before the swap. Alternatively, each par
 | Instance, Persistent, and Temporary storage | Review lifetime requirements. Thruput has one persistent model and no storage TTL; funded data remains until deleted. |
 | Built-in offers, liquidity pools, and path payments | Select an application-defined venue. Thruput has no built-in order book or liquidity pool. |
 | Inclusion fees | Gas costs zero tokens. Scheduling uses the sender's native-token balance. Sponsored transactions are [planned](/architecture/roadmap/#sponsored-transactions). |
-| Resource fees and rent for storage | [Storage deposits](/how-it-works/storage-economics/) come from the contract that owns the data, not the submitter. A write the contract cannot fund is excluded, not aborted. |
+| Resource fees and rent for storage | [Storage deposits](/architecture/storage-economics/) come from the contract that owns the data, not the submitter. A write the contract cannot fund is excluded, not aborted. |
 | Methods that let any caller create entries | Each new balance, allowance, or per-user record spends the contract's funds. Decide who may create entries, and consider refusing writes that only allocate, such as zero approvals for a new pair. |
 
 Soroban's Temporary data is deleted at TTL expiry. Persistent and Instance entries can be archived and restored. See [Stellar state archival](https://developers.stellar.org/docs/learn/fundamentals/contract-development/storage/state-archival). Anyone can extend an entry's TTL. For this reason, Stellar's storage guidance stores an explicit deadline and checks it on read. Port that check as it is. Some sources also extend a Temporary entry to its deadline. Soroban then refuses deadlines past the network's maximum TTL. Thruput block heights have no such limit. Keep an explicit bound if the source relied on it.
 
 ### Transaction snapshots
 
-On Stellar, the result of a ledger matches applying its transactions one at a time in order. Thruput transactions in the same block execute against the same committed snapshot. A transaction does not read another transaction's writes in that block. Later calls within one transaction see its own changes, including successful child calls. See [Contract Execution](/programming-model/execution/). In SDK tests, call `env.advance_block()` after a write before a dependent transaction reads it. A test transaction reporting success does not advance the block.
+On Stellar, the result of a ledger matches applying its transactions one at a time in order. Thruput transactions in the same block execute against the same committed snapshot. A transaction does not read another transaction's writes in that block. Later calls within one transaction see its own changes, including successful child calls. See [Contract Execution](/contracts/execution/). In SDK tests, call `env.advance_block()` after a write before a dependent transaction reads it. A test transaction reporting success does not advance the block.
 
 Authorization checks read the snapshot too. After an admin change or a revoked grant, the previous holder still passes a stored-role check in other transactions of the same block. Their writes land unless they conflict with the change. Test the previous holder acting in that block.
 
-Two absolute `Value::set` writes can coexist when they store the same value. A read/increment/set port could therefore lose an increment even if both writes land. Use Balance deltas when their bounds and return semantics fit, or an [exclusive write](/programming-model/storage-types/#exclusive-writes) for an absolute update that needs one included writer. Preserve source numeric limits. Exclusion does not guarantee an automatic retry.
+Two absolute `Value::set` writes can coexist when they store the same value. A read/increment/set port could therefore lose an increment even if both writes land. Use Balance deltas when their bounds and return semantics fit, or an [exclusive write](/contracts/storage-types/#exclusive-writes) for an absolute update that needs one included writer. Preserve source numeric limits. Exclusion does not guarantee an automatic retry.
 
 ### Atomic calls and queued work
 
 [Classic Stellar transactions](https://developers.stellar.org/docs/learn/fundamentals/transactions/operations-and-transactions) can bundle operations atomically. Soroban transactions contain one smart-contract operation, which can invoke other contracts.
 
-A Thruput transaction has one root invocation, which can call several contracts. The native DefaultWallet also supports [atomic typed call batches](/typescript/transactions/#execute-multiple-calls). If the root aborts, its contract changes and successful child changes are discarded. A parent using recoverable calls can handle a child's failure and continue. See [Invocation Frames](/how-it-works/invocation-frames/).
+A Thruput transaction has one root invocation, which can call several contracts. The native DefaultWallet also supports [atomic typed call batches](/typescript/transactions/#execute-multiple-calls). If the root aborts, its contract changes and successful child changes are discarded. A parent using recoverable calls can handle a child's failure and continue. See [Invocation Frames](/contracts/invocation-frames/).
 
 If the source completes an operation in one call, keep it that way. Use a queue only if a delayed result is acceptable. The [AMM example](/guides/build-an-amm/) shows queued requests processed in later transactions; there, acceptance is not a completed swap.
 
@@ -190,4 +190,4 @@ and inspect state after success and refusal. Report unrun checks as unverified.
 Do not infer bridge, token-standard, or Soroban ABI compatibility.
 ```
 
-For the Thruput execution and storage model, continue with [Contract Execution](/programming-model/execution/), [Storage Types](/programming-model/storage-types/), and [Testing](/programming-model/testing/).
+For the Thruput execution and storage model, continue with [Contract Execution](/contracts/execution/), [Storage Types](/contracts/storage-types/), and [Testing](/contracts/testing/).

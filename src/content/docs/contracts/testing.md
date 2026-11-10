@@ -111,7 +111,7 @@ Use [`TestEnvironment::default()`](https://docs.rs/thruput-sdk/latest/thruput_sd
 
 Use `TestEnvironment::new(Some(&model))` when the test is specifically about a custom `StorageCostModel`. Use `setup_grant_storage_tokens` to fund accounts in cost-sensitive tests.
 
-For the full generated API, see the [`TestEnvironment` Rustdoc](https://docs.rs/thruput-sdk/latest/thruput_sdk/struct.TestEnvironment.html) or [Rust API Docs](/tools/rust-api-docs/).
+For the full generated API, see the [`TestEnvironment` Rustdoc](https://docs.rs/thruput-sdk/latest/thruput_sdk/struct.TestEnvironment.html) or [Rust API Docs](/contracts/reference/rust-api-docs/).
 
 When a native test needs a custom transaction context, start with `env.transaction()`. The builder currently supports replacing the default authorization claim:
 
@@ -161,7 +161,7 @@ transfer(&env, alice(), carol(), 60).assert_commit_failed_nondeterministically()
 env.advance_block();
 ```
 
-`assert_commit_failed_nondeterministically()` means the root call succeeded but its deltas could not be reserved with the block's other changes. On a network, that attempt is excluded from the proposal. This assertion does not test scheduler requeue, RPC status, or client resubmission. See [Exclusion, requeue, and resubmission](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission) for those separate behaviors.
+`assert_commit_failed_nondeterministically()` means the root call succeeded but its deltas could not be reserved with the block's other changes. On a network, that attempt is excluded from the proposal. This assertion does not test scheduler requeue, RPC status, or client resubmission. See [Exclusion, requeue, and resubmission](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission) for those separate behaviors.
 
 `TransactResult` also provides `assert_return_as::<T>()`, `assert_abort_as::<E>()`, `events()`, and `filter_events::<E>()`. See [`contracts/erc20/tests/same_block.rs`](https://github.com/thruputchain/thruput-examples/blob/main/contracts/erc20/tests/same_block.rs) for more same-block cases.
 

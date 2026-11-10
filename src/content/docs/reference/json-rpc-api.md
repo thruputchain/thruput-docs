@@ -8,7 +8,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 | Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
-| Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/how-it-works/networking/) |
+| Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
 
 ## Request Format
 
@@ -74,7 +74,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 { "networkHash": "<base58, 32 bytes>" }
 ```
 
-`networkHash` is the signing network identity. It is part of every transaction signature preimage. Compare it with the expected network before signing. See [Authorization](/how-it-works/authorization/).
+`networkHash` is the signing network identity. It is part of every transaction signature preimage. Compare it with the expected network before signing. See [Authorization](/contracts/authorization/).
 
 ### `getServerLimits`
 
@@ -447,12 +447,12 @@ Standard JSON-RPC 2.0 errors also apply, including `-32601` for unregistered met
 
 | Language | Package | Wire selection |
 | --- | --- | --- |
-| TypeScript | `@thruputchain/client` `0.25` | Calls `getVersionInfo` once at connect and requires major `14`. See [TypeScript SDK](/tools/typescript-sdk/) |
+| TypeScript | `@thruputchain/client` `0.25` | Calls `getVersionInfo` once at connect and requires major `14`. See [TypeScript SDK](/typescript/reference/sdk/) |
 | Rust | `thruput-json-rpc-client` (`NativeClient`) | `thruput-client`'s `check_endpoint` requires major `14` and the methods you name |
 
 ## Related Documentation
 
-- [Networking](/how-it-works/networking/)
-- [Authorization](/how-it-works/authorization/)
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/)
-- [Storage Types](/reference/storage-types/)
+- [Networking](/architecture/networking/)
+- [Authorization](/contracts/authorization/)
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/)
+- [Storage Types](/contracts/reference/storage-types/)

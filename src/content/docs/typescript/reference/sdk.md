@@ -60,8 +60,8 @@ description: TypeScript client entry points, common operations, and links to foc
 | `createSourceAddressAccount({ address, signers, allowedKeys, requiredWeight })` | Existing stored-auth account; does not write auth data |
 | `createWalletClient({ client, account, invocationAdapter?, onSigned? })` | Separate signer-bound client; pubkey accounts default to DefaultWallet |
 | `networkHash` wallet option | Required for a client without validated network identity; must match the endpoint's network |
-| `createProviderWalletClient(...)` | External wallet adapter; see [provider API](/tools/wallet-provider/#sdk-adapter-behavior) |
-| Usage | [Accounts and wallet clients](/typescript/wallet-clients/), [script setup](/typescript/accounts/), [browser wallets](/tools/wallet-integration/) |
+| `createProviderWalletClient(...)` | External wallet adapter; see [provider API](/typescript/reference/wallet-provider/#sdk-adapter-behavior) |
+| Usage | [Accounts and wallet clients](/typescript/wallet-clients/), [script setup](/typescript/accounts/), [browser wallets](/typescript/wallet-integration/) |
 
 ## Fund and Execute a Call
 
@@ -133,7 +133,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `NativeRpcErrorCode.StateHeightUnavailable` (`-32012`) | RPC freshness error with `requestedStateBlockHeight` and `observedStateBlockHeight`; not a contract outcome |
 | `ContractViewError` | Contract abort, fault, or unsupported result |
 | `ContractDecodeError` | Malformed contract data |
-| Usage | [Read contract data](/typescript/reads/), [bindings](/tools/typescript-bindings/) |
+| Usage | [Read contract data](/typescript/reads/), [bindings](/typescript/bindings/) |
 
 ## Cancellation and Read Errors
 

@@ -30,7 +30,7 @@ These increases can combine if the rest of the transactions are compatible and n
 
 This is useful for shared counters and balances. It does not make every operation independent: replacing a value, enforcing uniqueness, or choosing a winning order can require different rules. Your storage choices determine which changes can combine.
 
-[Parallel Execution](/how-it-works/execution-model/) explains how Project Thruput applies these rules. [Storage types](/programming-model/storage-types/) shows how to use them in a contract.
+[Parallel Execution](/architecture/execution-model/) explains how Project Thruput applies these rules. [Storage types](/contracts/storage-types/) shows how to use them in a contract.
 
 ## Build in two layers
 
@@ -42,4 +42,4 @@ You can start with either layer. An application can use an existing contract wit
 
 ## Where to start
 
-Choose a path in [Get Started](/get-started/) to write code. To explore the platform first, use the [System Overview](/how-it-works/architecture/) as a map, then follow the [Transaction Lifecycle](/how-it-works/transaction-lifecycle/) or read about [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+Choose a path in [Get Started](/get-started/) to write code. To explore the platform first, use the [System Overview](/architecture/system-overview/) as a map, then follow the [Transaction Lifecycle](/architecture/transaction-lifecycle/) or read about [Compute, Capacity & Storage](/architecture/storage-economics/).

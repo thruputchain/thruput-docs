@@ -41,7 +41,7 @@ Confirm the package, toolchain, and features. In a workspace, use `-p PACKAGE`. 
 thruput tx show TX_HASH --profile futurenet
 ```
 
-See [Transaction Lifecycle](/how-it-works/transaction-lifecycle/#outcomes-to-distinguish) for outcomes and [CLI troubleshooting](/cli/troubleshooting/) for configuration checks.
+See [Transaction Lifecycle](/architecture/transaction-lifecycle/#outcomes-to-distinguish) for outcomes and [CLI troubleshooting](/cli/troubleshooting/) for configuration checks.
 
 ## Reproduce through RPC
 
