@@ -42,7 +42,7 @@ The helper waits for successful committed execution and decodes child returns in
 
 ## Send through a browser wallet
 
-Use the adapter returned by [Connect a wallet](/tools/wallet-integration/). The same typed call works, but the provider helper also requires an `onSigned` callback:
+Use the adapter returned by [Connect a wallet](/typescript/wallet-integration/). The same typed call works, but the provider helper also requires an `onSigned` callback:
 
 ```ts
 import type { ContractAddress } from "@thruputchain/client";
@@ -79,7 +79,7 @@ Call this from the user's send action. Your `onSigned` implementation must finis
 | Get a submitted hash and observe separately in a signer-based script | `execute({ invocation, gasLimit })` |
 | Inspect the transaction before signing | `prepareExecution(...)` |
 
-Provider-backed helpers require the additional lifecycle options shown above. Their explicit prepare/sign/submit path is covered in [Wallet integration](/tools/wallet-integration/#prepare-sign-save-submit-observe).
+Provider-backed helpers require the additional lifecycle options shown above. Their explicit prepare/sign/submit path is covered in [Wallet integration](/typescript/wallet-integration/#prepare-sign-save-submit-observe).
 
 ## Execute multiple calls
 
@@ -87,9 +87,9 @@ Pass an ordered list to `executeCallsAndWait` to execute calls atomically. If a 
 
 For a provider wallet, await `getCapabilities()` and inspect the returned `atomicBatch` before offering a multi-call action. `null` means unsupported; `maxCalls` gives the advertised limit. The adapter checks support during preparation as well. One atomic wallet transaction is different from [HTTP request batching](/typescript/transport/#http-batching).
 
-The SDK requests capabilities only when the provider advertises `getCapabilities`. No advertisement or a `4200` response means unsupported batching. Permission errors, transport failures, malformed responses, and account/network mismatches must remain errors. Refresh capability state after a session change; see [batch capability requirements](/tools/wallet-provider/#optional-atomic-batch-capabilities).
+The SDK requests capabilities only when the provider advertises `getCapabilities`. No advertisement or a `4200` response means unsupported batching. Permission errors, transport failures, malformed responses, and account/network mismatches must remain errors. Refresh capability state after a session change; see [batch capability requirements](/typescript/reference/wallet-provider/#optional-atomic-batch-capabilities).
 
-Keep a batch within the wallet's advertised limit, up to 16 calls. For explicit preparation, `prepareBatchExecution({ invocations, gasLimit })` builds one unsigned transaction; use the same [sign, save, submit, and observe flow](/tools/wallet-integration/#prepare-sign-save-submit-observe) as a single call.
+Keep a batch within the wallet's advertised limit, up to 16 calls. For explicit preparation, `prepareBatchExecution({ invocations, gasLimit })` builds one unsigned transaction; use the same [sign, save, submit, and observe flow](/typescript/wallet-integration/#prepare-sign-save-submit-observe) as a single call.
 
 If batching is unsupported, offer a single-call action only when it meets the user's intended operation. Do not split an operation that requires atomicity. After a batch is rejected or its submission is uncertain, never fall back to individual transactions. Retain its signed evidence and [inspect the original hash](/typescript/transaction-status/).
 
@@ -99,4 +99,4 @@ A batch that enqueues requests commits their acceptance, not their later executi
 
 Each child call has a budget; the root needs enough gas for the wallet wrapper and its child calls. The numbers above are example transfer budgets, not universal defaults. `walletGasLimit(invocations, overhead)` sums invocation budgets and an overhead that you have measured for your workload. For typed calls, pass each call's `invocation` field.
 
-There are no conventional gas fees, but the declared root limit uses scheduling capacity backed by the sender's unlocked native tokens. Storage deposits are separate. A new recipient's first credit must cover its balance storage, so a small first transfer can fail. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+There are no conventional gas fees, but the declared root limit uses scheduling capacity backed by the sender's unlocked native tokens. Storage deposits are separate. A new recipient's first credit must cover its balance storage, so a small first transfer can fail. See [Compute, Capacity & Storage](/architecture/storage-economics/).

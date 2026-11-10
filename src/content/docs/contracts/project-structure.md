@@ -40,7 +40,7 @@ For `my-counter`, the output under `target/thruput/` includes:
 - `my_counter.spec.xdr`: binary contract specification.
 - `my_counter.spec.json`: readable contract specification.
 
-The specification describes the contract interface and supports [TypeScript binding generation](/tools/typescript-bindings/).
+The specification describes the contract interface and supports [TypeScript binding generation](/typescript/bindings/).
 
 ## Test modes
 
@@ -48,10 +48,10 @@ The specification describes the contract interface and supports [TypeScript bind
 - `thruput test` runs the RV32 artifact tests.
 - `thruput test --integration` manages a local node for the integration tests.
 
-See [Testing](/programming-model/testing/) for the execution modes, generated integration environment, and how to add assertions.
+See [Testing](/contracts/testing/) for the execution modes, generated integration environment, and how to add assertions.
 
 ## SDK layers
 
 Generated projects start with the SDK's contract and storage macros. Use typed storage handles for normal state access. Lower-level syscall wrappers are available when you need a custom abstraction.
 
-These layers can be combined within a contract. Use [Storage Types](/programming-model/storage-types/) to choose an API, [SDK Macros](/reference/sdk-macros/) for macro reference, and [Rust API Docs](/tools/rust-api-docs/) for exact signatures.
+These layers can be combined within a contract. Use [Storage Types](/contracts/storage-types/) to choose an API, [SDK Macros](/contracts/reference/sdk-macros/) for macro reference, and [Rust API Docs](/contracts/reference/rust-api-docs/) for exact signatures.

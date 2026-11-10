@@ -3,7 +3,7 @@ title: Syscalls
 description: Host function numbers, parameters, and errors for Project Thruput contracts.
 ---
 
-These are the host functions available to Project Thruput guest contracts. Most developers use the SDK rather than calling syscalls directly. See [Programming Model: Storage Types](/programming-model/storage-types/) for the high-level API.
+These are the host functions available to Project Thruput guest contracts. Most developers use the SDK rather than calling syscalls directly. See [Programming Model: Storage Types](/contracts/storage-types/) for the high-level API.
 
 The tables below describe the protocol's logical typed interface. The generated low-level bindings map it to each guest target's ABI. User contracts use RV32. Variable-length buffers are passed as spans.
 
@@ -339,7 +339,7 @@ If `force_load_from_snapshot` is false, the prior snapshot state is ignored unle
 Errors:
 - `InvalidSyscallInput` if the operation would always violate the NNInt floor (for example `set_add(1, -2)` or `set_add(-1, -1)`).
 
-Sets or modifies the NNInt at `key`. `set_value` (if `Some`) supplies the base, and `add_value` is added as a delta. The resolved value must satisfy `value >= min(set, 0)`. Overwrites any existing value, even if that value has a different storage type. Leaves the key's [storage flags](#storage-flags) unchanged. See [Programming Model: NNInt](/programming-model/nnint/) for commutativity rules.
+Sets or modifies the NNInt at `key`. `set_value` (if `Some`) supplies the base, and `add_value` is added as a delta. The resolved value must satisfy `value >= min(set, 0)`. Overwrites any existing value, even if that value has a different storage type. Leaves the key's [storage flags](#storage-flags) unchanged. See [Programming Model: NNInt](/contracts/nnint/) for commutativity rules.
 
 ### DeleteObject
 

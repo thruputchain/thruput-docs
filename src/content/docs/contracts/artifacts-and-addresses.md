@@ -34,7 +34,7 @@ Every callable method is identified by an 8-byte `ContractEntrypointID`. The SDK
 
 When hogd invokes an RV32 contract, it enters the guest at `_start` with the method ID in registers. The RV32 runtime dispatches by scanning that section, then calls the generated wrapper for the matching method. That wrapper decodes calldata, calls the Rust method, and returns through the Return syscall.
 
-Entrypoint IDs can be arbitrary 8-byte values at the protocol layer. The SDK derives them as the first 8 bytes of `SHA256("<interface>::<major>::<method>")`. See [SDK Macros](/reference/sdk-macros/) and the [contract spec reference](/reference/contract-spec/) for the developer-facing shape.
+Entrypoint IDs can be arbitrary 8-byte values at the protocol layer. The SDK derives them as the first 8 bytes of `SHA256("<interface>::<major>::<method>")`. See [SDK Macros](/contracts/reference/sdk-macros/) and the [contract spec reference](/reference/contract-spec/) for the developer-facing shape.
 
 #### Artifact Shape
 
@@ -55,7 +55,7 @@ Users cannot deploy native contracts. Network configuration assigns system contr
 
 ## Contract Deployment
 
-Contracts are deployed by the DeployContract [system call](/reference/syscalls/). In normal CLI usage, `thruput deploy` calls `deploy` on the signing account. For a pubkey account, that call runs the native DefaultWallet, which calls DeployContract with the artifact hash and deployment nonce.
+Contracts are deployed by the DeployContract [system call](/contracts/reference/syscalls/). In normal CLI usage, `thruput deploy` calls `deploy` on the signing account. For a pubkey account, that call runs the native DefaultWallet, which calls DeployContract with the artifact hash and deployment nonce.
 
 ### Contract Identification
 
@@ -201,8 +201,8 @@ Once a contract is deployed to an address, that address's `DeployedContractHash`
 ## Related Documentation
 
 - [Thruput CLI](/cli/): RV32 builds, local nodes, deployment, and codegen
-- [Invocation Frames](/how-it-works/invocation-frames/): execution context and call stack management
-- [Syscalls](/reference/syscalls/): system calls available to contracts
-- [SDK Macros](/reference/sdk-macros/): SDK entrypoint IDs and generated clients
+- [Invocation Frames](/contracts/invocation-frames/): execution context and call stack management
+- [Syscalls](/contracts/reference/syscalls/): system calls available to contracts
+- [SDK Macros](/contracts/reference/sdk-macros/): SDK entrypoint IDs and generated clients
 - [Contract Spec](/reference/contract-spec/): generated method, type, event, and error metadata
-- [System Overview](/how-it-works/architecture/): the component map
+- [System Overview](/architecture/system-overview/): the component map

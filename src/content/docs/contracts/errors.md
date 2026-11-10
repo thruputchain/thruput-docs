@@ -7,7 +7,7 @@ Exported Project Thruput contract methods return their declared values and signa
 
 You cannot catch a thrown exception within the same frame. Use `Result`-returning helpers for local fallible work and generated `try_*` client methods for another contract. See [Cross-Contract Calls](/contracts/cross-contract-calls/).
 
-For exact SDK signatures, see [Rust API Docs](/tools/rust-api-docs/).
+For exact SDK signatures, see [Rust API Docs](/contracts/reference/rust-api-docs/).
 
 ## Defining Errors
 

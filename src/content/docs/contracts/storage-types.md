@@ -5,7 +5,7 @@ description: "SDK storage types, their conflict semantics, and how to choose bet
 
 Start with `Balance` for nonnegative counts and amounts. It exposes reads, increases, and decreases without requiring you to manage the underlying integer base. The storage type you choose determines whether concurrent writes merge, conflict, or ignore each other.
 
-This page explains behavior and tradeoffs. For exact method signatures, see [Storage Types Reference](/reference/storage-types/).
+This page explains behavior and tradeoffs. For exact method signatures, see [Storage Types Reference](/contracts/reference/storage-types/).
 
 ## Balance
 
@@ -30,7 +30,7 @@ self.value.decrease(3);   // Tx B: "subtract 3"
 // If both transactions are admitted, the result is 102.
 ```
 
-Both methods check bounds during execution and record relative changes. The runtime also checks aggregate bounds when it reserves concurrent transactions. Two decreases that each fit the snapshot may still exceed it together, and credits from other transactions in the same block do not count toward a decrease. Successful execution alone does not guarantee inclusion. See [Merged Deltas](/programming-model/execution/#merged-deltas).
+Both methods check bounds during execution and record relative changes. The runtime also checks aggregate bounds when it reserves concurrent transactions. Two decreases that each fit the snapshot may still exceed it together, and credits from other transactions in the same block do not count toward a decrease. Successful execution alone does not guarantee inclusion. See [Merged Deltas](/contracts/execution/#merged-deltas).
 
 ### Checked and lazy updates
 
@@ -94,7 +94,7 @@ self.value.strict_inc(-3);   // Tx B: "subtract 3"
 
 `strict_inc` loads the base for an immediate underflow check; `inc` skips the forced read. Both produce deltas that can merge when their resolved bases match and aggregate bounds permit. Unlike Balance, `NNInt::get` fails on missing storage, and `set` can replace the base, including with a negative value. Negative bases change the commit-time floor.
 
-Continue with [NNInt and concurrent updates](/programming-model/nnint/) for the `set_add` representation, base matching, and negative-base rules. Balance provides a narrower API over that same storage primitive; it does not use a different merge mechanism.
+Continue with [NNInt and concurrent updates](/contracts/nnint/) for the `set_add` representation, base matching, and negative-base rules. Balance provides a narrower API over that same storage primitive; it does not use a different merge mechanism.
 
 ## Map\<K, V\>
 
@@ -122,7 +122,7 @@ self.balances.at_mut(&alice).lazy_increase(20);  // Tx B, merges to +30
 
 Maps can nest: `Map<K, Map<K2, Balance>>` gives composite keys with independent conflict domains at each level. The ERC-20 allowance pattern uses this for owner and spender pairs.
 
-Maps cannot enumerate keys, so a whole `Map` cannot be deleted. Delete one entry with `delete_at(&key)`, or call `delete()` on a deletable handle. Deleting data returns its [storage deposit](/how-it-works/storage-economics/#storage-refundable-deposits).
+Maps cannot enumerate keys, so a whole `Map` cannot be deleted. Delete one entry with `delete_at(&key)`, or call `delete()` on a deletable handle. Deleting data returns its [storage deposit](/architecture/storage-economics/#storage-refundable-deposits).
 
 ## Bytestring
 
@@ -162,7 +162,7 @@ Only one transaction per block can consume from a given queue; a second consumer
 
 ## CapacityConstraint
 
-A commit-time limit shared by changes from multiple transactions. Use it for a rule that spans transactions, such as a supply cap or an aggregate withdrawal limit. A check against a snapshot read cannot enforce that rule, because [reads are not checked at commit](/programming-model/execution/#snapshot-isolation).
+A commit-time limit shared by changes from multiple transactions. Use it for a rule that spans transactions, such as a supply cap or an aggregate withdrawal limit. A check against a snapshot read cannot enforce that rule, because [reads are not checked at commit](/contracts/execution/#snapshot-isolation).
 
 ```rust
 use thruput_sdk::storage::CapacityConstraint;
@@ -289,6 +289,6 @@ self.integer_state.at_mut_exclusive(&owner).set(0);
 self.integer_state.at_mut(&owner).inc(1);  // The lock request remains.
 ```
 
-A reverted frame or failed `try_invoke` discards its flag changes along with its writes. Leaf handles implement `Flaggable` to read, add, or clear flags; see [Flaggable Trait](/reference/storage-types/#flaggable-trait) and [Storage Flags](/reference/syscalls/#storage-flags).
+A reverted frame or failed `try_invoke` discards its flag changes along with its writes. Leaf handles implement `Flaggable` to read, add, or clear flags; see [Flaggable Trait](/contracts/reference/storage-types/#flaggable-trait) and [Storage Flags](/contracts/reference/syscalls/#storage-flags).
 
-If `Balance` covers your state model, you do not need its lower-level representation. Read [NNInt and concurrent updates](/programming-model/nnint/) when you need signed changes, an explicit base, or the exact `set_add` commutativity rules. For runtime reservation details, continue to [Parallel Execution](/how-it-works/execution-model/).
+If `Balance` covers your state model, you do not need its lower-level representation. Read [NNInt and concurrent updates](/contracts/nnint/) when you need signed changes, an explicit base, or the exact `set_add` commutativity rules. For runtime reservation details, continue to [Parallel Execution](/architecture/execution-model/).

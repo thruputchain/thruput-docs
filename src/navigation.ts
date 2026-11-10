@@ -1,6 +1,7 @@
 import { docsPath, logicalDocsPath, docsPrefix } from '../scripts/docs-routing.mjs';
 interface NavigationGroup {
   label: string;
+  directory: string;
   items: string[];
   collapsed?: boolean;
 }
@@ -17,29 +18,28 @@ interface DocumentationSection {
   items: (string | NavigationGroup | NavigationLink)[];
 }
 
-// Keep current content routes here until each page is migrated. A page has one
-// sidebar owner; cross-section links belong in the page content.
+// URLs follow their sidebar section and group. Each page has one sidebar owner.
 export const sections: DocumentationSection[] = [
   {
     id: 'get-started', label: 'Get Started', href: '/get-started/',
     items: [
       'get-started',
       'get-started/cli', 'get-started/contract', 'get-started/typescript', 'get-started/react',
-      'start/build-with-an-agent',
+      'get-started/build-with-an-agent',
     ],
   },
   {
     id: 'architecture', label: 'Understand Project Thruput', href: '/architecture/',
     items: [
       'architecture',
-      'how-it-works/architecture',
-      'how-it-works/execution-model', 'how-it-works/transaction-lifecycle',
-      'how-it-works/storage-economics',
-      'how-it-works/consensus', 'how-it-works/networking',
-      { label: 'Coming from...', collapsed: true, items: [
-        'start/for-blockchain-developers',
-        'ecosystem/evm', 'ecosystem/solana', 'ecosystem/stellar',
-        'start/for-backend-developers', 'start/for-distributed-systems-developers',
+      'architecture/system-overview',
+      'architecture/execution-model', 'architecture/transaction-lifecycle',
+      'architecture/storage-economics',
+      'architecture/consensus', 'architecture/networking',
+      { label: 'Coming from...', directory: 'coming-from', collapsed: true, items: [
+        'architecture/coming-from/blockchain',
+        'architecture/coming-from/evm', 'architecture/coming-from/solana', 'architecture/coming-from/stellar',
+        'architecture/coming-from/backend', 'architecture/coming-from/distributed-systems',
       ] },
       'architecture/roadmap',
     ],
@@ -59,13 +59,13 @@ export const sections: DocumentationSection[] = [
     items: [
       'contracts',
       'contracts/project-structure', 'contracts/methods',
-      'programming-model/execution', 'programming-model/storage-types', 'programming-model/nnint',
-      'how-it-works/authorization', 'contracts/errors', 'contracts/events',
-      'contracts/cross-contract-calls', 'how-it-works/invocation-frames',
-      'programming-model/testing', 'contracts/debugging',
-      'contracts/client-bindings', 'how-it-works/contracts',
-      { label: 'Reference', collapsed: true, items: [
-        'tools/rust-api-docs', 'reference/storage-types', 'reference/sdk-macros', 'reference/syscalls',
+      'contracts/execution', 'contracts/storage-types', 'contracts/nnint',
+      'contracts/authorization', 'contracts/errors', 'contracts/events',
+      'contracts/cross-contract-calls', 'contracts/invocation-frames',
+      'contracts/testing', 'contracts/debugging',
+      'contracts/client-bindings', 'contracts/artifacts-and-addresses',
+      { label: 'Reference', directory: 'reference', collapsed: true, items: [
+        'contracts/reference/rust-api-docs', 'contracts/reference/storage-types', 'contracts/reference/sdk-macros', 'contracts/reference/syscalls',
       ] },
     ],
   },
@@ -75,11 +75,11 @@ export const sections: DocumentationSection[] = [
       'typescript',
       'typescript/setup',
       'typescript/connect', 'typescript/transport', 'typescript/values',
-      'tools/typescript-bindings', 'typescript/reads', 'typescript/events',
-      'typescript/wallet-clients', 'tools/wallet-integration', 'typescript/accounts', 'typescript/transactions',
+      'typescript/bindings', 'typescript/reads', 'typescript/events',
+      'typescript/wallet-clients', 'typescript/wallet-integration', 'typescript/accounts', 'typescript/transactions',
       'typescript/transaction-status', 'typescript/deployment',
-      { label: 'Reference', collapsed: true, items: [
-        'tools/typescript-sdk', 'tools/wallet-provider',
+      { label: 'Reference', directory: 'reference', collapsed: true, items: [
+        'typescript/reference/sdk', 'typescript/reference/wallet-provider',
       ] },
     ],
   },
@@ -120,15 +120,15 @@ export const sections: DocumentationSection[] = [
   },
 ];
 
-const routeItem = (item: string | NavigationGroup | NavigationLink): string | NavigationGroup | NavigationLink =>
+const routeItem = (item: string | NavigationGroup | NavigationLink): string | Omit<NavigationGroup, 'directory'> | NavigationLink =>
   typeof item === 'string' ? `${docsPrefix.slice(1)}${docsPrefix ? '/' : ''}${item}` :
-  'items' in item ? { ...item, items: item.items.map(value => routeItem(value) as string) } :
+  'items' in item ? { label: item.label, collapsed: item.collapsed, items: item.items.map(value => routeItem(value) as string) } :
   { ...item, link: docsPath(item.link) };
 export const sidebar = sections.map(({ label, items }) => ({ label, items: items.map(routeItem), collapsed: true }));
 
 export function sectionForPath(pathname: string): DocumentationSection | undefined {
   const slug = logicalDocsPath(pathname).replace(/^\/+|\/+$/g, '');
-  // Exact ownership takes precedence over the root while legacy routes remain.
+  // Exact ownership also handles sections without an index page.
   return sections.find(section => section.items.some(item =>
     typeof item === 'string' ? item === slug : 'items' in item && item.items.includes(slug)
   )) ?? sections.find(section => slug === section.id || slug.startsWith(`${section.id}/`));

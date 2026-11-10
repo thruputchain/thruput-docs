@@ -3,6 +3,7 @@ import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { sections, sectionForPath } from '../src/navigation.ts';
+import { legacyDocsRoutes } from './legacy-docs-routes.mjs';
 
 test('every published documentation page has exactly one sidebar owner', () => {
   const root = fileURLToPath(new URL('../src/content/docs/', import.meta.url));
@@ -20,11 +21,11 @@ test('every published documentation page has exactly one sidebar owner', () => {
   }
 });
 
-test('legacy deep links resolve to their task area before matching URL roots', () => {
-  assert.equal(sectionForPath('/reference/storage-types/')?.id, 'contracts');
+test('canonical deep links resolve to their sidebar section', () => {
+  assert.equal(sectionForPath('/contracts/reference/storage-types/')?.id, 'contracts');
   assert.equal(sectionForPath('/reference/json-rpc-api/')?.id, 'reference');
   assert.equal(sectionForPath('/tutorials/connect-a-wallet-to-your-app/')?.id, 'tutorials');
-  assert.equal(sectionForPath('/start/build-with-an-agent/')?.id, 'get-started');
+  assert.equal(sectionForPath('/get-started/build-with-an-agent/')?.id, 'get-started');
   assert.equal(sectionForPath('/tools/faucet/')?.id, 'tools');
   assert.equal(sectionForPath('/tools/block-explorer/')?.id, 'tools');
   assert.equal(sectionForPath('/cli/reference/')?.id, 'cli');
@@ -34,6 +35,34 @@ test('legacy deep links resolve to their task area before matching URL roots', (
   assert.equal(sectionForPath('/react/wallets/')?.id, 'react');
   assert.equal(sectionForPath('/reactive/'), undefined);
   assert.equal(sectionForPath('/'), undefined);
+});
+
+test('page URLs follow the full sidebar hierarchy', () => {
+  for (const section of sections) {
+    assert.ok(section.href.startsWith(`/${section.id}/`));
+    for (const item of section.items) {
+      if (typeof item === 'string') {
+        assert.ok(item === section.id || item.startsWith(`${section.id}/`), item);
+        assert.ok(item.split('/').length <= 2, `Unexpected group in ${item}`);
+      } else if ('items' in item) {
+        for (const page of item.items) {
+          assert.ok(page.startsWith(`${section.id}/${item.directory}/`), page);
+          assert.equal(page.split('/').length, 3, page);
+        }
+      }
+    }
+  }
+});
+
+test('legacy aliases point directly to published pages, without collisions or chains', () => {
+  const pages = new Set(sections.flatMap(section => section.items.flatMap(item =>
+    typeof item === 'string' ? [item] : 'items' in item ? item.items : []
+  )));
+  for (const [from, to] of Object.entries(legacyDocsRoutes)) {
+    assert.ok(!pages.has(from), `Alias shadows a page: ${from}`);
+    assert.ok(pages.has(to), `Missing redirect destination: ${to}`);
+    assert.ok(!Object.hasOwn(legacyDocsRoutes, to), `Redirect chain: ${from}`);
+  }
 });
 
 test('tutorials and guides own their ordered pages at hosted and snapshot paths', () => {

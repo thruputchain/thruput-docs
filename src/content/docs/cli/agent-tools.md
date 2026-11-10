@@ -3,7 +3,7 @@ title: Skills and local docs
 description: Install, update, and read the thruput skill, and serve or export local documentation.
 ---
 
-Use `thruput skill` for coding-agent instructions and `thruput docs` for the developer documentation. For a first project, follow [Build with an Agent](/start/build-with-an-agent/).
+Use `thruput skill` for coding-agent instructions and `thruput docs` for the developer documentation. For a first project, follow [Build with an Agent](/get-started/build-with-an-agent/).
 
 ## Install the maintained skill
 

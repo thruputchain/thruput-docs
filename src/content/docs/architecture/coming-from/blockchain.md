@@ -33,7 +33,7 @@ The code stays familiar. `balances` is a `Map<ContractAddress, Balance>`. Callin
 
 `decrease(amount)` loads the sender's snapshot balance because the contract needs to fail immediately when funds are insufficient. `lazy_increase(amount)` skips the receiver load because the contract does not need an immediate overflow result. Its bound is checked when the transaction's completed delta batch is admitted. Both calls produce deltas that can merge with compatible transactions. `Balance` accepts only nonnegative amounts and exposes no absolute `set` operation.
 
-[Build a Token](/guides/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/programming-model/execution/#merged-deltas) explains how Project Thruput combines changes across a block.
+[Build a Token](/guides/build-a-token/) uses this pattern in a complete contract. [Merged Deltas](/contracts/execution/#merged-deltas) explains how Project Thruput combines changes across a block.
 
 ---
 
@@ -41,7 +41,7 @@ The code stays familiar. `balances` is a `Map<ContractAddress, Balance>`. Callin
 
 `Balance::decrease` checks the transaction's current balance view. The runtime also checks aggregate bounds when concurrent deltas are reserved. This does not replace authorization or application-specific checks.
 
-Contract calls also have different reentrancy rules from the EVM. See the [EVM reentrancy comparison](/ecosystem/evm/#reentrancy) for that call pattern, and [Authorization](/how-it-works/authorization/) for caller checks and signed permissions.
+Contract calls also have different reentrancy rules from the EVM. See the [EVM reentrancy comparison](/architecture/coming-from/evm/#reentrancy) for that call pattern, and [Authorization](/contracts/authorization/) for caller checks and signed permissions.
 
 ---
 
@@ -52,7 +52,7 @@ Project Thruput exposes these rules to contract developers:
 - **Gas price estimation.** Gas limits exist for metering, but gas costs zero. The declared gas limit still consumes scheduling capacity.
 - **Ordering-sensitive balance updates.** Commutative balance deltas have the same merged outcome in any execution order. Application flows that conflict still need protocol-aware design.
 - **Nonces.** Replay protection uses a unique expiry-height and nonce pair, without a sequential account counter.
-- **Access lists.** Project Thruput discovers storage access during execution. Compare [Solana account declarations](/ecosystem/solana/#access-lists-vs-type-based-parallelism) with Ethereum's optional [EIP-2930 access lists](https://eips.ethereum.org/EIPS/eip-2930).
+- **Access lists.** Project Thruput discovers storage access during execution. Compare [Solana account declarations](/architecture/coming-from/solana/#access-lists-vs-type-based-parallelism) with Ethereum's optional [EIP-2930 access lists](https://eips.ethereum.org/EIPS/eip-2930).
 - **Storage slot packing.** Typed fields via `#[thruput_sdk::storage]`. No manual layout, no packing variables into 256-bit slots.
 - **TTL management.** No storage expiry. Data persists as long as its native-token deposit is held. Delete the data, get the deposit back.
 
@@ -62,7 +62,7 @@ Project Thruput exposes these rules to contract developers:
 
 Choose operations that express the change you intend. Use `Balance` for ordinary balance adjustments, `Map` for separate records, and other storage types when the application needs different merge rules. Compatible arithmetic can combine, but ordering-sensitive workflows still need an explicit design.
 
-[Contract Execution](/programming-model/execution/) explains snapshots and deltas. [Storage Types](/programming-model/storage-types/) covers the available APIs, and [NNInt and concurrent updates](/programming-model/nnint/) covers the lower-level integer model.
+[Contract Execution](/contracts/execution/) explains snapshots and deltas. [Storage Types](/contracts/storage-types/) covers the available APIs, and [NNInt and concurrent updates](/contracts/nnint/) covers the lower-level integer model.
 
 ---
 
@@ -78,7 +78,7 @@ Continue in layers:
 
 1. [Contract quickstart](/get-started/contract/) builds and deploys your first contract.
 2. [Build a Token](/guides/build-a-token/) applies checked and lazy balance operations in a complete ERC-20-style contract.
-3. [Contract Execution](/programming-model/execution/) and [Storage Types](/programming-model/storage-types/) give the full contract-author model.
-4. [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) explains the engine's reservation machinery.
+3. [Contract Execution](/contracts/execution/) and [Storage Types](/contracts/storage-types/) give the full contract-author model.
+4. [How Conflicts Are Resolved](/architecture/execution-model/#how-conflicts-are-resolved) explains the engine's reservation machinery.
 
-For a detailed mapping from Solidity to Project Thruput, see [EVM & Solidity](/ecosystem/evm/).
+For a detailed mapping from Solidity to Project Thruput, see [EVM & Solidity](/architecture/coming-from/evm/).

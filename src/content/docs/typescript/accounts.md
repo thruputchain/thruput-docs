@@ -3,7 +3,7 @@ title: Use a signer in scripts
 description: Bind a Node.js signer to a native account, request Futurenet funds, and use local bootstrap accounts.
 ---
 
-Use a signer when your Node.js script or service manages an account's key. This page sets up a pubkey account. See [Accounts and wallet clients](/typescript/wallet-clients/) for account models and client construction, or [Connect a wallet](/tools/wallet-integration/) for a browser application.
+Use a signer when your Node.js script or service manages an account's key. This page sets up a pubkey account. See [Accounts and wallet clients](/typescript/wallet-clients/) for account models and client construction, or [Connect a wallet](/typescript/wallet-integration/) for a browser application.
 
 ## Bind a signer
 

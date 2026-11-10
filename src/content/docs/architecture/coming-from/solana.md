@@ -40,7 +40,7 @@ The build produces a deployable artifact and contract spec. Keep the generated t
 
 ### Deploying
 
-Project Thruput deployment derives an address from the deployer, nonce, and code hash. This shares a PDA's predictability, not its derivation or authorization model. See [Contract artifacts and addresses](/how-it-works/contracts/).
+Project Thruput deployment derives an address from the deployer, nonce, and code hash. This shares a PDA's predictability, not its derivation or authorization model. See [Contract artifacts and addresses](/contracts/artifacts-and-addresses/).
 
 ### Calling
 
@@ -76,7 +76,7 @@ Solana accounts hold a refundable minimum lamport balance for their storage. Pro
 
 ### Compute Unit Budgets
 
-Project Thruput gas limits bound computation, including child calls. Gas costs zero tokens, but a root transaction's declared limit consumes scheduling capacity. Account funding and execution bounds still matter. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+Project Thruput gas limits bound computation, including child calls. Gas costs zero tokens, but a root transaction's declared limit consumes scheduling capacity. Account funding and execution bounds still matter. See [Compute, Capacity & Storage](/architecture/storage-economics/).
 
 ### PDA Seed Management
 
@@ -86,7 +86,7 @@ A PDA used only for per-user state often maps to a `Map` entry. A PDA used as an
 
 Solana CPI passes existing signer and writable privileges to the callee. `invoke_signed` additionally supplies seeds when the calling program must authorize a PDA. Ordinary CPI does not always require signer seeds.
 
-Project Thruput's `get_caller()` returns the immediate calling contract, not the root signer. Use contract policy, allowances, or [typed auth tokens](/how-it-works/authorization/#auth-tokens-and-signedt) when authority must pass through several calls.
+Project Thruput's `get_caller()` returns the immediate calling contract, not the root signer. Use contract policy, allowances, or [typed auth tokens](/contracts/authorization/#auth-tokens-and-signedt) when authority must pass through several calls.
 
 ## Pattern Adaptations
 
@@ -99,7 +99,7 @@ pub struct Registry {
 }
 ```
 
-`UserState` is your serializable application type. Access an entry with `at` or `at_mut`; first writes create storage and require its deposit. See [Storage Types](/programming-model/storage-types/).
+`UserState` is your serializable application type. Access an entry with `at` or `at_mut`; first writes create storage and require its deposit. See [Storage Types](/contracts/storage-types/).
 
 ### Token Transfer
 
@@ -142,5 +142,5 @@ Project Thruput does not use Solana account arrays, associated token accounts, P
 
 - [Contract quickstart](/get-started/contract/): build and deploy a counter
 - [Build a token](/guides/build-a-token/): token state and tests
-- [Storage Types](/programming-model/storage-types/): map and balance APIs
-- [Authorization](/how-it-works/authorization/): caller and auth-token rules
+- [Storage Types](/contracts/storage-types/): map and balance APIs
+- [Authorization](/contracts/authorization/): caller and auth-token rules

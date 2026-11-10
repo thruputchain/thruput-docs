@@ -9,7 +9,7 @@ For installation and test funds, follow [Wallet Extension](/tools/wallet-extensi
 
 ## Choose the Integration
 
-This page covers the provider-backed path described in [Accounts and wallet clients](/typescript/wallet-clients/). For a Node.js process that manages its own key, use [Use a signer in scripts](/typescript/accounts/). Wallet implementers should use [Wallet provider reference](/tools/wallet-provider/).
+This page covers the provider-backed path described in [Accounts and wallet clients](/typescript/wallet-clients/). For a Node.js process that manages its own key, use [Use a signer in scripts](/typescript/accounts/). Wallet implementers should use [Wallet provider reference](/typescript/reference/wallet-provider/).
 
 ## Discover and Connect
 
@@ -101,6 +101,6 @@ The adapter allows one in-flight operation. A session change invalidates pending
 
 Once submission begins, an error may arrive after broadcast. Use the saved hash and original network to [track the transaction](/typescript/transaction-status/), including after disconnect or reload. Do not create a replacement merely because observation timed out.
 
-Use `parseWalletProviderError` for provider errors across browser contexts rather than relying on `instanceof`. The [error table](/tools/wallet-provider/#errors) distinguishes rejection, authorization, network, and transport errors.
+Use `parseWalletProviderError` for provider errors across browser contexts rather than relying on `instanceof`. The [error table](/typescript/reference/wallet-provider/#errors) distinguishes rejection, authorization, network, and transport errors.
 
 For a complete counter interface with wallet-approved updates, follow [Counter, part 4: Connect a wallet](/tutorials/connect-a-wallet-to-your-app/).

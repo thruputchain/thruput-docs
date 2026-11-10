@@ -40,7 +40,7 @@ The storage attribute derives paths for these handles:
 | `allowances` | An owner/spender pair's remaining authorization |
 | `total_supply` | Outstanding tokens |
 
-Different map keys are independent. Balance changes use deltas instead of replacing a shared absolute value. See [Storage Types](/programming-model/storage-types/) for the merge rules.
+Different map keys are independent. Balance changes use deltas instead of replacing a shared absolute value. See [Storage Types](/contracts/storage-types/) for the merge rules.
 
 ## Follow a transfer
 
@@ -117,7 +117,7 @@ thruput test -p erc20
 
 The build writes `target/thruput/erc20.rv32a` and spec sidecars. The artifact test exercises the compiled guest implementation. Keep it as well as the native tests.
 
-You now have a deployable token artifact. Use [Deploy and call](/cli/deploy-and-call/) for network deployment and [Use contract bindings](/tools/typescript-bindings/) for typed application calls. The repository's standard-token and factory examples add a fixed launch configuration for the separate launchpad application.
+You now have a deployable token artifact. Use [Deploy and call](/cli/deploy-and-call/) for network deployment and [Use contract bindings](/typescript/bindings/) for typed application calls. The repository's standard-token and factory examples add a fixed launch configuration for the separate launchpad application.
 
 ## Work with an agent
 

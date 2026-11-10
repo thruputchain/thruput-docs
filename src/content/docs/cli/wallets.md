@@ -81,7 +81,7 @@ To transfer native tokens to another saved wallet or an address:
 thruput transfer RECIPIENT 1 --profile futurenet
 ```
 
-Replace `RECIPIENT` with the destination. Confirm the transaction and inspect its result. A new recipient needs a sufficient first credit to cover its balance storage; funding amounts depend on the network. See [Faucet](/tools/faucet/) and [storage costs](/how-it-works/storage-economics/).
+Replace `RECIPIENT` with the destination. Confirm the transaction and inspect its result. A new recipient needs a sufficient first credit to cover its balance storage; funding amounts depend on the network. See [Faucet](/tools/faucet/) and [storage costs](/architecture/storage-economics/).
 
 ## Remove local records
 

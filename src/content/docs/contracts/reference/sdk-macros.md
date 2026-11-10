@@ -6,12 +6,12 @@ description: Macro targets, parameters, generated APIs, and constraints for the 
 | Task | Guide |
 | --- | --- |
 | Define state and methods | [Methods and interfaces](/contracts/methods/) |
-| Choose storage | [Storage types](/programming-model/storage-types/) |
+| Choose storage | [Storage types](/contracts/storage-types/) |
 | Declare and handle failures | [Handle errors](/contracts/errors/) |
 | Call another contract | [Cross-Contract Calls](/contracts/cross-contract-calls/) |
 | Define, emit, and test events | [Events](/contracts/events/) |
-| Register a test contract | [Testing](/programming-model/testing/) |
-| Find complete generated APIs | [Rust API Docs](/tools/rust-api-docs/) |
+| Register a test contract | [Testing](/contracts/testing/) |
+| Find complete generated APIs | [Rust API Docs](/contracts/reference/rust-api-docs/) |
 
 ## `#[contract]`
 
@@ -121,7 +121,7 @@ description: Macro targets, parameters, generated APIs, and constraints for the 
 | Output | `From<Keypath>` implementation assigning each field a subpath |
 | Fields | Storage handles; wrap plain data in `Value<T>` |
 | Collections | Use `Node<T>` to place a compound storage struct inside `Map` or `Vector` |
-| Usage | [Storage types](/programming-model/storage-types/) |
+| Usage | [Storage types](/contracts/storage-types/) |
 
 ## `#[derive(Deletable)]`
 
@@ -157,7 +157,7 @@ description: Macro targets, parameters, generated APIs, and constraints for the 
 | `hash_ident! { static NAME: SHA256Hash; }` | Named hash static; also supports `ContractAddress` and visibility |
 | `sha256_array_ident!(Name)` | Identifier hash as `[u8; 32]` |
 | `hash_to_array!("text")` | String or byte-string hash as `[u8; 32]` |
-| `declare_mock_contract!()` | Crate-root mock registration when `dev` is enabled; see [test setup](/programming-model/testing/#test-setup) |
+| `declare_mock_contract!()` | Crate-root mock registration when `dev` is enabled; see [test setup](/contracts/testing/#test-setup) |
 
 ## `#[contract_type]`
 

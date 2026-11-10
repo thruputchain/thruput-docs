@@ -65,7 +65,7 @@ export function RawBalance({ owner }: { owner: ContractAddress }) {
 }
 ```
 
-Pass `caller` when a view needs simulated caller context. It does not authorize a transaction. Custom contracts use their own [generated bindings](/tools/typescript-bindings/).
+Pass `caller` when a view needs simulated caller context. It does not authorize a transaction. Custom contracts use their own [generated bindings](/typescript/bindings/).
 
 ## Control when a read runs
 

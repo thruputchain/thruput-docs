@@ -3,11 +3,11 @@ title: NNInt and concurrent updates
 description: The set_add primitive underneath NNInt and why concurrent transactions merge.
 ---
 
-`NNInt` is the lower-level signed-integer storage API underneath [`Balance`](/programming-model/storage-types/#balance). This page explains its `set_add` representation and why concurrent transactions can merge safely.
+`NNInt` is the lower-level signed-integer storage API underneath [`Balance`](/contracts/storage-types/#balance). This page explains its `set_add` representation and why concurrent transactions can merge safely.
 
 Start with `Balance` for nonnegative counters, balances, allowances, and supply. Read this page when you need signed changes, an explicit integer base, or the exact representation that makes checked and lazy balance deltas compatible.
 
-For exact SDK method signatures, see [Rust API Docs](/tools/rust-api-docs/) or [Storage Types Reference](/reference/storage-types/#nnint).
+For exact SDK method signatures, see [Rust API Docs](/contracts/reference/rust-api-docs/) or [Storage Types Reference](/contracts/reference/storage-types/#nnint).
 
 ## From Balance to NNInt
 
@@ -84,4 +84,4 @@ non_negative_int_inc(key, 1);  // The value becomes -4.
 
 `strict_inc` rejects a running total that remains negative, so use `inc` or the raw functions for negative-base state. Use `Balance` for ordinary nonnegative counters, balances, and allowances. A negative NNInt base is a separate state model, not a way to represent a Balance.
 
-Matching bases are required, but do not guarantee inclusion: aggregate bounds and other transaction changes still matter. See [Merged Deltas](/programming-model/execution/#merged-deltas) for the contract-level model.
+Matching bases are required, but do not guarantee inclusion: aggregate bounds and other transaction changes still matter. See [Merged Deltas](/contracts/execution/#merged-deltas) for the contract-level model.

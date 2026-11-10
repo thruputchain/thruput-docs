@@ -5,6 +5,7 @@ import { request as httpRequest } from 'node:http';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
 import { chromium, expect } from '@playwright/test';
+import { legacyDocsRoutes } from './legacy-docs-routes.mjs';
 
 const binary = process.argv[2];
 if (!binary) throw new Error('Usage: node scripts/smoke-host-routing.mjs /path/to/caddy');
@@ -53,6 +54,24 @@ try {
     assert.equal(response.headers.get('location'), 'https://www.thruput.network' + destination);
   }
   const home = await request('www.thruput.network', '/');
+  for (const [from, to] of Object.entries(legacyDocsRoutes)) {
+    for (const host of ['www.thruput.network', 'thruput.network', 'docs.thruput.network', 'docs.groundhog.dev']) {
+      for (const prefix of ['', '/docs']) {
+        for (const slash of ['', '/']) {
+          const path = `${prefix}/${from}${slash}?via=legacy&value=a%20b`;
+          const response = await request(host, path);
+          assert.equal(response.status, 301, `${host}${path}`);
+          assert.equal(response.headers.get('location'), `https://www.thruput.network/docs/${to}/?via=legacy&value=a%20b`);
+        }
+      }
+    }
+    assert.equal((await request('www.thruput.network', `/docs/${to}/`)).status, 200, to);
+    const markdown = await request('www.thruput.network', `/markdown/pages/${from}.md?via=agent`);
+    assert.equal(markdown.status, 301, from);
+    assert.equal(markdown.headers.get('location'), `https://www.thruput.network/markdown/pages/${to}.md?via=agent`);
+    assert.equal((await request('www.thruput.network', `/markdown/pages/${to}.md`)).status, 200, to);
+  }
+  assert.equal((await request('www.thruput.network', '/docs-redirects.caddy')).status, 404);
   assert.equal(home.status, 200);
   assert.match(await home.text(), /href="https:\/\/www\.thruput\.network\/"/);
   const docs = await request('www.thruput.network', '/docs/cli/install/');

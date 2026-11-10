@@ -37,7 +37,7 @@ The runtime creates a frame with the call context and an empty record of local c
 
 ### 2. Execution
 
-Contract code uses [syscalls](/reference/syscalls/) to read state, record changes, emit events, and call other contracts. Child calls can create further frames.
+Contract code uses [syscalls](/contracts/reference/syscalls/) to read state, record changes, emit events, and call other contracts. Child calls can create further frames.
 
 ### 3. Completion
 
@@ -55,7 +55,7 @@ On a successful child return, its storage changes, deployments, and events becom
 
 In either case, the parent receives the child's status and return buffer and accounts for its gas use. A recoverable SDK call lets the parent inspect the failure. A throwing call propagates an unhandled failure. See [Cross-Contract Calls](/contracts/cross-contract-calls/#error-handling).
 
-When the root returns successfully, the transaction's changes must still pass reservation against the proposed block. A committed root abort or fault records the failure while discarding contract effects; protocol bookkeeping such as replay protection remains. See [Transaction Lifecycle](/how-it-works/transaction-lifecycle/#root-frame-completion).
+When the root returns successfully, the transaction's changes must still pass reservation against the proposed block. A committed root abort or fault records the failure while discarding contract effects; protocol bookkeeping such as replay protection remains. See [Transaction Lifecycle](/architecture/transaction-lifecycle/#root-frame-completion).
 
 ### 5. Pop and Return
 
@@ -78,6 +78,6 @@ If the transaction is admitted and committed, the ledger contains `AAA`, `BBB`, 
 ## Related Documentation
 
 - [Cross-Contract Calls](/contracts/cross-contract-calls/): SDK call and error-handling patterns
-- [Authorization](/how-it-works/authorization/#passing-auth-tokens): Auth-token ownership across frames
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): Reservation and final outcomes
-- [Contract artifacts and addresses](/how-it-works/contracts/): Code and deployment identities
+- [Authorization](/contracts/authorization/#passing-auth-tokens): Auth-token ownership across frames
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/): Reservation and final outcomes
+- [Contract artifacts and addresses](/contracts/artifacts-and-addresses/): Code and deployment identities

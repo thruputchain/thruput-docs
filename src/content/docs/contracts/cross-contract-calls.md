@@ -9,7 +9,7 @@ Use a generated Rust client to call another contract through its interface. Dire
 
 On a trait definition or inherent impl, `#[contract]` generates a client struct, named `{Interface}Client` unless you override it with `client = CustomName`. The client mirrors every public method on the trait or impl block.
 
-For interface design, see [Methods and interfaces](/contracts/methods/). For macro parameters, see [SDK Macros](/reference/sdk-macros/#contract).
+For interface design, see [Methods and interfaces](/contracts/methods/). For macro parameters, see [SDK Macros](/contracts/reference/sdk-macros/#contract).
 
 Single error type:
 
@@ -61,7 +61,7 @@ let capped = token.with_gas_limit(500_000);
 capped.transfer(&recipient, 100);
 ```
 
-The default request is `u64::MAX`; the child is still bounded by the caller's remaining gas. Use an explicit cap when the callee should receive less. See [Contract Execution](/programming-model/execution/#gas) for details.
+The default request is `u64::MAX`; the child is still bounded by the caller's remaining gas. Use an explicit cap when the callee should receive less. See [Contract Execution](/contracts/execution/#gas) for details.
 
 | Method | Signature | Description |
 |--------|-----------|-------------|
@@ -133,7 +133,7 @@ pub enum CallError {
 | Variant | When it appears |
 |---------|-----------------|
 | `Invalid` | The call could not be made (e.g. invalid contract address before the call dispatched). |
-| `Reentrance` | The target already had a frame open on the invocation stack, so the runtime refused the call as reentrant. See [`Reentrance`](/reference/syscalls/) in the syscall errors. |
+| `Reentrance` | The target already had a frame open on the invocation stack, so the runtime refused the call as reentrant. See [`Reentrance`](/contracts/reference/syscalls/) in the syscall errors. |
 | `DepthExceeded` | Admitting the call would have exceeded the network's cross-invoke depth bound. The same call succeeds from a shallower frame. |
 | `InvokeRejected(SysErr)` | The invoke syscall was refused for another reason, carrying the raw syscall error. |
 | `Exception(RawException)` | The callee threw. Any exception type, declared in `throws` or not, including the SDK's own `LibraryExn`. |

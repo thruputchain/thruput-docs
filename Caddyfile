@@ -27,6 +27,8 @@
 	route {
 		respond /health 200
 
+		import {$SITE_ROOT:/app/dist}/docs-redirects.caddy
+
 		@oldDocsRoot {
 			host docs.thruput.network docs.groundhog.dev
 			path /
@@ -52,6 +54,7 @@
 		file_server {
 			hide .git
 			hide .env*
+			hide *.caddy
 		}
 	}
 }

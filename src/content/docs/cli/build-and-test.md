@@ -38,7 +38,7 @@ cargo test
 thruput test
 ```
 
-For test code, assertions, and storage-cost setup, use [Test contracts](/programming-model/testing/).
+For test code, assertions, and storage-cost setup, use [Test contracts](/contracts/testing/).
 
 ## Focus a test run
 

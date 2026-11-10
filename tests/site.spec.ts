@@ -2,8 +2,8 @@ import { test as base, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const origin = 'http://127.0.0.1:4322';
-const docs = '/docs/start/build-with-an-agent/';
-const onboarding = readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8');
+const docs = '/docs/get-started/build-with-an-agent/';
+const onboarding = readFileSync(new URL('../src/content/docs/get-started/build-with-an-agent.md', import.meta.url), 'utf8');
 const prompt = onboarding.match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
 const test = base.extend({
   page: async ({ page }, use) => {
@@ -313,9 +313,9 @@ test('header and page titles use Project Thruput while preserving the exact CLI 
 
 test('homepage learn-more links navigate to real docs and valid anchors', async ({ page }) => {
   for (const [feature, href, title] of [
-    ['Explore the execution model', '/docs/how-it-works/execution-model/', 'Parallel Execution'],
-    ['Understand gas limits', '/docs/programming-model/execution/#gas', 'Contract Execution'],
-    ['Choose your storage', '/docs/programming-model/storage-types/', 'Storage Types'],
+    ['Explore the execution model', '/docs/architecture/execution-model/', 'Parallel Execution'],
+    ['Understand gas limits', '/docs/contracts/execution/#gas', 'Contract Execution'],
+    ['Choose your storage', '/docs/contracts/storage-types/', 'Storage Types'],
     ['Build a counter, step by step', '/docs/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
   ]) {
     await page.goto(origin);

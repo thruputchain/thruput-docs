@@ -38,11 +38,11 @@ The mempool sends the transaction to the auth server, which verifies the root ad
 - If verification succeeds: the transaction enters the scheduling queue
 - If verification fails: the transaction is rejected
 
-See [Authorization](/how-it-works/authorization/) for the signature preimage and admission models.
+See [Authorization](/contracts/authorization/) for the signature preimage and admission models.
 
 ## Stage 3: Scheduling
 
-Verified transactions are queued by account with balance-proportional scheduling. When the coordinator asks for a block proposal, the mempool selects transactions from accounts whose token-backed capacity has waited longest. See [Compute, Capacity & Storage](/how-it-works/storage-economics/) for how scheduling priority works.
+Verified transactions are queued by account with balance-proportional scheduling. When the coordinator asks for a block proposal, the mempool selects transactions from accounts whose token-backed capacity has waited longest. See [Compute, Capacity & Storage](/architecture/storage-economics/) for how scheduling priority works.
 
 ## Stage 4: Execution
 
@@ -54,9 +54,9 @@ When contract code executes:
 - It produces deltas describing how to modify state
 - It runs until termination (return, abort, or fault)
 
-**Conflict checking follows root execution.** If the root call succeeds, the executor submits its completed delta batch for reservation against the proposed block. An incompatible batch is excluded. Contract execution and reservation can both proceed concurrently across executor workers. See [Parallel Execution: How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) for the mechanism and the distinction between checked and lazy operations.
+**Conflict checking follows root execution.** If the root call succeeds, the executor submits its completed delta batch for reservation against the proposed block. An incompatible batch is excluded. Contract execution and reservation can both proceed concurrently across executor workers. See [Parallel Execution: How Conflicts Are Resolved](/architecture/execution-model/#how-conflicts-are-resolved) for the mechanism and the distinction between checked and lazy operations.
 
-See [Invocation Frames](/how-it-works/invocation-frames/) for detailed execution semantics (frame lifecycle, child calls, merge/discard rules).
+See [Invocation Frames](/contracts/invocation-frames/) for detailed execution semantics (frame lifecycle, child calls, merge/discard rules).
 
 ### Root Frame Completion
 
@@ -69,7 +69,7 @@ This is distinct from **conflict exclusion** during reservation (Stage 4): the r
 
 ## Stage 5: Block Assembly
 
-The proposer packages the included transaction results into a consensus proposal: signed transaction hashes (`SignedTransactionHash`), nondeterministic execution data, and the computed block hash. The proposal is sent to validators via SCP. See [Consensus](/how-it-works/consensus/) for how the proposer/validator split works.
+The proposer packages the included transaction results into a consensus proposal: signed transaction hashes (`SignedTransactionHash`), nondeterministic execution data, and the computed block hash. The proposal is sent to validators via SCP. See [Consensus](/architecture/consensus/) for how the proposer/validator split works.
 
 ## Stage 6: Commit
 
@@ -97,6 +97,6 @@ Sources: engine `0.1.31-rc.16` [commit handling](https://github.com/thruputchain
 
 ## Related Documentation
 
-- [Invocation Frames](/how-it-works/invocation-frames/): Execution context
-- [Authorization](/how-it-works/authorization/): How signatures are verified
-- [Contract artifacts and addresses](/how-it-works/contracts/): Code hashes and deployment identities
+- [Invocation Frames](/contracts/invocation-frames/): Execution context
+- [Authorization](/contracts/authorization/): How signatures are verified
+- [Contract artifacts and addresses](/contracts/artifacts-and-addresses/): Code hashes and deployment identities

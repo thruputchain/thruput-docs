@@ -71,7 +71,7 @@ result.assert_event::<CounterIncremented>(0, |event| {
 });
 ```
 
-Here, `env` is the test environment, `caller` is the calling address, and `address` is the deployed test contract. See [Testing](/programming-model/testing/#basic-pattern) for registration and deployment setup.
+Here, `env` is the test environment, `caller` is the calling address, and `address` is the deployed test contract. See [Testing](/contracts/testing/#basic-pattern) for registration and deployment setup.
 
 The event count covers all contracts called by the test transaction. Assert both topics and payload so the test checks the event's content, not only its presence.
 
@@ -79,6 +79,6 @@ The event count covers all contracts called by the test transaction. Assert both
 
 Rebuild after changing an event declaration. The generated spec records its name, signature, topic layout, and payload layout. [Client bindings](/contracts/client-bindings/) use that metadata to expose the event to applications.
 
-For library-emitted events that no interface declares, `#[event_spec(export)]` explicitly includes the type in the linked contract's spec. See the [event macro reference](/reference/sdk-macros/#deriveevent) for the generated API.
+For library-emitted events that no interface declares, `#[event_spec(export)]` explicitly includes the type in the linked contract's spec. See the [event macro reference](/contracts/reference/sdk-macros/#deriveevent) for the generated API.
 
 Use [Read events](/typescript/events/) for application queries, receipt decoding, and pagination.

@@ -5,22 +5,22 @@ description: "The rules your contract relies on: snapshots, compatible state cha
 
 Your contract reads from a frozen snapshot and produces typed storage changes, called deltas. Ordinary storage reads do not see other transactions' writes. The runtime checks whether each transaction's deltas can coexist with the other changes landing in the block. Deltas that can coexist form the next committed state. Transactions with conflicting deltas are excluded from that proposal.
 
-Read this page first, then [Storage Types](/programming-model/storage-types/). It explains the behavior your contract relies on without requiring the engine's lock and reservation implementation.
+Read this page first, then [Storage Types](/contracts/storage-types/). It explains the behavior your contract relies on without requiring the engine's lock and reservation implementation.
 
 ## Rules That Cause Bugs
 
 - **Reads are not checked at commit.** A decision based on a value that another transaction can change in the same block can be stale. See [Snapshot Isolation](#snapshot-isolation).
-- **Decreases must fit the base.** All decreases admitted to one `Balance` or `NNInt` in a block must fit within the base value. For `Balance` and ordinary `NNInt` updates, the base is the start-of-block snapshot; an explicit `NNInt::set_add` uses the base it sets. Same-block credits do not count. See [Merged Deltas](#merged-deltas) and [NNInt](/programming-model/nnint/).
+- **Decreases must fit the base.** All decreases admitted to one `Balance` or `NNInt` in a block must fit within the base value. For `Balance` and ordinary `NNInt` updates, the base is the start-of-block snapshot; an explicit `NNInt::set_add` uses the base it sets. Same-block credits do not count. See [Merged Deltas](#merged-deltas) and [NNInt](/contracts/nnint/).
 - **Exclusion applies to one proposal.** It does not consume the replay nonce or guarantee automatic requeue. A committed abort, revert, or out-of-gas fault consumes the nonce. See [Exclusion](#exclusion).
-- **Absolute writes merge only when equal.** Two `Value`, `Bytestring`, or `NNInt::set` writes to one key land together only when they write the same value. See [Storage Types](/programming-model/storage-types/#choosing-a-type).
-- **Some operations allow one writer per block.** One transaction per block can consume from a queue, push or pop a `Vector`, or hold an exclusive write on a key. See [RCQ](/programming-model/storage-types/#rcqt--retrocausalqueue) and [Exclusive Writes](/programming-model/storage-types/#exclusive-writes).
+- **Absolute writes merge only when equal.** Two `Value`, `Bytestring`, or `NNInt::set` writes to one key land together only when they write the same value. See [Storage Types](/contracts/storage-types/#choosing-a-type).
+- **Some operations allow one writer per block.** One transaction per block can consume from a queue, push or pop a `Vector`, or hold an exclusive write on a key. See [RCQ](/contracts/storage-types/#rcqt--retrocausalqueue) and [Exclusive Writes](/contracts/storage-types/#exclusive-writes).
 - **The full gas limit is reserved.** Scheduling uses the declared limit, not the gas used. See [Gas](#gas).
 
 ## Snapshot Isolation
 
 All transactions in a block read the same committed state from the previous block. Ordinary storage reads do not see another transaction's writes within the block. Reads include changes made within your transaction, including successful child calls. Other transactions cannot change the snapshot you read.
 
-Reads are not validated when the transaction commits. Only writes can conflict. If two transactions each read `total_supply`, find room under a cap, and mint, both can land and exceed the cap. Enforce a rule that spans transactions with a write the runtime checks: a `Balance` or `NNInt` floor, a [`CapacityConstraint`](/programming-model/storage-types/#capacityconstraint), or an [exclusive write](/programming-model/storage-types/#exclusive-writes).
+Reads are not validated when the transaction commits. Only writes can conflict. If two transactions each read `total_supply`, find room under a cap, and mint, both can land and exceed the cap. Enforce a rule that spans transactions with a write the runtime checks: a `Balance` or `NNInt` floor, a [`CapacityConstraint`](/contracts/storage-types/#capacityconstraint), or an [exclusive write](/contracts/storage-types/#exclusive-writes).
 
 `RetrocausalQueue` has separate observation rules: a consumer can observe concurrent inserts in the same block. The proposer records these observations for validator replay.
 
@@ -53,7 +53,7 @@ Merge rules depend on the storage type:
 - Changes to different `Map` keys are independent.
 - Two `Value` writes to the same key can coexist only when they store the same value.
 
-In these docs, **compatible deltas** means the storage type allows both changes to land. See [`Balance`](/programming-model/storage-types/#balance) for the ordinary balance API and [NNInt and concurrent updates](/programming-model/nnint/) for the underlying `set_add` rules.
+In these docs, **compatible deltas** means the storage type allows both changes to land. See [`Balance`](/contracts/storage-types/#balance) for the ordinary balance API and [NNInt and concurrent updates](/contracts/nnint/) for the underlying `set_add` rules.
 
 ## Block Lifecycle
 
@@ -61,13 +61,13 @@ In these docs, **compatible deltas** means the storage type allows both changes 
 2. **Reserve:** after the root call succeeds, the runtime checks whether the complete delta batch can coexist with the proposal's other changes.
 3. **Commit or exclude:** admissible transactions contribute to the finalized block. Conflicting transactions are excluded from that proposal.
 
-Your contract does not control these phases. [Transaction Lifecycle](/how-it-works/transaction-lifecycle/) covers submission through finalization; [Parallel Execution](/how-it-works/execution-model/) explains the reservation machinery.
+Your contract does not control these phases. [Transaction Lifecycle](/architecture/transaction-lifecycle/) covers submission through finalization; [Parallel Execution](/architecture/execution-model/) explains the reservation machinery.
 
 ## Exclusion
 
-From your contract's perspective, a conflicting attempt doesn't land in that proposal. Your code runs, produces deltas, and the system determines whether that completed delta batch is compatible with the proposal's other changes. Exclusion does not commit the transaction or consume its replay nonce. It does not establish whether the same transaction committed in another proposal. See [How Conflicts Are Resolved](/how-it-works/execution-model/#how-conflicts-are-resolved) for the engine-level details.
+From your contract's perspective, a conflicting attempt doesn't land in that proposal. Your code runs, produces deltas, and the system determines whether that completed delta batch is compatible with the proposal's other changes. Exclusion does not commit the transaction or consume its replay nonce. It does not establish whether the same transaction committed in another proposal. See [How Conflicts Are Resolved](/architecture/execution-model/#how-conflicts-are-resolved) for the engine-level details.
 
-The scheduler can requeue transactions when a nomination is rolled back or a different proposal commits. When its own proposal commits, it removes the attempted transactions, including excluded ones, and records retryable execution failures as `retry`. See [Exclusion, requeue, and resubmission](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission) for the full lifecycle.
+The scheduler can requeue transactions when a nomination is rolled back or a different proposal commits. When its own proposal commits, it removes the attempted transactions, including excluded ones, and records retryable execution failures as `retry`. See [Exclusion, requeue, and resubmission](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission) for the full lifecycle.
 
 A committed abort, revert, or out-of-gas fault discards the contract changes but records the replay nonce and RCQ observations. Once the receipt confirms that committed failure, fix the cause before signing a new transaction.
 
@@ -98,10 +98,10 @@ Project Thruput needs no gas price estimation because the token price of gas is 
 
 ## Throughput
 
-Your unlocked native-token balance provides scheduling capacity. A transaction's gas limit must fit within the capacity the sending account's tokens provide; the scheduler drops a transaction whose limit exceeds it. Compatible storage changes do not guarantee inclusion in the next block: admission, capacity, propagation, and expiry still matter. See [Balance-Proportional Scheduling](/how-it-works/storage-economics/#balance-proportional-scheduling) for the allocation rules.
+Your unlocked native-token balance provides scheduling capacity. A transaction's gas limit must fit within the capacity the sending account's tokens provide; the scheduler drops a transaction whose limit exceeds it. Compatible storage changes do not guarantee inclusion in the next block: admission, capacity, propagation, and expiry still matter. See [Balance-Proportional Scheduling](/architecture/storage-economics/#balance-proportional-scheduling) for the allocation rules.
 
 ## Storage Costs
 
-The address that owns stored data funds its deposit. The runtime accounts for storage changes; your contract does not calculate the deposit itself. Delete data you no longer need with `delete()` or `Map::delete_at` to release its deposit. See [Storage: Refundable Deposits](/how-it-works/storage-economics/#storage-refundable-deposits) for funding and cost rules.
+The address that owns stored data funds its deposit. The runtime accounts for storage changes; your contract does not calculate the deposit itself. Delete data you no longer need with `delete()` or `Map::delete_at` to release its deposit. See [Storage: Refundable Deposits](/architecture/storage-economics/#storage-refundable-deposits) for funding and cost rules.
 
-Next, [Storage Types](/programming-model/storage-types/) turns this model into concrete API choices.
+Next, [Storage Types](/contracts/storage-types/) turns this model into concrete API choices.

@@ -18,7 +18,7 @@ The contract lifecycle remains write, test, deploy, and call. The main differenc
 
 Project Thruput entrypoints use 8-byte IDs and CXS arguments. Ethereum contract calls commonly use a 4-byte selector and ABI arguments; see [Ethereum transactions](https://ethereum.org/en/developers/docs/transactions/). Use bindings rather than constructing either encoding manually.
 
-Project Thruput deployment addresses derive from the deployer, nonce, and code hash. This resembles `CREATE2` in allowing address prediction, but uses a different preimage. See [Contract artifacts and addresses](/how-it-works/contracts/).
+Project Thruput deployment addresses derive from the deployer, nonce, and code hash. This resembles `CREATE2` in allowing address prediction, but uses a different preimage. See [Contract artifacts and addresses](/contracts/artifacts-and-addresses/).
 
 ## Mental Model Shifts
 
@@ -50,7 +50,7 @@ Compatible arithmetic changes have the same merged value regardless of execution
 
 Ethereum transactions specify gas limits and fee parameters. Project Thruput gas meters execution but costs zero tokens, so no gas price estimation is needed. Gas usage still matters: the declared root limit consumes scheduling capacity, and exceeding it faults execution.
 
-Unlocked native-token balances provide capacity; stored data requires separate deposits. See [Compute, Capacity & Storage](/how-it-works/storage-economics/).
+Unlocked native-token balances provide capacity; stored data requires separate deposits. See [Compute, Capacity & Storage](/architecture/storage-economics/).
 
 ### Nonce Management
 
@@ -90,7 +90,7 @@ Store an owner or role policy and check it before changing state:
 ensure(get_caller() == self.owner.get(), Error::NotOwner);
 ```
 
-Define `Error` with `#[contract_exception]`. A forwarding contract becomes the immediate caller; it does not inherit the original user's identity. See [Authorization](/how-it-works/authorization/).
+Define `Error` with `#[contract_exception]`. A forwarding contract becomes the immediate caller; it does not inherit the original user's identity. See [Authorization](/contracts/authorization/).
 
 ### Constructor and Initialization
 
@@ -112,11 +112,11 @@ Define events with `#[derive(Event)]`, mark filterable fields with `#[topic]`, a
 | Solidity `receive` / `fallback` dispatch | Use declared methods in the generated SDK dispatcher |
 | Storage-slot packing | Use typed storage paths |
 
-Block context and gas inspection do exist: `get_block_timepoint()`, `get_block_height()`, and `stats::gas_remaining()`. Artifact and transaction bounds are network constraints, not EVM limits; see [Contract artifacts](/how-it-works/contracts/).
+Block context and gas inspection do exist: `get_block_timepoint()`, `get_block_height()`, and `stats::gas_remaining()`. Artifact and transaction bounds are network constraints, not EVM limits; see [Contract artifacts](/contracts/artifacts-and-addresses/).
 
 ## Next Steps
 
 - [Contract quickstart](/get-started/contract/): build and deploy a counter
 - [Build a token](/guides/build-a-token/): maintained token code and tests
-- [Contract Execution](/programming-model/execution/): snapshots and deltas
-- [Storage Types](/programming-model/storage-types/): choose a storage API
+- [Contract Execution](/contracts/execution/): snapshots and deltas
+- [Storage Types](/contracts/storage-types/): choose a storage API

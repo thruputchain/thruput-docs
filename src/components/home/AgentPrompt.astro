@@ -2,7 +2,7 @@
 import { docsPath } from '../../../scripts/docs-routing.mjs';
 import { Icon } from '@astrojs/starlight/components';
 import CopyIcon from '../CopyIcon.astro';
-import onboarding from '../../content/docs/start/build-with-an-agent.md?raw';
+import onboarding from '../../content/docs/get-started/build-with-an-agent.md?raw';
 const rawPrompt = onboarding.match(/```text\r?\n([\s\S]*?)\r?\n```/)?.[1];
 if (!rawPrompt) throw new Error('Agent onboarding must include a text prompt.');
 const prompt = rawPrompt;

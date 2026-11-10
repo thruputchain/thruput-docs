@@ -30,7 +30,7 @@ try {
     assert.deepEqual(codes(readFileSync(resolve(output, `pages/${page}.md`), 'utf8')),
       codes(readFileSync(resolve(`src/content/docs/${page}.md`), 'utf8')), `Code changed in ${page}`);
   }
-  assert.ok(readFileSync(resolve(output, 'pages/reference/json-rpc-api.md'), 'utf8').includes('Not Yet Implemented'));
+  assert.ok(readFileSync(resolve(output, 'pages/architecture/storage-economics.md'), 'utf8').includes('Planned, Not Implemented'));
   assert.deepEqual(JSON.parse(readFileSync(resolve(output, 'snapshot.json'), 'utf8')), report.data.snapshot);
   console.log(`CLI exported ${paths.length} Markdown files; portable links and source code examples verified.`);
 } finally {
@@ -73,10 +73,12 @@ try {
   await page.waitForURL(`${origin}/architecture/`);
   assert.equal(await page.locator('main h1').textContent(), 'Introduction');
   for (const [legacy, destination, fragment] of [
+    ['programming-model/storage-types', 'contracts/storage-types', 'balance'],
+    ['reference/storage-types', 'contracts/reference/storage-types', 'balance'],
     ['reference/error-handling', 'contracts/errors', 'defining-errors'],
     ['reference/cross-contract-calls', 'contracts/cross-contract-calls', 'gas-limits'],
-    ['programming-model/advanced', 'programming-model/storage-types', 'lock-requests'],
-    ['programming-model/advanced', 'programming-model/nnint', 'negative-set-values'],
+    ['programming-model/advanced', 'contracts/storage-types', 'lock-requests'],
+    ['programming-model/advanced', 'contracts/nnint', 'negative-set-values'],
   ]) {
     await page.goto(`${origin}/${legacy}/#${fragment}`);
     await page.waitForURL(`${origin}/${destination}/#${fragment}`);

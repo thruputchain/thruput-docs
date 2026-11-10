@@ -302,8 +302,8 @@ Do not rely on these patterns yet:
 
 ## See Also
 
-- [Invocation Frames](/how-it-works/invocation-frames/)
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/)
-- [Syscalls](/reference/syscalls/)
-- [SDK Macros](/reference/sdk-macros/)
-- [Rust API Docs](/tools/rust-api-docs/)
+- [Invocation Frames](/contracts/invocation-frames/)
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/)
+- [Syscalls](/contracts/reference/syscalls/)
+- [SDK Macros](/contracts/reference/sdk-macros/)
+- [Rust API Docs](/contracts/reference/rust-api-docs/)

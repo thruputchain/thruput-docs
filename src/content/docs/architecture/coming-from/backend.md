@@ -7,7 +7,7 @@ Database snapshot isolation is a useful starting point for Project Thruput. Tran
 
 ## Shared Snapshot
 
-Every transaction in a block starts from the previous block's committed state. Ordinary storage reads include its own changes and successful child calls, but not other transactions' writes. `RetrocausalQueue` has separate rules for observing concurrent inserts. Each transaction produces typed changes, called **deltas**. Compatible deltas form the next committed state. See [Merged Deltas](/programming-model/execution/#merged-deltas).
+Every transaction in a block starts from the previous block's committed state. Ordinary storage reads include its own changes and successful child calls, but not other transactions' writes. `RetrocausalQueue` has separate rules for observing concurrent inserts. Each transaction produces typed changes, called **deltas**. Compatible deltas form the next committed state. See [Merged Deltas](/contracts/execution/#merged-deltas).
 
 ## Deltas, Not Assignments
 
@@ -21,9 +21,9 @@ fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
 }
 ```
 
-[`Balance`](/programming-model/storage-types/#balance) is the SDK type for this pattern. Both calls record deltas that can merge with concurrent transactions. `decrease()` loads the sender's balance so an insufficient debit fails during execution. `lazy_increase()` skips the receiver load and defers its bound check until the delta batch is reserved. If two transactions debit 20 and 30 from a balance of 100, both can land and the next balance is 50. Applying the changes in either order gives the same result, so the operations **commute**.
+[`Balance`](/contracts/storage-types/#balance) is the SDK type for this pattern. Both calls record deltas that can merge with concurrent transactions. `decrease()` loads the sender's balance so an insufficient debit fails during execution. `lazy_increase()` skips the receiver load and defers its bound check until the delta batch is reserved. If two transactions debit 20 and 30 from a balance of 100, both can land and the next balance is 50. Applying the changes in either order gives the same result, so the operations **commute**.
 
-[NNInt and concurrent updates](/programming-model/nnint/) explains the representation behind these balance operations, including base matching and early bound checks.
+[NNInt and concurrent updates](/contracts/nnint/) explains the representation behind these balance operations, including base matching and early bound checks.
 
 **Relative updates such as `SET col = col + ?` map naturally to mergeable integer operations.** Compatibility still depends on bounds and the transaction's other changes. Absolute replacements can conflict when they assign different values.
 
@@ -31,7 +31,7 @@ fn transfer(&mut self, receiver: &ContractAddress, amount: Amount) {
 
 ## Conflicts and Retries
 
-When deltas conflict, that attempt is excluded from the proposal. Contract code does not retry the operation. The scheduler can requeue transactions after a nomination is rolled back or a different proposal commits, but exclusion does not guarantee automatic requeue or a `retry` status. Clients observe the original transaction and, when retrying is appropriate, resubmit the same signed bytes while valid. Replay protection permits at most one commitment. See [Transaction Lifecycle](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission).
+When deltas conflict, that attempt is excluded from the proposal. Contract code does not retry the operation. The scheduler can requeue transactions after a nomination is rolled back or a different proposal commits, but exclusion does not guarantee automatic requeue or a `retry` status. Clients observe the original transaction and, when retrying is appropriate, resubmit the same signed bytes while valid. Replay protection permits at most one commitment. See [Transaction Lifecycle](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission).
 
 The balance constraint works the same way. If two concurrent withdrawals together exceed the available balance, one or more transactions are excluded. This is `CHECK (balance >= 0)` enforced by the storage model rather than application code.
 
@@ -49,6 +49,6 @@ The balance constraint works the same way. If two concurrent withdrawals togethe
 
 ## Next Steps
 
-For storage type details (`Balance`, `NNInt`, `Map`, `Vector`, `Value`, `Bytestring`, `CapacityConstraint`, and `RetrocausalQueue`) and their conflict semantics, see [Programming Model: Storage Types](/programming-model/storage-types/). For the contract-level execution model, see [Merged Deltas](/programming-model/execution/#merged-deltas).
+For storage type details (`Balance`, `NNInt`, `Map`, `Vector`, `Value`, `Bytestring`, `CapacityConstraint`, and `RetrocausalQueue`) and their conflict semantics, see [Programming Model: Storage Types](/contracts/storage-types/). For the contract-level execution model, see [Merged Deltas](/contracts/execution/#merged-deltas).
 
 Ready to write code? The [contract quickstart](/get-started/contract/) walks you through building and deploying your first contract.

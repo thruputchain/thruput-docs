@@ -4,7 +4,7 @@ description: Canonical contract metadata, structured identities, methods, types,
 ---
 
 For usage, see
-[TypeScript Bindings](/tools/typescript-bindings/) and [Build a Counter](/tutorials/build-a-counter/).
+[TypeScript Bindings](/typescript/bindings/) and [Build a Counter](/tutorials/build-a-counter/).
 
 ## Where the Spec Lives
 
@@ -107,6 +107,6 @@ See [Events](/contracts/events/) for emission and [Read events](/typescript/even
 
 ## Related Documentation
 
-- [SDK Macros](/reference/sdk-macros/)
-- [TypeScript Bindings](/tools/typescript-bindings/)
+- [SDK Macros](/contracts/reference/sdk-macros/)
+- [TypeScript Bindings](/typescript/bindings/)
 - [XDR Protocol](/reference/xdr-protocol/)

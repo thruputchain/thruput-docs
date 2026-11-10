@@ -16,7 +16,7 @@ Get a working result on Futurenet. Choose the tools you want to use; you do not 
 
 ## Work with a coding agent
 
-[Build with an Agent](/start/build-with-an-agent/) gives you one prompt to install the tools, fund a wallet, and deploy and call a counter on Futurenet. For a smaller task, use the prompt in an individual quickstart.
+[Build with an Agent](/get-started/build-with-an-agent/) gives you one prompt to install the tools, fund a wallet, and deploy and call a counter on Futurenet. For a smaller task, use the prompt in an individual quickstart.
 
 ## What you need
 

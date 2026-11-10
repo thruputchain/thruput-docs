@@ -131,7 +131,7 @@ test('copies the exported page, Markdown link, and existing task prompt', async 
   await expect(actions.locator('[data-copy="prompt"] [data-label]')).toHaveText('Copied');
   await expect(actions.locator('[data-copy="prompt"] [data-label]')).toHaveText('Copy task prompt');
   await expect(actions.getByRole('link', { name: 'View Markdown' })).toHaveAttribute('href', markdown);
-  await expect(actions.getByRole('link', { name: 'Set up your agent' })).toHaveAttribute('href', '/docs/start/build-with-an-agent/');
+  await expect(actions.getByRole('link', { name: 'Set up your agent' })).toHaveAttribute('href', '/docs/get-started/build-with-an-agent/');
   await page.goto(origin + '/docs/typescript/reads/');
   await page.locator('page-actions summary').click();
   await expect(page.getByRole('button', { name: 'Copy task prompt' })).toHaveCount(0);
@@ -230,6 +230,6 @@ test('Markdown and setup links work without JavaScript', async ({ browser }) => 
     await expect(actions.getByRole('button', { name: 'Copy Markdown link' })).not.toBeVisible();
     await expect(actions.getByRole('link', { name: 'View Markdown' })).toBeVisible();
     await actions.getByRole('link', { name: 'Set up your agent' }).click();
-    await expect(page).toHaveURL(origin + '/docs/start/build-with-an-agent/');
+    await expect(page).toHaveURL(origin + '/docs/get-started/build-with-an-agent/');
   } finally { await context.close(); }
 });

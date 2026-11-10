@@ -8,8 +8,8 @@ description: Encoding boundaries and source definitions for the Project Thruput 
 | Surface | Encoding | Reference |
 | --- | --- | --- |
 | `Transaction`, `SignedTransaction`, contract spec sidecars | Classic XDR | Protocol definitions below |
-| Contract arguments, return values, exceptions, typed storage, event payloads | CXS, the compact encoding used by the SDK | [Contract Spec](/reference/contract-spec/), [TypeScript Bindings](/tools/typescript-bindings/) |
-| Transaction signing preimage | CXS domain separator, raw network hash, then classic XDR transaction | [Authorization](/how-it-works/authorization/) |
+| Contract arguments, return values, exceptions, typed storage, event payloads | CXS, the compact encoding used by the SDK | [Contract Spec](/reference/contract-spec/), [TypeScript Bindings](/typescript/bindings/) |
+| Transaction signing preimage | CXS domain separator, raw network hash, then classic XDR transaction | [Authorization](/contracts/authorization/) |
 | Public JSON-RPC requests and responses | JSON, with base58 identifiers, `0x` hex byte fields, and decimal strings for large integers | [JSON-RPC API](/reference/json-rpc-api/) |
 
 The Rust traits retain the names `ReadXDR` and `WriteXDR` for both encodings. Use generated SDK clients and TypeScript bindings for contract payloads; a classic XDR encoder produces different bytes.

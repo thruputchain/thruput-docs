@@ -17,4 +17,4 @@ The spec describes the exported interface. Bindings turn that description into T
 - Give application developers the bindings and the matching deployment address and network.
 - Keep generated files separate from application code so regeneration does not overwrite manual changes.
 
-See [Generate TypeScript bindings](/cli/codegen/) for output paths and generation from an existing spec, and [Use contract bindings](/tools/typescript-bindings/) for consuming the generated interface in an application.
+See [Generate TypeScript bindings](/cli/codegen/) for output paths and generation from an existing spec, and [Use contract bindings](/typescript/bindings/) for consuming the generated interface in an application.

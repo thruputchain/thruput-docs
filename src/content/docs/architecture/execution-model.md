@@ -9,7 +9,7 @@ Every transaction reads from a consistent snapshot and records typed deltas. The
 
 Commutativity describes operations whose combined result does not depend on their order. Project Thruput still enforces resource limits, including gas limits, bounded return values, and a maximum encoded transaction size.
 
-This page explains the engine: snapshots, concurrent reservation, and conflict selection. For the rules your code relies on, read [Contract Execution](/programming-model/execution/).
+This page explains the engine: snapshots, concurrent reservation, and conflict selection. For the rules your code relies on, read [Contract Execution](/contracts/execution/).
 
 ## Snapshot Isolation
 
@@ -46,7 +46,7 @@ Two compatible increments to the same balance produce the same result regardless
 
 ## What Commutes and What Doesn't
 
-Transactions execute concurrently. Storage merge rules determine whether their changes can land together. A conflicting transaction is excluded from that proposal. Exclusion does not guarantee automatic requeue or a `retry` status. See [Exclusion, requeue, and resubmission](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission) for scheduler behavior and client recovery.
+Transactions execute concurrently. Storage merge rules determine whether their changes can land together. A conflicting transaction is excluded from that proposal. Exclusion does not guarantee automatic requeue or a `retry` status. See [Exclusion, requeue, and resubmission](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission) for scheduler behavior and client recovery.
 
 | Operation | Can both changes land? | Why |
 |-----------|-----------|-----|
@@ -61,7 +61,7 @@ These rules describe the listed operations. Other changes in either transaction 
 
 ### What This Means for Your Data Model
 
-Choose storage around the changes your application needs to combine. Mergeable arithmetic still has bounds; absolute writes can coexist when they store identical values. [Storage Types](/programming-model/storage-types/#choosing-a-type) turns these rules into contract-design choices.
+Choose storage around the changes your application needs to combine. Mergeable arithmetic still has bounds; absolute writes can coexist when they store identical values. [Storage Types](/contracts/storage-types/#choosing-a-type) turns these rules into contract-design choices.
 
 ## How Conflicts Are Resolved
 
@@ -100,7 +100,7 @@ The proposer records reservation-dependent outcomes so validators can replay and
 
 ## Related reading
 
-- [Contract Execution](/programming-model/execution/): The contract-author model
-- [Storage Types](/programming-model/storage-types/): API choices and merge rules
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): How a transaction moves from submission to commit
-- [Compute, Capacity & Storage](/how-it-works/storage-economics/): Gas limits, scheduling, and deposits
+- [Contract Execution](/contracts/execution/): The contract-author model
+- [Storage Types](/contracts/storage-types/): API choices and merge rules
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/): How a transaction moves from submission to commit
+- [Compute, Capacity & Storage](/architecture/storage-economics/): Gas limits, scheduling, and deposits

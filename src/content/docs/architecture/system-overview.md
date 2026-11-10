@@ -27,7 +27,7 @@ JSON-RPC gateway
       +-- Event server
 ```
 
-The diagram shows the main service relationships. [Networking](/how-it-works/networking/) covers registration and communication between them.
+The diagram shows the main service relationships. [Networking](/architecture/networking/) covers registration and communication between them.
 
 | Component | Responsibility |
 | --- | --- |
@@ -57,10 +57,10 @@ Multiple execution workers and database shards distribute work within a node. Co
 
 ## Explore the details
 
-- [Parallel Execution](/how-it-works/execution-model/): Snapshots, compatible updates, and conflict reservation
-- [Transaction Lifecycle](/how-it-works/transaction-lifecycle/): Submission, execution outcomes, and commit
-- [Compute, Capacity & Storage](/how-it-works/storage-economics/): Scheduling and storage deposits
-- [Consensus](/how-it-works/consensus/): Proposals, validation, and finality
-- [Networking](/how-it-works/networking/): Component registration and internal interfaces
+- [Parallel Execution](/architecture/execution-model/): Snapshots, compatible updates, and conflict reservation
+- [Transaction Lifecycle](/architecture/transaction-lifecycle/): Submission, execution outcomes, and commit
+- [Compute, Capacity & Storage](/architecture/storage-economics/): Scheduling and storage deposits
+- [Consensus](/architecture/consensus/): Proposals, validation, and finality
+- [Networking](/architecture/networking/): Component registration and internal interfaces
 
-For the behavior your contract relies on, read [Contract Execution](/programming-model/execution/).
+For the behavior your contract relies on, read [Contract Execution](/contracts/execution/).

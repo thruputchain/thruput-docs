@@ -31,7 +31,7 @@ Key rules:
 
 ## Content Rules
 
-- Author Markdown links with absolute logical paths such as `/how-it-works/architecture/`. The routing transform adds `/docs` for the hosted site and keeps root paths for offline snapshots. In Astro components, use `docsPath` from `scripts/docs-routing.mjs` for documentation links.
+- Author Markdown links with absolute logical paths such as `/architecture/system-overview/`. The routing transform adds `/docs` for the hosted site and keeps root paths for offline snapshots. In Astro components, use `docsPath` from `scripts/docs-routing.mjs` for documentation links.
 - Markdown pages use Starlight admonitions, not JSX components.
 - `title` and `description` frontmatter are required for docs pages.
 - Reference pages describe API contracts, mainly through tables. Use short explanations and request/response examples where needed. Link to the relevant concept, task guide, or tutorial for usage guidance.
