@@ -49,9 +49,9 @@ use a scaffold's local overlay without a selected default. The name `default` ha
 
 ## Futurenet
 
-`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network` and a built-in network-hash pin. Hosted airdrops use that RPC endpoint. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
+`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network`, and `init` records its network hash. Airdrops use the same endpoint. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
 
-The CLI checks the RPC endpoint against the profile's `network-hash` before signing. Every profile without a local runtime manifest needs this pin; signing fails with `missing_network_hash` without one. After upgrading from an older CLI, rerun `thruput init` to add the Futurenet pin. Do not copy a hash from a different deployment.
+Before signing, the CLI checks that the RPC endpoint serves the network in the profile's `network-hash`. Every profile needs this hash unless it uses a local runtime manifest. Without it, signing fails with `missing_network_hash`. If you upgraded from an older CLI, rerun `thruput init` to add the Futurenet hash. Do not copy a hash from a different deployment.
 
 `network = "devnet"` remains a compatibility alias for the hosted network.
 Existing Devnet profiles and saved wallets keep their names and settings.
@@ -98,7 +98,7 @@ The second command removes the project override and reveals any inherited value.
 
 ## Add another endpoint
 
-Replace the example URL and hash with values from the deployment's operator. The pin protects against a wrong endpoint, so do not copy it from that endpoint alone:
+Get the RPC URL and network hash from the network's operator. The hash catches a wrong endpoint, so do not read it from the endpoint itself:
 
 ```bash
 thruput config new staging --network futurenet \

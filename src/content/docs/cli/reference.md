@@ -85,7 +85,7 @@ description: Thruput CLI commands, common options, and links to task instruction
 | `deploy --init METHOD --init-arg VALUE` | Initialize atomically with deployment | [Initialization](/cli/deploy-and-call/#include-initialization) |
 | `deploy --artifact PATH --alias NAME` | Select an artifact and saved alias | [Deployment](/cli/deploy-and-call/#deploy-an-artifact) |
 | `inspect CONTRACT [--json]` | Read deployment details and the embedded spec | [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) |
-| `inspect CONTRACT --output FILE` | Export the embedded spec as JSON | Replaces the file only when a supported spec is available |
+| `inspect CONTRACT --output FILE` | Export the embedded spec as JSON | [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) |
 | `call CONTRACT METHOD [ARGS...]` | Submit a signed contract invocation | [Calls](/cli/deploy-and-call/#submit-a-call) |
 | `view CONTRACT METHOD [ARGS...]` | Run a sandboxed read without submitting | [Views](/cli/deploy-and-call/#read-without-submitting) |
 | `storage CONTRACT KEY` | Read a raw committed storage item | [Views and storage](/cli/deploy-and-call/#read-without-submitting) |

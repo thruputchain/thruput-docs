@@ -65,9 +65,9 @@ thruput inspect my-counter --profile futurenet
 thruput inspect my-counter --profile futurenet --json
 ```
 
-Use an alias or address to read deployment details, methods, events, errors, and types without a local build or signing key. The CLI verifies the retrieved artifact against its deployment hash. Add `--output counter.spec.json` to export the spec as JSON, replacing the file if it exists.
+Pass an alias or address to see the contract's deployment details, methods, events, errors, and types. You do not need a local build or signing key. The CLI checks the downloaded artifact against its deployment hash. Add `--output counter.spec.json` to save the spec as JSON. This replaces an existing file.
 
-Native contracts have no embedded RV32 spec. An unavailable artifact is an error, not evidence that no contract is deployed. For bindings, see [code generation](/cli/codegen/#generate-from-a-deployed-contract).
+Native contracts, such as the native token, have no embedded spec. If the node cannot return the artifact, inspection fails; this does not mean the contract is missing. To generate bindings, see [code generation](/cli/codegen/#generate-from-a-deployed-contract).
 
 ## Submit a call
 

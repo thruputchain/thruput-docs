@@ -26,7 +26,7 @@ target/thruput/counter.spec.json
 
 The `.rv32a` file is the executable contract artifact. `thruput deploy` wraps those bytes in the protocol's `Contract::kRv32` variant before signing and submitting the deploy transaction.
 
-The embedded spec describes the contract interface and is stored outside guest memory. Tools can retrieve it from the deployed artifact for [inspection](/cli/deploy-and-call/#inspect-a-contract) and [binding generation](/cli/codegen/).
+The embedded spec describes the contract interface. It is not loaded into guest memory. Tools read it from the deployed artifact for [inspection](/cli/deploy-and-call/#inspect-a-contract) and [binding generation](/cli/codegen/).
 
 Deployment must satisfy the network's limits on attached contract size, RV32 code, guest memory, and new contracts per transaction. Client and gateway submission limits also apply. Use the selected network's configuration rather than assuming a fixed maximum.
 

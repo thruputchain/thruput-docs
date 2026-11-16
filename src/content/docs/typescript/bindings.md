@@ -17,7 +17,7 @@ Regenerate when methods, argument or return types, declared exceptions, or event
 
 For tools that inspect contracts at runtime, `getContractSpec(rpcClient, { address })` from `@thruputchain/client/actions` retrieves the current deployment and verifies its artifact hash. When `artifactSpec.kind` is `spec`, `artifactSpec.spec` contains the decoded spec. Use the codec and decoder helpers in `@thruputchain/client/contract` to work with it without generated bindings.
 
-A missing deployment returns `deployment: null` and `artifactSpec: null`. Native contracts, absent specs, and unsupported versions have distinct results. Unavailable or malformed artifacts throw. Current deployment metadata does not establish which code produced a historical result.
+If nothing is deployed, `deployment` and `artifactSpec` are `null`. Other `artifactSpec.kind` values identify native contracts, contracts without a spec, and unsupported formats. Unavailable or malformed artifacts throw. The result describes the current deployment, which may differ from the code that ran in past transactions.
 
 ## Select an Interface Version
 

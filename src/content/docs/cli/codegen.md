@@ -37,7 +37,7 @@ thruput codegen ts --address my-counter --profile futurenet \
 
 Use a saved alias, base58 address, or Thruput `Z` StrKey. The CLI retrieves the deployed artifact, verifies its hash, and reads its embedded spec. Use `--rpc-url URL` to override the profile endpoint.
 
-Provide exactly one file or `--address`. A supported spec is required. Retrieval or validation errors leave an existing output file unchanged. Without `--output`, bindings go to stdout.
+Pass either a file or `--address`, not both. The contract must have a supported embedded spec. If retrieval or validation fails, the CLI leaves any existing output file unchanged. Without `--output`, bindings are written to stdout.
 
 ## Keep code and deployment aligned
 

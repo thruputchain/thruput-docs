@@ -15,7 +15,7 @@ For usage, see
 | `<crate>.spec.json` | Human-readable export for inspection; not a codegen input |
 | Generation | SDK macros emit fragments; build canonicalizes, sorts, validates, embeds the spec, and writes exports under `target/thruput/` by default |
 
-The contract hash covers the embedded spec with the rest of the artifact. [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) retrieves it from the node without a local sidecar. Native contracts have no embedded RV32 spec.
+The contract hash covers the embedded spec and the rest of the artifact. [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) reads the spec from the deployed contract, so no local files are needed. Native contracts have no embedded spec.
 
 ## Top-Level Structure
 
