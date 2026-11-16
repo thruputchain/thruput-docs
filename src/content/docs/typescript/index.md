@@ -34,7 +34,7 @@ Generated bindings are application files, not a replacement for the client packa
 
 The [TypeScript quickstart](/get-started/typescript/) reads Futurenet's native-token contract using its supplied binding and address. [Read contract data](/typescript/reads/) uses the same checkpoint, so you can learn the application APIs without first writing a contract.
 
-For a custom contract, obtain its generated bindings, deployment address, and network from its author. [Use contract bindings](/tools/typescript-bindings/) explains how those pieces fit.
+For a custom contract, obtain its generated bindings, deployment address, and network from its author. [Use contract bindings](/typescript/bindings/) explains how those pieces fit.
 
 [Read events](/typescript/events/) completes the read-only path with filters, decoding, and historical pagination. It also needs no wallet or signer.
 
@@ -42,9 +42,9 @@ For a custom contract, obtain its generated bindings, deployment address, and ne
 
 Read [Accounts and wallet clients](/typescript/wallet-clients/) to understand account identity, authorization, and call wrapping. Then choose one integration path for your application:
 
-- [Connect a wallet](/tools/wallet-integration/) when the user's browser wallet manages approval and signing.
+- [Connect a wallet](/typescript/wallet-integration/) when the user's browser wallet manages approval and signing.
 - [Use a signer in scripts](/typescript/accounts/) when your Node.js process manages the account key.
 
 These are alternatives, not consecutive setup steps. Both lead to [Send transactions](/typescript/transactions/) and [Track transaction results](/typescript/transaction-status/). [Deploy a contract](/typescript/deployment/) builds on that transaction flow when your application needs to create a deployment.
 
-Complete applications live in [Guides](/guides/). This section covers individual tasks; [Client API reference](/tools/typescript-sdk/) and [Wallet provider reference](/tools/wallet-provider/) provide lookup tables.
+Complete applications live in [Guides](/guides/). This section covers individual tasks; [Client API reference](/typescript/reference/sdk/) and [Wallet provider reference](/typescript/reference/wallet-provider/) provide lookup tables.

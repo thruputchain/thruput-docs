@@ -4,6 +4,7 @@ interface Props { href?: string; Component?: AstroComponentFactory }
 import { getCollection } from 'astro:content';
 import LegacyRedirect from '../components/LegacyRedirect.astro';
 import { docsPrefix, logicalDocsPath } from '../../scripts/docs-routing.mjs';
+import { legacyDocsRoutes } from '../../scripts/legacy-docs-routes.mjs';
 
 export async function getStaticPaths() {
   // Reuse the existing fragment maps for both old root and hosted docs URLs.
@@ -20,6 +21,10 @@ export async function getStaticPaths() {
     { params: { legacy: `${docsPrefix.slice(1)}${docsPrefix ? '/' : ''}start` }, props: { href: '/architecture/' } },
     { params: { legacy: `${docsPrefix.slice(1)}${docsPrefix ? '/' : ''}start/getting-started` }, props: { href: '/get-started/contract/' } },
   ];
+  for (const [from, to] of Object.entries(legacyDocsRoutes)) {
+    paths.push({ params: { legacy: `${docsPrefix.slice(1)}${docsPrefix ? '/' : ''}${from}` }, props: { href: `/${to}/` } });
+    if (docsPrefix) paths.push({ params: { legacy: from }, props: { href: `/${to}/` } });
+  }
   if (docsPrefix) {
     paths.push({ params: { legacy: 'docs' }, props: { href: '/get-started/' } });
     for (const entry of await getCollection('docs', entry => entry.id !== '404')) {

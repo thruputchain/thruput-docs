@@ -49,4 +49,4 @@ Use the correct contract alias and the spec from the matching build. Rebuild aft
 
 ## The integration target is missing
 
-Current CLI projects include `tests/integration.rs` and its activation wiring. Compare an older project with a fresh scaffold before adding them; do not replace its dependency configuration blindly. See [Test contracts](/programming-model/testing/#what-the-scaffold-gives-you).
+Current CLI projects include `tests/integration.rs` and its activation wiring. Compare an older project with a fresh scaffold before adding them; do not replace its dependency configuration blindly. See [Test contracts](/contracts/testing/#what-the-scaffold-gives-you).

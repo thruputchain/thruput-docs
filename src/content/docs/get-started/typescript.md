@@ -60,7 +60,7 @@ This is a read-only call. It does not request wallet permission or submit a tran
 
 ## Next
 
-Use [Read contract data](/typescript/reads/) for arguments, caller context, and cancellation, or [Connect a wallet](/tools/wallet-integration/) to add signing and transaction submission.
+Use [Read contract data](/typescript/reads/) for arguments, caller context, and cancellation, or [Connect a wallet](/typescript/wallet-integration/) to add signing and transaction submission.
 
 ## Use a coding agent
 

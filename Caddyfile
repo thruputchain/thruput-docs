@@ -27,6 +27,8 @@
 	route {
 		respond /health 200
 
+		import {$SITE_ROOT:/app/dist}/docs-redirects.caddy
+
 		@oldDocsRoot {
 			host docs.thruput.network docs.groundhog.dev
 			path /
@@ -43,9 +45,16 @@
 		redir @aliasHosts https://www.thruput.network{uri} 308
 
 		try_files {path} {path}.html {path}/index.html
+		# Show Markdown as source, even when it starts with an HTML anchor.
+		@markdown {
+			path *.md
+			file {path}
+		}
+		header @markdown Content-Type "text/plain; charset=utf-8"
 		file_server {
 			hide .git
 			hide .env*
+			hide *.caddy
 		}
 	}
 }

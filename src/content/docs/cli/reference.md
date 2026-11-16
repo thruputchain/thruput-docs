@@ -53,7 +53,7 @@ description: Thruput CLI commands, common options, and links to task instruction
 | `build --bindings ts` | Also generate TypeScript bindings | [Code generation](/cli/codegen/) |
 | `build --stack-size SIZE` | Set guest stack size within configured memory | `thruput build --help` |
 | `test [-p PACKAGE]` | Build and run the RV32 artifact test target | [Test modes](/cli/build-and-test/#choose-a-test-boundary) |
-| `test --integration` | Run an isolated local-node integration target | [Integration tests](/programming-model/testing/#integration-test-environment) |
+| `test --integration` | Run an isolated local-node integration target | [Integration tests](/contracts/testing/#integration-test-environment) |
 | `test --workspace` | Run eligible workspace members | [Workspace runs](/cli/build-and-test/#integration-and-workspace-runs) |
 | `test --match-test TEXT` / `--skip TEXT` | Filter test names | [Focused runs](/cli/build-and-test/#focus-a-test-run) |
 | `test --rerun` / `--watch` | Repeat failures or watch files | Not supported with `--integration` |

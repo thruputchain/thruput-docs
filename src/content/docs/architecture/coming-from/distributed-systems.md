@@ -1,0 +1,32 @@
+---
+title: "For Distributed Systems Developers"
+description: Understand Project Thruput's use of commutative updates within consensus blocks.
+---
+
+Project Thruput uses commutative operations to combine concurrent changes within a block. The storage model supports parallel execution; consensus selects the result validators commit.
+
+## Your Head Start
+
+Additions such as `+5` and `+3` have the same sum in either order. Project Thruput's [`Balance`](/contracts/storage-types/#balance) and [`NNInt`](/contracts/nnint/) expose relative updates with explicit bounds. `Map<K, V>` gives separate keys independent storage locations.
+
+The similarity to counters and maps in CRDT systems is useful, but the coordination model differs.
+
+## Coordination at Block Boundaries
+
+CRDTs can reconcile independently updated replicas. Project Thruput instead executes transactions against a common committed snapshot, reserves compatible typed changes, and uses [consensus](/architecture/consensus/) to select a finalized block.
+
+- **Merge rules operate within a proposal.** Applications do not maintain vector clocks to reconcile ordinary balance or map updates.
+- **Bounds still apply.** A balance cannot commit below zero. If concurrent debits exceed the available value, an overdrawing attempt is excluded from the proposal. Requeue and reported status depend on later processing. See [Transaction Lifecycle](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission).
+- **Consensus selects one result.** Validators verify the proposed state transition. Nodes that have applied the same finalized block agree on that state.
+- **Readers can see different heights.** A node may lag while receiving or replaying blocks. Check the returned read height when freshness matters.
+
+## If You Don't Know Any of This
+
+You can write contracts without implementing a concurrency algorithm. Choose the storage type for the updates your application needs, then use its ordinary Rust methods. The [backend-developer guide](/architecture/coming-from/backend/) explains the same model through database concepts.
+
+## Next Steps
+
+- [Contract Execution](/contracts/execution/): snapshots, deltas, and exclusion
+- [Storage Types](/contracts/storage-types/): data-model choices
+- [How Conflicts Are Resolved](/architecture/execution-model/#how-conflicts-are-resolved): engine reservation details
+- [Contract quickstart](/get-started/contract/): build and deploy a counter

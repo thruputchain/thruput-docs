@@ -7,7 +7,7 @@ description: Provider props, wallet hooks, query hooks, transaction hooks, and r
 | --- | --- |
 | `@thruputchain/react` | All public React exports below |
 | [Setup](/react/setup/) | Installation and context wiring |
-| [TypeScript client reference](/tools/typescript-sdk/) | Shared SDK concepts and operations; use the client supported by the React package's peer dependencies |
+| [TypeScript client reference](/typescript/reference/sdk/) | Shared SDK concepts and operations; use the client supported by the React package's peer dependencies |
 | [React source](https://github.com/thruputchain/thruput-react) | Implementation; type declarations are included in the public npm package |
 
 ## WalletProvider

@@ -5,6 +5,7 @@ import starlight from "@astrojs/starlight";
 import { sidebar, sections, sectionForPath } from "./src/navigation.ts";
 import { remarkDocsRoutes } from "./scripts/docs-routing.mjs";
 import markdownExport from "./scripts/markdown-export.mjs";
+import docsRedirects from "./scripts/docs-redirects.mjs";
 
 export default defineConfig({
   site: "https://www.thruput.network",
@@ -12,6 +13,7 @@ export default defineConfig({
   markdown: { processor: unified({ remarkPlugins: [remarkDocsRoutes] }) },
 
   integrations: [
+    docsRedirects(),
     canonicalSitemap(),
     starlight({
       title: "Stellar Project Thruput",

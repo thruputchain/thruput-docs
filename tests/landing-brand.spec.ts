@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const origin = 'http://127.0.0.1:4322';
-const prompt = readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8').match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
+const prompt = readFileSync(new URL('../src/content/docs/get-started/build-with-an-agent.md', import.meta.url), 'utf8').match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
 
 for (const width of [320, 1280]) {
   test(`prompt preview is complete, keyboard accessible, and copyable at ${width}px`, async ({ page, context }, info) => {
@@ -52,6 +52,15 @@ test('hero paths, workflow, and footer links reach confirmed destinations', asyn
   await page.goto(origin);
   await expect(page.locator('.hero-links').getByRole('link')).toHaveCount(3);
   await expect(page.getByRole('navigation', { name: 'Footer' }).getByRole('heading')).toHaveText(['Build', 'Learn', 'Connect', 'Project']);
+  const footer = page.getByRole('navigation', { name: 'Footer' });
+  await expect(footer.getByRole('link', { name: 'Community discussions', exact: true }))
+    .toHaveAttribute('href', 'https://github.com/thruputchain/thruput-docs/discussions');
+  await expect(footer.getByRole('link', { name: 'Discord: #thruput', exact: true }))
+    .toHaveAttribute('href', 'https://discord.com/channels/897514728459468821/1564948118162898954');
+  await expect(footer.getByRole('link', { name: 'Join Stellar Developers Discord', exact: true }))
+    .toHaveAttribute('href', 'https://discord.gg/stellardev');
+  await expect(footer.getByRole('link', { name: 'GitHub repositories', exact: true }))
+    .toHaveAttribute('href', 'https://github.com/thruputchain');
   const links = await page.locator('main a[href^="/"]').evaluateAll(elements => [...new Set(elements.map(element => element.getAttribute('href')!))]);
   for (const link of links) expect((await request.get(origin + link)).ok(), link).toBe(true);
 });

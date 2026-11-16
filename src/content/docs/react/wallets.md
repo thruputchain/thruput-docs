@@ -90,4 +90,4 @@ Session changes invalidate old signing bindings immediately. The provider binds 
 
 Disconnect clears local authorization immediately. If remote revocation fails, the UI remains disconnected and exposes an error. Unmounting disposes the local binding without requesting revocation. Connection is explicit; there is no automatic reconnect or persisted connection.
 
-Use the shared [wallet-provider error codes](/tools/wallet-provider/#errors) for application-specific messages. Do not infer transaction failure from a disconnected wallet; [receipt observation](/react/transaction-status/) uses the public client.
+Use the shared [wallet-provider error codes](/typescript/reference/wallet-provider/#errors) for application-specific messages. Do not infer transaction failure from a disconnected wallet; [receipt observation](/react/transaction-status/) uses the public client.

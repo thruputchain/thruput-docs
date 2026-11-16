@@ -75,7 +75,7 @@ try {
 
 Keep the original signed bytes, transaction hash, and signing network so recovery does not create a different transaction. Query the original hash on that network and preserve any known commitment. A missing receipt from one endpoint does not erase a known commitment.
 
-An excluded proposal attempt does not consume the replay nonce. Scheduler requeue depends on the proposal outcome; it is not guaranteed. See [Exclusion, requeue, and resubmission](/how-it-works/transaction-lifecycle/#exclusion-requeue-and-resubmission).
+An excluded proposal attempt does not consume the replay nonce. Scheduler requeue depends on the proposal outcome; it is not guaranteed. See [Exclusion, requeue, and resubmission](/architecture/transaction-lifecycle/#exclusion-requeue-and-resubmission).
 
 When the reported scheduler error permits another attempt and the transaction remains valid, resubmit the same signed bytes with bounded backoff. Receipt polling alone will not do this. `recentFailure` is advisory and does not authorize resubmission or replacement.
 
@@ -119,4 +119,4 @@ Do not decode a root abort with a child method's exception schema merely because
 
 After a reload, use the saved hash and network to resume public observation. Decode a saved base58 hash with `hashFromBase58`. This does not require the wallet to remain connected. A provider's `onSigned` callback provides the pre-submission record; see [Send transactions](/typescript/transactions/#send-through-a-browser-wallet).
 
-For protocol-level outcomes, see [Transaction Lifecycle](/how-it-works/transaction-lifecycle/).
+For protocol-level outcomes, see [Transaction Lifecycle](/architecture/transaction-lifecycle/).

@@ -2,8 +2,8 @@ import { test as base, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const origin = 'http://127.0.0.1:4322';
-const docs = '/docs/start/build-with-an-agent/';
-const onboarding = readFileSync(new URL('../src/content/docs/start/build-with-an-agent.md', import.meta.url), 'utf8');
+const docs = '/docs/get-started/build-with-an-agent/';
+const onboarding = readFileSync(new URL('../src/content/docs/get-started/build-with-an-agent.md', import.meta.url), 'utf8');
 const prompt = onboarding.match(/```text\r?\n([\s\S]*?)\r?\n```/)![1];
 const test = base.extend({
   page: async ({ page }, use) => {
@@ -125,7 +125,9 @@ test('mobile homepage navigation and docs sidebar/theme', async ({ page }, testI
   await page.goto(origin);
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await expect(page.locator('.sidebar .site-navigation').getByRole('link', { name: 'Community', exact: true }))
-    .toHaveAttribute('href', 'https://github.com/thruputchain');
+    .toHaveAttribute('href', 'https://github.com/thruputchain/thruput-docs/discussions');
+  await expect(page.locator('.sidebar .site-navigation').getByRole('link', { name: 'Discord', exact: true }))
+    .toHaveAttribute('href', 'https://discord.com/channels/897514728459468821/1564948118162898954');
   await page.locator('.sidebar').getByRole('link', { name: 'Start Building', exact: true }).click();
   await expect(page).toHaveURL(origin + '/docs/get-started/');
   await page.getByRole('button', { name: 'Menu', exact: true }).click();
@@ -245,14 +247,26 @@ for (const width of [320, 375, 800, 1024, 1280, 1920]) {
       await page.goto(origin + route);
       await page.evaluate(() => document.fonts.ready);
       await checkShell(page);
-      const geometry = await page.locator('.site-header').evaluate(header =>
-        ['.site-brand', '.site-navigation', 'site-search > button', '.build-link'].map(selector => {
+      const geometry = await page.locator('.site-header').evaluate((header, width) =>
+        (width < 800
+          ? ['.site-brand', '.site-navigation', 'site-search > button', '.build-link']
+          : ['.site-brand', '.site-navigation a']).map(selector => {
           const rect = header.querySelector(selector)!.getBoundingClientRect();
           return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
-        })
+        }), width
       );
       if (baseline) expect(geometry, route).toEqual(baseline);
       else baseline = geometry;
+      if (width < 800) continue;
+      const rightmostControl = route !== '/'
+          ? '.desktop-theme button'
+          : width < 1200 ? 'site-search > button' : '.build-link';
+      await expect(page.locator(rightmostControl)).toBeVisible();
+      const rightGap = await page.locator('.site-header').evaluate((header, selector) =>
+        header.getBoundingClientRect().right - header.querySelector(selector)!.getBoundingClientRect().right,
+        rightmostControl
+      );
+      expect(Math.abs(rightGap), `${route} right-edge alignment`).toBeLessThanOrEqual(1);
     }
   });
 }
@@ -299,9 +313,9 @@ test('header and page titles use Project Thruput while preserving the exact CLI 
 
 test('homepage learn-more links navigate to real docs and valid anchors', async ({ page }) => {
   for (const [feature, href, title] of [
-    ['Explore the execution model', '/docs/how-it-works/execution-model/', 'Parallel Execution'],
-    ['Understand gas limits', '/docs/programming-model/execution/#gas', 'Contract Execution'],
-    ['Choose your storage', '/docs/programming-model/storage-types/', 'Storage Types'],
+    ['Explore the execution model', '/docs/architecture/execution-model/', 'Parallel Execution'],
+    ['Understand gas limits', '/docs/contracts/execution/#gas', 'Contract Execution'],
+    ['Choose your storage', '/docs/contracts/storage-types/', 'Storage Types'],
     ['Build a counter, step by step', '/docs/tutorials/build-a-counter/', 'Build a counter, part 1: Contract'],
   ]) {
     await page.goto(origin);

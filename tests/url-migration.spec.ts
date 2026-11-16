@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { legacyDocsRoutes } from '../scripts/legacy-docs-routes.mjs';
 const origin = 'http://127.0.0.1:4322';
 
 test('landing and docs have distinct canonical URLs and retain root downloads', async ({ page, request }) => {
@@ -20,7 +21,7 @@ test('old root links preserve query strings and fragments', async ({ page }) => 
   for (const [oldPath, destination] of [
     ['/cli/install/?via=old#install-with-cargo', '/docs/cli/install/?via=old#install-with-cargo'],
     ['/start/?via=old#_top', '/docs/architecture/?via=old#_top'],
-    ['/programming-model/advanced/?via=old#negative-set-values', '/docs/programming-model/nnint/?via=old#negative-set-values'],
+    ['/programming-model/advanced/?via=old#negative-set-values', '/docs/contracts/nnint/?via=old#negative-set-values'],
   ]) {
     await page.goto(origin + oldPath);
     await expect(page).toHaveURL(origin + destination);
@@ -32,6 +33,15 @@ test('sitemap lists canonical pages and excludes URL aliases and redirect pages'
   const xml = await (await request.get(origin + '/sitemap-0.xml')).text();
   expect(xml).toContain('<loc>https://www.thruput.network/</loc>');
   expect(xml).toContain('<loc>https://www.thruput.network/docs/cli/install/</loc>');
+  for (const [from, to] of Object.entries(legacyDocsRoutes)) {
+    expect(xml).toContain(`<loc>https://www.thruput.network/docs/${to}/</loc>`);
+    for (const prefix of ['', '/docs']) {
+      expect(xml).not.toContain(`<loc>https://www.thruput.network${prefix}/${from}/</loc>`);
+      const alias = await request.get(`${origin}${prefix}/${from}/`);
+      expect(alias.status()).toBe(200);
+      expect(await alias.text()).toContain(`href="/docs/${to}/"`);
+    }
+  }
   for (const path of ['/cli/install/', '/docs/', '/start/', '/docs/start/',
     '/docs/tutorials/build-a-token/', '/docs/tutorials/build-an-amm/', '/docs/tutorials/consume-the-firehose/']) {
     expect(xml).not.toContain(`<loc>https://www.thruput.network${path}</loc>`);
