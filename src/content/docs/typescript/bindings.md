@@ -15,7 +15,13 @@ Regenerate when methods, argument or return types, declared exceptions, or event
 
 ## Read a deployed spec
 
-For tools that inspect contracts at runtime, `getContractSpec(rpcClient, { address })` from `@thruputchain/client/actions` retrieves the current deployment and verifies its artifact hash. When `artifactSpec.kind` is `spec`, `artifactSpec.spec` contains the decoded spec. Use the codec and decoder helpers in `@thruputchain/client/contract` to work with it without generated bindings.
+For tools that inspect contracts at runtime, `getContractSpec` from `@thruputchain/client/actions` retrieves the current deployment and verifies its artifact hash. It takes address bytes, so convert a base58 address first:
+
+```ts
+const result = await getContractSpec(client, { address: parseAddress(text) });
+```
+
+When `artifactSpec.kind` is `spec`, `artifactSpec.spec` contains the decoded spec. Use the codec and decoder helpers in `@thruputchain/client/contract` to work with it without generated bindings.
 
 If nothing is deployed, `deployment` and `artifactSpec` are `null`. Other `artifactSpec.kind` values identify native contracts, contracts without a spec, and unsupported formats. Unavailable or malformed artifacts throw. The result describes the current deployment, which may differ from the code that ran in past transactions.
 

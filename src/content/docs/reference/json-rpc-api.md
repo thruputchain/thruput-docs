@@ -296,7 +296,7 @@ An explicit deployment takes precedence. Only root invocations use the network d
 | `hash` | Requested contract hash |
 | `contractXdr` | Complete canonical `Contract` XDR as hex, including the type tag and padding |
 
-Check `SHA256(contractXdr)` against the requested hash before reading the embedded spec. A match proves the bytes are correct, not that the contract is deployed. Unavailable artifacts return `-32014` (`ContractArtifactUnavailable`), not `null`.
+Check `SHA256(contractXdr)` against the requested hash before reading the embedded spec. A match proves the bytes are correct, not that the contract is deployed. Unavailable artifacts return `-32014` (`contractArtifactUnavailable`), not `null`.
 
 Usage: [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) and [runtime spec discovery](/typescript/bindings/#read-a-deployed-spec).
 
