@@ -1,5 +1,5 @@
 {
-  "cli": "thruput 0.43.0 (commit unavailable)",
+  "cli": "thruput 0.45.2 (commit 4f8d00f7)",
   "commands": {
     "": {
       "subcommands": {
@@ -924,7 +924,6 @@
       "subcommands": {},
       "flags": [
         "--default-key",
-        "--faucet-url",
         "--global",
         "--help",
         "--json",
@@ -943,7 +942,6 @@
       ],
       "values": [
         "--default-key",
-        "--faucet-url",
         "--network",
         "--network-hash",
         "--rpc-url"
