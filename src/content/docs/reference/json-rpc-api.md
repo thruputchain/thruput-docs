@@ -5,7 +5,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 
 | API property | Value |
 | --- | --- |
-| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.5.0` (tools `VERSION-TBD`) adds the local [block and time methods](#block-and-time-methods) |
+| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` (tools `VERSION-TBD`) adds the local [block and time methods](#block-and-time-methods) |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
