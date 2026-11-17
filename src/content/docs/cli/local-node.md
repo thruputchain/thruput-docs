@@ -64,6 +64,54 @@ Choose logging before reproducing a problem: restarting an ephemeral node to ena
 
 The public listener binds to loopback by default. `--host` changes that listener for container or VM access; exposing it beyond loopback exposes an unauthenticated development RPC endpoint.
 
+## Control blocks and time
+
+Contracts that depend on time, such as vesting, expiry, auctions, and interest, need days of chain time in a test that runs for seconds. A local node can produce blocks on request and move block time forward. These controls need thruput CLI `VERSION-TBD` or later.
+
+`--block-driver` selects how the node produces blocks:
+
+| Mode | Blocks |
+| --- | --- |
+| `instant` (default) | One block for each accepted transaction submission |
+| `interval` | One block every `--block-interval-ms` milliseconds, empty or not |
+| `manual` | Only on request |
+
+```bash
+thruput node --block-driver manual
+```
+
+In every mode, these local-only JSON-RPC methods control blocks and block time. They follow Anvil's mining and time methods:
+
+| Method | Anvil | Effect |
+| --- | --- | --- |
+| `dev_produceBlock` | `evm_mine` | Produce one block now. It can be empty. An optional `blockTimepoint` sets its time |
+| `dev_produceBlocks` | `anvil_mine` | Produce 1 to 1000 blocks, optionally `intervalNanoseconds` apart |
+| `dev_setNextBlockTimepoint` | `evm_setNextBlockTimestamp` | Set the time of the next block |
+| `dev_increaseTime` | `evm_increaseTime` | Move the clock forward for every later block. Produces no block |
+| `dev_setBlockDriver` | `evm_setAutomine` | Change the block driver mode. Switching to `instant` mines pending transactions |
+
+Block time follows these rules:
+
+- Timepoints are Unix nanoseconds as decimal strings, the value contracts read with `get_block_timepoint()`.
+- After a time change, later blocks continue from the new time. They do not fall back to the wall clock.
+- Blocks never move backward. A timepoint earlier than the chain tip's returns `-32602`.
+- A contract view sees a new time only after a block exists at that time, so produce one after `dev_increaseTime`.
+
+For example, move 30 days ahead and make the new time visible:
+
+```bash
+curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"dev_increaseTime","params":{"nanoseconds":"2592000000000000"}}'
+curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":2,"method":"dev_produceBlock","params":{}}'
+```
+
+:::note
+Contract views run at the later of the wall clock and the tip's time from hog-devnode `VERSION-TBD`. With hog-devnode 0.1.34 and earlier, views use the wall clock, so a view does not see a block time ahead of it.
+:::
+
+The [JSON-RPC reference](/reference/json-rpc-api/#block-and-time-methods) lists the parameters and results. In Rust, [testkit](/contracts/testing/#testkit) wraps these methods on `Network`.
+
 ## Runtime selection
 
 The CLI selects a default from its bundled runtime catalog. See [local runtime setup](/cli/install/#set-up-the-local-runtime) to inspect and install managed runtimes.

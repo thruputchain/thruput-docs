@@ -5,7 +5,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 
 | API property | Value |
 | --- | --- |
-| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail |
+| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.5.0` (tools `VERSION-TBD`) adds the local [block and time methods](#block-and-time-methods) |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
@@ -409,6 +409,64 @@ Local node only.
 
 Local node only. **Parameters:** None. **Returns:** `{ "count": "0" }`, the local scheduler's pending count as a decimal string.
 
+## Block and Time Methods
+
+Local node only, in every block driver mode. Timepoints are Unix nanoseconds, the value contracts read with `get_block_timepoint()`. After a time change, later blocks continue from the new time. A timepoint earlier than the chain tip's returns `-32602`. For usage, see [Control blocks and time](/cli/local-node/#control-blocks-and-time).
+
+### `dev_produceBlock`
+
+Produce one block now. It can be empty.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `blockTimepoint` | decimal string, optional | Exact time for this block, at or after the tip's. Later blocks continue from it |
+
+**Returns:** `{ blockHeight, blockTimepoint }`.
+
+### `dev_produceBlocks`
+
+Produce several blocks now, in height order. On error, blocks already produced stay committed.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `count` | number | Number of blocks, from 1 to 1000 |
+| `intervalNanoseconds` | decimal string, optional | Exact spacing after the first block. Without it, each block follows the block clock |
+
+**Returns:** `{ blocks: [{ blockHeight, blockTimepoint }] }`, lowest height first.
+
+### `dev_setNextBlockTimepoint`
+
+Set the exact time of the next block. Later blocks continue from it. Time added with `dev_increaseTime` afterwards applies to the blocks after the next one.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `blockTimepoint` | decimal string | At or after the tip's timepoint |
+
+**Returns:** `{ nextBlockTimepoint }`.
+
+### `dev_increaseTime`
+
+Move the block clock forward for every later block. Produces no block, so a contract view sees the new time only after the next block.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `nanoseconds` | decimal string | Time to add |
+
+**Returns:** `{ nextBlockTimepoint }`, the time the next block receives if it is produced now.
+
+### `dev_setBlockDriver`
+
+Change how the node produces blocks while it runs. Switching to `instant` mines transactions that are already pending.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | string | `instant`, `interval`, or `manual` |
+| `intervalMilliseconds` | decimal string, optional | Replaces the interval for `interval` mode; positive |
+
+**Returns:** `{ mode, intervalMilliseconds }`.
+
+A block or time request that runs past its deadline returns `-32051`; its outcome may be unknown, so check the chain tip before you retry.
+
 ## Method Availability
 
 | Methods | Registered when the endpoint has |
@@ -422,6 +480,7 @@ Local node only. **Parameters:** None. **Returns:** `{ "count": "0" }`, the loca
 | `faucet_requestAirdrop` | Hosted faucet, or local node funding |
 | `dev_fundAccount` | Local node funding |
 | `dev_getPendingTransactionCount` | Local node only |
+| `dev_produceBlock`, `dev_produceBlocks`, `dev_setNextBlockTimepoint`, `dev_increaseTime`, `dev_setBlockDriver` | Local node only |
 
 A configured backend that is down returns a backend error. It does not remove the method.
 

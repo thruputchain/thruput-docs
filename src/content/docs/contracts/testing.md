@@ -146,7 +146,7 @@ The `try_decrement` method (generated alongside `decrement` by the `#[contract]`
 
 Each `env.transact` call runs in the current block. Transactions in the same block read the previous block's committed state and do not see each other's writes. Call `env.advance_block()` to commit the block and make its effects visible.
 
-Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. After pinning a future time, use `advance_block_at` for subsequent blocks until the wall clock catches up; `advance_block()` panics before then.
+Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. From SDK `VERSION-TBD`, each later `advance_block()` continues from the pinned time plus the elapsed wall-clock time, as a [local node](/cli/local-node/#control-blocks-and-time) does. With earlier SDKs, `advance_block()` panics after a future pin until the wall clock catches up, so keep using `advance_block_at`.
 
 Use same-block transactions to test merges and exclusion:
 
@@ -276,6 +276,17 @@ Other features:
   ctx.network().produce_block().await?;
   first.await_receipt().await?;
   second.await_receipt().await?;
+  ```
+
+- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit `VERSION-TBD`.
+
+  ```rust
+  use std::time::Duration;
+
+  // Thirty days pass; an empty block makes the new time visible to views.
+  ctx.network().increase_time(Duration::from_hours(30 * 24)).await?;
+  let block = ctx.network().produce_block().await?;
+  println!("block {} at {} ns", block.height, *block.timepoint);
   ```
 
 - **Uncertain submissions.** Testkit never resends a transaction. When a submission's outcome is uncertain, the error keeps the original transaction hash and signed bytes for reconciliation.

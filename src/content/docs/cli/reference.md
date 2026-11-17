@@ -67,6 +67,8 @@ description: Thruput CLI commands, common options, and links to task instruction
 | `node --data-dir PATH` | Preserve chain state | [Persistent state](/cli/local-node/#preserve-state) |
 | `node --port PORT` / `--host ADDRESS` | Configure the public listener | [Endpoint and logging](/cli/local-node/#change-the-endpoint-or-logging) |
 | `node --verbose` | Forward node diagnostics | [Troubleshooting](/cli/troubleshooting/) |
+| `node --block-driver MODE` | Produce blocks per submission (`instant`, default), on a timer (`interval`), or on request (`manual`) | [Control blocks and time](/cli/local-node/#control-blocks-and-time) |
+| `node --block-interval-ms MS` | Set the timer for `--block-driver interval` | [Control blocks and time](/cli/local-node/#control-blocks-and-time) |
 | `node --network-config NAME=VALUE` | Override a supported genesis parameter | Repeatable; preserve settings when reopening a data directory |
 | `node --key NAME` / `--initial-account-tokens AMOUNT` | Fund a stored key on a fresh chain | Default: the selected key and 100 native tokens |
 | `node --bootstrap-accounts FILE` | Fund fixture-owned public keys at genesis | JSON array; cannot be combined with `--key` or `--initial-account-tokens` |
