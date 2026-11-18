@@ -146,7 +146,7 @@ The `try_decrement` method (generated alongside `decrement` by the `#[contract]`
 
 Each `env.transact` call runs in the current block. Transactions in the same block read the previous block's committed state and do not see each other's writes. Call `env.advance_block()` to commit the block and make its effects visible.
 
-Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. From SDK `VERSION-TBD`, each later `advance_block()` continues from the pinned time plus the elapsed wall-clock time, as a [local node](/cli/local-node/#control-blocks-and-time) does. With earlier SDKs, `advance_block()` panics after a future pin until the wall clock catches up, so keep using `advance_block_at`.
+Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. From SDK 0.61.3, each later `advance_block()` continues from the pinned time plus the elapsed wall-clock time, as a [local node](/cli/local-node/#control-blocks-and-time) does. With earlier SDKs, `advance_block()` panics after a future pin until the wall clock catches up, so keep using `advance_block_at`.
 
 Use same-block transactions to test merges and exclusion:
 
@@ -278,7 +278,7 @@ Other features:
   second.await_receipt().await?;
   ```
 
-- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit `VERSION-TBD`.
+- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit 0.46.0.
 
   ```rust
   use std::time::Duration;

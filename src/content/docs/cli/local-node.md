@@ -66,7 +66,7 @@ The public listener binds to loopback by default. `--host` changes that listener
 
 ## Control blocks and time
 
-Contracts that depend on time, such as vesting, expiry, auctions, and interest, need days of chain time in a test that runs for seconds. A local node can produce blocks on request and move block time forward. These controls need thruput CLI `VERSION-TBD` or later.
+Contracts that depend on time, such as vesting, expiry, auctions, and interest, need days of chain time in a test that runs for seconds. A local node can produce blocks on request and move block time forward. These controls need thruput CLI 0.46.0 or later.
 
 `--block-driver` selects how the node produces blocks:
 
@@ -107,7 +107,7 @@ curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
 ```
 
 :::note
-Contract views run at the later of the wall clock and the tip's time from hog-devnode `VERSION-TBD`. With hog-devnode 0.1.34 and earlier, views use the wall clock, so a view does not see a block time ahead of it.
+Contract views run at the later of the wall clock and the tip's time from hog-devnode 0.1.35, the default runtime from thruput CLI 0.46.1. With hog-devnode 0.1.34 and earlier, views use the wall clock, so a view does not see a block time ahead of it.
 :::
 
 The [JSON-RPC reference](/reference/json-rpc-api/#block-and-time-methods) lists the parameters and results. In Rust, [testkit](/contracts/testing/#testkit) wraps these methods on `Network`.
