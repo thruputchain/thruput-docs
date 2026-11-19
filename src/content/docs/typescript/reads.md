@@ -60,7 +60,7 @@ export async function readBalanceAtLeast(ownerText: string, minStateBlockHeight:
 
 `minStateBlockHeight` is an optional nonnegative `bigint` freshness floor, not an exact historical height. The same option works with generated `.view()`, `.viewOutcome()`, bound views, and raw `client.simulateInvocation()`. Omit it for an unconstrained read.
 
-A backend whose selected snapshot is behind returns error `-32012` (`NativeRpcErrorCode.StateHeightUnavailable`). Its `data.kind` is `stateHeightUnavailable`, with `requestedStateBlockHeight` and `observedStateBlockHeight`. The request does not wait for a block or force a refresh, and the client does not poll or retry it. Keep the confirmed receipt and decide when to retry the read; this error is not a reason to repeat the write.
+A backend whose selected snapshot is behind returns error `-32012` (`NativeRpcErrorCode.StateHeightUnavailable`). Its `data.kind` is `stateHeightUnavailable`, with `requestedStateBlockHeight` and `observedStateBlockHeight`. From wire 14.6.1 (thruput CLI 0.46.0), when the floor is at or below the committed tip, the server first waits up to 2 s for its view to catch up. A floor above the committed tip, or an older server, fails at once. The client does not poll or retry. Keep the confirmed receipt and decide when to retry the read; this error is not a reason to repeat the write.
 
 ## Read related values from one snapshot
 

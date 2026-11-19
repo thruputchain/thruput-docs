@@ -19,7 +19,7 @@ New projects use the public npm registry without additional configuration. If yo
 
 Keep unrelated registry settings and credentials. If an existing lockfile still resolves `@thruputchain` packages through GitHub Packages, update those resolutions before using it for a clean install.
 
-These pages use `@thruputchain/client` 0.25.0 with `@thruputchain/protocol` 0.19.1. Install those versions and keep the generated lockfile.
+These pages use `@thruputchain/client` 0.27.0 with `@thruputchain/protocol` 0.20.0. Install those versions and keep the generated lockfile.
 
 ## Install the TypeScript client
 
@@ -28,7 +28,7 @@ In a new application directory:
 ```bash
 npm init -y
 npm pkg set type=module
-npm install --save-exact @thruputchain/client@0.25.0 @thruputchain/protocol@0.19.1
+npm install --save-exact @thruputchain/client@0.27.0 @thruputchain/protocol@0.20.0
 npm install --save-dev typescript tsx @types/node
 mkdir -p src
 ```

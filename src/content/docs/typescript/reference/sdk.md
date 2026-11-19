@@ -127,7 +127,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `method.viewRequest({ address, args?, caller?, assumedAuth? })` | Prepare a typed read without I/O; arguments follow the method's generated types |
 | `client.readViews({ calls, minStateBlockHeight? }, options?)` | Tuple-typed outcomes in input order at one shared `stateBlockHeight`; no splitting or separate-read fallback |
 | `client.simulateInvocation(request, options?)` / `client.simulateInvocations({ invocations, minStateBlockHeight? }, options?)` | Raw single/grouped simulations; `minStateBlockHeight` goes on the single request or whole group |
-| `minStateBlockHeight` | Optional nonnegative `bigint` freshness floor; no waiting, forced refresh, or automatic client retry |
+| `minStateBlockHeight` | Optional nonnegative `bigint` freshness floor. The client does not wait or retry; from wire 14.6.1 the server waits up to 2 s for a committed floor |
 | `assumedAuth` | Protocol `AuthClaim`, such as `account.authClaim`; simulation does not verify signatures |
 | `(await client.getServerLimits()).simulationBatch` | Optional advertised batch limits; required for grouped reads |
 | `NativeRpcErrorCode.StateHeightUnavailable` (`-32012`) | RPC freshness error with `requestedStateBlockHeight` and `observedStateBlockHeight`; not a contract outcome |
