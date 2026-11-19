@@ -5,7 +5,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 
 | API property | Value |
 | --- | --- |
-| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` (tools `0.46.0`) adds the local [block and time methods](#block-and-time-methods) |
+| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` adds the local [block and time methods](#block-and-time-methods); `14.6.1` (tools `0.46.0`) waits for a committed `minStateBlockHeight` |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
@@ -267,14 +267,14 @@ No signature is verified. Contract checks still run, and writes never commit. Om
 | `output` | `{ "result": "return", "returnData" }`, `{ "result": "abort", "abortData" }`, or `{ "result": "fault" }` |
 | `events` | Events emitted during the simulation |
 | `gasUsed` | Decimal string. Equals the selected limit on an out-of-gas fault |
-| Snapshot below `minStateBlockHeight` | `-32012` with `requestedStateBlockHeight` and `observedStateBlockHeight`; no wait or refresh |
+| Snapshot below `minStateBlockHeight` | From wire `14.6.1`, the server waits up to 2 s for a floor at or below the committed tip, then returns `-32012` with `requestedStateBlockHeight` and `observedStateBlockHeight`. A floor above the tip, or an older server, fails at once |
 
 ### `simulateInvocations`
 
 | Parameter | Contract |
 | --- | --- |
 | `invocations` | Nonempty array. Each entry takes `address`, `entrypoint`, `calldata`, and optional `caller`, `assumedAuth`, `gasLimit` |
-| `minStateBlockHeight` | Optional floor for the whole group. A per-entry floor is rejected |
+| `minStateBlockHeight` | Optional floor for the whole group, with the same wait as `simulateInvocation`. A per-entry floor is rejected |
 
 | Response field or case | Contract |
 | --- | --- |

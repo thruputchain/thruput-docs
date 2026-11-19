@@ -95,7 +95,7 @@ Block time follows these rules:
 - Timepoints are Unix nanoseconds as decimal strings, the value contracts read with `get_block_timepoint()`.
 - After a time change, later blocks continue from the new time. They do not fall back to the wall clock.
 - Blocks never move backward. A timepoint earlier than the chain tip's returns `-32602`.
-- A contract view sees a new time only after a block exists at that time, so produce one after `dev_increaseTime`.
+- A contract view sees a new time only after a block exists at that time, so produce one after `dev_increaseTime`. This needs hog-devnode 0.1.35 or later; see the note below.
 
 For example, move 30 days ahead and make the new time visible:
 
@@ -109,6 +109,23 @@ curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
 :::note
 Contract views run at the later of the wall clock and the tip's time from hog-devnode 0.1.35, the default runtime from thruput CLI 0.46.1. With hog-devnode 0.1.34 and earlier, views use the wall clock, so a view does not see a block time ahead of it.
 :::
+
+From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client. Timepoints and durations are `bigint` nanoseconds:
+
+```ts
+import { createRpcClient, HttpTransport } from "@thruputchain/client";
+
+const rpc = await createRpcClient({
+  transport: new HttpTransport("http://127.0.0.1:9545"),
+  requiredMethods: ["dev_increaseTime", "dev_produceBlock"],
+});
+const thirtyDays = 30n * 24n * 60n * 60n * 1_000_000_000n;
+await rpc.dev_increaseTime({ nanoseconds: thirtyDays });
+const block = await rpc.dev_produceBlock();
+console.log(block.blockHeight, block.blockTimepoint);
+```
+
+`requiredMethods` makes client creation fail with `RpcCompatibilityError` when the endpoint does not serve the methods, for example on a hosted network.
 
 The [JSON-RPC reference](/reference/json-rpc-api/#block-and-time-methods) lists the parameters and results. In Rust, [testkit](/contracts/testing/#testkit) wraps these methods on `Network`.
 
