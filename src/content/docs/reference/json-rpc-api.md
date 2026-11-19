@@ -465,7 +465,11 @@ Change how the node produces blocks while it runs. Switching to `instant` mines 
 
 **Returns:** `{ mode, intervalMilliseconds }`.
 
-A block or time request that runs past its deadline returns `-32051`; its outcome may be unknown, so check the chain tip before you retry.
+A request that runs past its deadline returns `-32051`, and its outcome may be unknown:
+
+- `dev_produceBlock` and `dev_produceBlocks`: check the chain tip before you retry.
+- `dev_increaseTime`: do not repeat it, because the chain tip does not show whether it took effect and a repeat can add the time twice. Call `dev_increaseTime` with `"0"`, which returns `nextBlockTimepoint` without moving the clock, or set an absolute time with `dev_setNextBlockTimepoint`.
+- `dev_setNextBlockTimepoint` and `dev_setBlockDriver` set absolute values, so you can repeat them.
 
 ## Method Availability
 
