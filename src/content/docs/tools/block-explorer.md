@@ -18,14 +18,19 @@ The home page also lists recent native-token transfers. Select a transaction to 
 The transaction page shows:
 
 - Transaction status and, once committed, block height and execution result.
-- Receipt events, including decoded token transfers, mints, and burns where supported.
-- Raw receipt data for debugging.
+- The called method and its arguments, when the node keeps the input and the contract has a spec.
+- Receipt events, decoded with the contract's spec where available, including token transfers, mints, and burns.
+- Raw input and receipt data for debugging.
 
 Events without a supported decoder appear as raw topics and data.
+
+Calls made through a wallet show what the transaction requested, not whether each call succeeded. Decoding uses the contract's current spec, which may differ from the code that ran at the time.
 
 ### Addresses and Tokens
 
 The address page shows the native-token balance. For non-token addresses, it also shows recent transactions and sent or received native-token transfers. Recognized token contracts show token metadata and token transfer history. Other contracts can show their emitted events.
+
+For contracts, the address page shows the contract hash and, when the contract has an embedded spec, its methods, events, errors, and types. Native contracts have no embedded spec.
 
 Address transaction history combines transactions whose root invocation targets the address with native-token transfer activity. It does not cover every nested invocation or every token transfer involving the address.
 

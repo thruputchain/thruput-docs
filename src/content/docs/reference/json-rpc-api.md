@@ -33,8 +33,8 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 
 | Value | JSON encoding |
 | --- | --- |
-| Addresses, transaction hashes, block and network hashes, config hashes, public keys, public-key hashes, validator IDs | Unprefixed, case-sensitive base58 (Bitcoin/Solana alphabet). Must decode to exactly 32 bytes. `0x` hex is rejected |
-| Signed transactions, calldata, entrypoints, return and abort data, storage keys and bytes, event topics and data, cursors, client nonces, upgrade entries | `0x`-prefixed lowercase hex with an even number of digits |
+| Addresses, transaction and contract hashes, block and network hashes, config hashes, public keys, public-key hashes, validator IDs | Unprefixed, case-sensitive base58 (Bitcoin/Solana alphabet). Must decode to exactly 32 bytes. `0x` hex is rejected |
+| Transaction and contract XDR, calldata, entrypoints, return and abort data, storage keys and bytes, event topics and data, cursors, client nonces, upgrade entries | `0x`-prefixed lowercase hex with an even number of digits |
 | 64-bit and wider integers: heights, nanosecond timestamps, gas, counts, balances, amounts | Canonical decimal string, including `"0"` |
 | Smaller bounded integers: protocol versions, page limits, event sequence numbers, key IDs, weights | JSON number |
 | Encoding choice | By field meaning, not byte length. A raw event topic stays hex even when its decoded value is an address or hash |
@@ -191,6 +191,19 @@ Indexed commitment takes priority. No negative status proves nonexecution, and a
 
 A receipt proves commitment. Only `execution.result: "return"` proves successful execution. `gasUsed` is metered work, not a fee: gas has no token cost and no refund.
 
+### `getTransactionInput`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `transactionHash` | base58 | Transaction hash |
+
+| `status` | Fields and meaning |
+| --- | --- |
+| `available` | `transactionHash`, `blockHeight` (decimal string), and `transactionXdr` (hex): retained committed input |
+| `unavailable` | No input can be served; does not prove nonexecution or nonexistence |
+
+The hash covers the `Transaction` XDR without signatures. Inputs larger than 4 MiB are not served. The input shows what the transaction requested, including child calls, not what ran. Use the receipt for the outcome.
+
 ## State Methods
 
 ### `getBalance`
@@ -239,6 +252,53 @@ A receipt proves commitment. Only `execution.result: "return"` proves successful
 | `signers[]` | `keyId`, `maxWeight`, and `publicKey`: `{ "scheme": "ed25519", "key": "<base58>" }` or `{ "scheme": "unknown", "schemeId": n }` |
 
 `null` does not prove that the account is absent. It does not recover the key of a pubkey-derived account.
+
+### `getContractDeployment`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `address` | base58 | Contract address |
+
+| Response field | Contract |
+| --- | --- |
+| `address`, `stateBlockHeight` | Echoed address and committed snapshot height |
+| `deployment` | `null` if no explicit deployment exists at this snapshot; otherwise `{ hash, size, contractType }` |
+| `deployment.hash` | Base58 hash of the complete canonical `Contract` XDR |
+| `deployment.size` | Artifact byte count as a JSON number; zero for native contracts |
+| `deployment.contractType` | Protocol contract-type discriminant as a JSON number |
+
+This returns the current deployment, which may differ from the code that ran in past transactions. To include the network's default root contract, use `getEffectiveContract`.
+
+### `getEffectiveContract`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `address` | base58 | Invocation target |
+| `context` | string | `root` or `nested` |
+
+| Response field | Contract |
+| --- | --- |
+| `address`, `context`, `stateBlockHeight` | Echoed inputs and committed snapshot height |
+| `selection` | `null` if no contract applies; otherwise `{ source, contract }` |
+| `selection.source` | `explicitDeployment` or `networkDefault` |
+| `selection.contract` | `{ hash, size, contractType }`, as in `getContractDeployment` |
+
+An explicit deployment takes precedence. Only root invocations use the network default. The result reflects committed state only and does not show whether a call is authorized.
+
+### `getContractArtifact`
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `hash` | base58 | Contract hash |
+
+| Response field | Contract |
+| --- | --- |
+| `hash` | Requested contract hash |
+| `contractXdr` | Complete canonical `Contract` XDR as hex, including the type tag and padding |
+
+Check `SHA256(contractXdr)` against the requested hash before reading the embedded spec. A match proves the bytes are correct, not that the contract is deployed. Unavailable artifacts return `-32014` (`contractArtifactUnavailable`), not `null`.
+
+Usage: [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) and [runtime spec discovery](/typescript/bindings/#read-a-deployed-spec).
 
 ## Simulation Methods
 
@@ -478,8 +538,8 @@ A request that runs past its deadline returns `-32051`, and its outcome may be u
 | `getVersionInfo`, `getNetworkInfo`, `getServerLimits` | Always |
 | `sendTransaction` | Scheduler |
 | `getTransactionStatus` | Scheduler and indexer |
-| `getTransactionReceipt`, `getEvents`, `getTransactionsByRootAddress`, `getBlockByHeight`, `getTransactionsByBlock` | Indexer |
-| `getChainTip`, `getChainConfig`, `getBalance`, `getStorage`, `getRegisteredAuth` | State database |
+| `getTransactionReceipt`, `getTransactionInput`, `getEvents`, `getTransactionsByRootAddress`, `getBlockByHeight`, `getTransactionsByBlock` | Indexer |
+| `getChainTip`, `getChainConfig`, `getBalance`, `getStorage`, `getRegisteredAuth`, `getContractDeployment`, `getEffectiveContract`, `getContractArtifact` | State database |
 | `simulateInvocation`, `simulateInvocations` | Simulation backend |
 | `faucet_requestAirdrop` | Hosted faucet, or local node funding |
 | `dev_fundAccount` | Local node funding |
@@ -499,6 +559,7 @@ Standard JSON-RPC 2.0 errors also apply, including `-32601` for unregistered met
 | `-32001` | `transactionRejected` | Expiry or scheduler authentication refusal for this attempt |
 | `-32012` | `stateHeightUnavailable` | Simulation snapshot below the requested floor |
 | `-32013` | `historyUnavailable` | Required history cannot be served |
+| `-32014` | `contractArtifactUnavailable` | Contract artifact cannot be served; `hash` identifies the requested artifact |
 | `-32030` | `fundingAttemptStopped` | Funding service stopped this attempt |
 | `-32031` | `localFundingUnresolved` | Local funding has signed evidence without a resolved outcome |
 | `-32050` | `backendUnavailable` | Required backend is unavailable |

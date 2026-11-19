@@ -58,6 +58,17 @@ Repeat `--init-arg` for additional arguments. The initializer sees the deploying
 
 Initialization is an ordinary contract method. The contract must enforce one-time initialization when its design requires it. The starter counter simply adds the supplied amount, so do not call it again after initializing this example.
 
+## Inspect a contract
+
+```bash
+thruput inspect my-counter --profile futurenet
+thruput inspect my-counter --profile futurenet --json
+```
+
+Pass an alias or address to see the contract's deployment details, methods, events, errors, and types. You do not need a local build or signing key. The CLI checks the downloaded artifact against its deployment hash. Add `--output counter.spec.json` to save the spec as JSON. This replaces an existing file.
+
+Native contracts, such as the native token, have no embedded spec. If the node cannot return the artifact, inspection fails; this does not mean the contract is missing. To generate bindings, see [code generation](/cli/codegen/#generate-from-a-deployed-contract).
+
 ## Submit a call
 
 For a counter that has been deployed and initialized:

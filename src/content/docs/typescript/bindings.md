@@ -9,9 +9,21 @@ Bindings describe a contract's API. The client runtime uses them to encode argum
 
 The client supplies standard bindings such as `ERC20` through `@thruputchain/client/contracts`. For a custom contract, obtain its generated `.ts` file, address, and network from the contract author.
 
-Generate a binding yourself only when you have its build or canonical spec. See [CLI code generation](/cli/codegen/) and [the contract-side handoff](/contracts/client-bindings/).
+Generate a binding from its build, exported spec, or deployed address. See [CLI code generation](/cli/codegen/) and [the contract-side handoff](/contracts/client-bindings/).
 
 Regenerate when methods, argument or return types, declared exceptions, or events change. Keep the generated file and deployment from the same interface build. Put application wrappers in separate files.
+
+## Read a deployed spec
+
+For tools that inspect contracts at runtime, `getContractSpec` from `@thruputchain/client/actions` retrieves the current deployment and verifies its artifact hash. It takes address bytes, so convert a base58 address first:
+
+```ts
+const result = await getContractSpec(client, { address: parseAddress(text) });
+```
+
+When `artifactSpec.kind` is `spec`, `artifactSpec.spec` contains the decoded spec. Use the codec and decoder helpers in `@thruputchain/client/contract` to work with it without generated bindings.
+
+If nothing is deployed, `deployment` and `artifactSpec` are `null`. Other `artifactSpec.kind` values identify native contracts, contracts without a spec, and unsupported formats. Unavailable or malformed artifacts throw. The result describes the current deployment, which may differ from the code that ran in past transactions.
 
 ## Select an Interface Version
 

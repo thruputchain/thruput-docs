@@ -49,9 +49,9 @@ use a scaffold's local overlay without a selected default. The name `default` ha
 
 ## Futurenet
 
-`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network` and `https://faucet.thruput.network`. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
+`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network`, and `init` records its network hash. Airdrops use the same endpoint. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
 
-The CLI validates the selected network before signing. An explicit `network-hash` pins the network identity. Without a pin, hosted native-account operations use the configured network descriptor and RPC identity. Do not copy a hash from a different deployment; a Futurenet reset can change the identity.
+Before signing, the CLI checks that the RPC endpoint serves the network in the profile's `network-hash`. Every profile needs this hash unless it uses a local runtime manifest. Without it, signing fails with `missing_network_hash`. If you upgraded from an older CLI, rerun `thruput init` to add the Futurenet hash. Do not copy a hash from a different deployment.
 
 `network = "devnet"` remains a compatibility alias for the hosted network.
 Existing Devnet profiles and saved wallets keep their names and settings.
@@ -94,16 +94,16 @@ thruput config set default-key alice --profile futurenet --project
 thruput config unset default-key --profile futurenet --project
 ```
 
-The second command removes the project override and reveals any inherited value. The editable fields are `network`, `rpc-url`, `network-hash`, `faucet-url`, and `default-key`. Use [wallet commands](/cli/wallets/) to select wallets and deployment commands to create contract aliases.
+The second command removes the project override and reveals any inherited value. The editable fields are `network`, `rpc-url`, `network-hash`, and `default-key`. Use [wallet commands](/cli/wallets/) to select wallets and deployment commands to create contract aliases.
 
 ## Add another endpoint
 
-Replace the example URLs with the RPC and faucet for the same deployment:
+Get the RPC URL and network hash from the network's operator. The hash catches a wrong endpoint, so do not read it from the endpoint itself:
 
 ```bash
 thruput config new staging --network futurenet \
   --rpc-url https://rpc.example.com \
-  --faucet-url https://faucet.example.com \
+  --network-hash NETWORK_HASH \
   --global
 ```
 

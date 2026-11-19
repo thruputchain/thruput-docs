@@ -10,10 +10,12 @@ For usage, see
 
 | Artifact | Purpose |
 | --- | --- |
-| `<crate>.spec.xdr` | Canonical contract API, consumed by standalone TypeScript codegen |
-| `<crate>.spec.json` | Human-readable rendering for inspection; not the codegen input |
-| `<crate>.rv32a` | Deployable RV32 artifact |
-| Generation | SDK macros emit fragments; build canonicalizes, sorts, validates, and writes sidecars under `target/thruput/` by default |
+| `<crate>.rv32a` | Deployable RV32 artifact containing the canonical spec; accepted by TypeScript codegen |
+| `<crate>.spec.xdr` | Binary export of the embedded spec; also accepted by TypeScript codegen |
+| `<crate>.spec.json` | Human-readable export for inspection; not a codegen input |
+| Generation | SDK macros emit fragments; build canonicalizes, sorts, validates, embeds the spec, and writes exports under `target/thruput/` by default |
+
+The contract hash covers the embedded spec and the rest of the artifact. [Contract inspection](/cli/deploy-and-call/#inspect-a-contract) reads the spec from the deployed contract, so no local files are needed. Native contracts have no embedded spec.
 
 ## Top-Level Structure
 
