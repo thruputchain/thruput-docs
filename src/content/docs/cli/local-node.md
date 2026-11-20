@@ -64,20 +64,7 @@ Choose logging before reproducing a problem: restarting an ephemeral node to ena
 
 The public listener binds to loopback by default. `--host` changes that listener for container or VM access; exposing it beyond loopback exposes an unauthenticated development RPC endpoint.
 
-## Call the node from a browser app
-
-From thruput CLI 0.47.0, `thruput node` answers CORS requests from every origin, as Anvil does. A browser app calls the local node directly, the same way it calls Futurenet, with no development proxy.
-
-```bash
-thruput node --allow-origin http://localhost:5173
-thruput node --no-cors
-```
-
-- `--allow-origin ORIGIN` allows only the listed origins. Repeat it for each origin.
-- `--no-cors` sends no CORS headers, so browsers block cross-origin calls.
-- These flags control HTTP only. The node does not check the origin of WebSocket connections.
-- Any web page you open can call a node that allows every origin, including its funding and `dev_` methods. The node logs a warning when it also binds beyond loopback.
-- Nodes that `thruput test --integration` and the Rust testkit start send no CORS headers.
+From thruput CLI 0.47.0, the listener allows CORS requests from any origin, so a browser app can call the node without a proxy. Any web page you open can then call it, including its funding and `dev_` methods. `--allow-origin ORIGIN` (repeatable) allows only the listed origins, and `--no-cors` turns CORS off. Both apply to HTTP only, not WebSocket connections.
 
 ## Control blocks and time
 
@@ -103,7 +90,7 @@ In every mode, these local-only JSON-RPC methods control blocks and block time. 
 | `dev_produceBlocks` | `anvil_mine` | Produce 1 to 1000 blocks, optionally `intervalNanoseconds` apart |
 | `dev_setNextBlockTimepoint` | `evm_setNextBlockTimestamp` | Set the time of the next block |
 | `dev_increaseTime` | `evm_increaseTime` | Move the clock forward for every later block. Produces no block |
-| `dev_setBlockTimeStep` | `anvil_setBlockTimestampInterval` | Give each block without a pinned time its parent's time plus a fixed step. A step of `0` freezes the clock |
+| `dev_setBlockTimeStep` | `anvil_setBlockTimestampInterval` | Step each later block from its parent's time instead of the wall clock. A step of `0` freezes the clock |
 | `dev_setBlockDriver` | `evm_setAutomine` | Change the block driver mode. Switching to `instant` mines pending transactions |
 
 Block time follows these rules:
@@ -111,7 +98,7 @@ Block time follows these rules:
 - Timepoints are Unix nanoseconds as decimal strings, the value contracts read with `get_block_timepoint()`.
 - After a time change, later blocks continue from the new time. They do not fall back to the wall clock.
 - Blocks never move backward. A timepoint earlier than the chain tip's returns `-32602`.
-- A contract view runs at the time the next block would get. A pinned, increased, stepped, or frozen time applies to views at once, before any block. This needs thruput CLI 0.47.0 or later; see the note below.
+- A contract view runs at the time the next block would get, so it sees a time change at once. This needs thruput CLI 0.47.0 or later; see the note below.
 
 For example, move 30 days ahead and produce a block at the new time:
 
@@ -122,30 +109,13 @@ curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
   -d '{"jsonrpc":"2.0","id":2,"method":"dev_produceBlock","params":{}}'
 ```
 
-### Freeze or step the clock
-
-By default, a block without a pinned time takes the wall clock. A fixed step makes block time deterministic: each such block gets its parent's time plus the step. A step of 0 freezes the clock, so every block carries the same time until the next pin or time increase.
-
-```bash
-thruput node --block-time-step-ms 0
-```
-
-Or set the step on a running node. `{}` clears it, and the clock continues from the tip's time:
-
-```bash
-curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
-  -d '{"jsonrpc":"2.0","id":1,"method":"dev_setBlockTimeStep","params":{"stepNanoseconds":"0"}}'
-```
-
-A simulation that runs in ticks can freeze the clock once, then pin each tick's time with `dev_setNextBlockTimepoint`. Every transaction in the tick, and every contract view, then sees exactly the tick's time. The chain can start in the past: on a fresh chain, pin the first time before any other transaction.
-
-On a fresh chain, the first block still takes the wall clock unless you pin its time.
+To make block time deterministic, start the node with `--block-time-step-ms`. Each block without a pinned time then gets its parent's time plus the step, and `0` freezes the clock until the next time change. `dev_setBlockTimeStep` changes the step on a running node.
 
 :::note
-Contract views run at the time the next block would get from thruput CLI 0.47.0, with hog-devnode 0.1.36. With CLI 0.46.1 and hog-devnode 0.1.35, views run at the later of the wall clock and the tip's time, so a view on a chain dated in the past sees today's date. Earlier runtimes use the wall clock for views.
+Before thruput CLI 0.47.0, contract views ran at the later of the wall clock and the tip's time, so a chain dated in the past showed today's date in views.
 :::
 
-From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client, and 0.28.0 adds `dev_setBlockTimeStep`. Timepoints and durations are `bigint` nanoseconds:
+From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client. Timepoints and durations are `bigint` nanoseconds:
 
 ```ts
 import { createRpcClient, HttpTransport } from "@thruputchain/client";

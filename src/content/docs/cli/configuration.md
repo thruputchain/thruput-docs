@@ -49,9 +49,9 @@ use a scaffold's local overlay without a selected default. The name `default` ha
 
 ## Futurenet
 
-`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network` and `https://faucet.thruput.network`. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
+`thruput init` creates `local` and `futurenet`, with `local` as the initial default. Futurenet uses `https://rpc.thruput.network`. Initialization preserves existing defaults and custom profile fields. For a first funded account, follow the [CLI quickstart](/get-started/cli/).
 
-The CLI validates the selected network before signing. A profile's `network-hash` pins the network identity, and the CLI checks the RPC endpoint against it. Every hosted profile needs one: without it, signing commands fail with `missing_network_hash`. A local profile takes the hash from the node's runtime manifest. `thruput init` adds the built-in Futurenet pin to a `futurenet` profile that uses the built-in RPC URL. Do not copy a hash from a different deployment; a Futurenet reset can change the identity.
+The CLI validates the selected network before signing. A profile's `network-hash` pins the network identity. Hosted profiles need one, or signing commands fail with `missing_network_hash`; local profiles read it from the node's runtime manifest. Do not copy a hash from a different deployment; a Futurenet reset can change the identity.
 
 `network = "devnet"` remains a compatibility alias for the hosted network.
 Existing Devnet profiles and saved wallets keep their names and settings.
@@ -98,7 +98,7 @@ The second command removes the project override and reveals any inherited value.
 
 ## Add another endpoint
 
-Replace the example URL and hash with the RPC endpoint and network hash of the same deployment:
+Replace the example URL and hash with those of the deployment:
 
 ```bash
 thruput config new staging --network futurenet \
@@ -106,7 +106,5 @@ thruput config new staging --network futurenet \
   --network-hash NETWORK_HASH \
   --global
 ```
-
-Airdrops on a hosted profile go to the RPC endpoint's faucet method.
 
 Use `config new` to create a profile in a layer before changing its fields there. `config rm staging --global` removes that layer's profile, including its saved aliases and wallet bindings. It does not delete onchain state.

@@ -261,7 +261,7 @@ A receipt proves commitment. Only `execution.result: "return"` proves successful
 
 No signature is verified. Contract checks still run, and writes never commit. Omission supplies a zero-key, zero-weight source-address claim.
 
-A view runs at a block time the server chooses, the value the contract reads with `get_block_timepoint()`. From thruput CLI 0.47.0, a local node uses the time the next block would get, so the [block clock controls](#block-and-time-methods) apply to views. A hosted gateway uses its wall clock.
+The block time a view reads with `get_block_timepoint()` is the gateway's wall clock. From thruput CLI 0.47.0, a local node uses the time the next block would get.
 
 | Response field or case | Contract |
 | --- | --- |
@@ -458,11 +458,11 @@ Move the block clock forward for every later block. Produces no block. From thru
 
 ### `dev_setBlockTimeStep`
 
-Give each later block without a pinned time its parent's time plus a fixed step, instead of the wall clock. A step of `"0"` freezes the clock: every block carries the same time until the next pin or time increase. Pins, `dev_increaseTime`, and `dev_produceBlocks` with `intervalNanoseconds` work as before. While the chain tip is one of a fresh chain's initial blocks, the next block still takes the wall clock. Requires thruput CLI 0.47.0; `thruput node --block-time-step-ms` sets the same step at startup.
+Give each later block without a pinned time its parent's time plus a fixed step, instead of the wall clock. `"0"` freezes the clock until the next time change. On a fresh chain, the first block still takes the wall clock. Requires thruput CLI 0.47.0.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `stepNanoseconds` | decimal string, optional | The step. Omit it (`{}`) to follow the wall clock again, continuing from the tip's time |
+| `stepNanoseconds` | decimal string, optional | The step. Omit it to return to the wall clock |
 
 **Returns:** `{ stepNanoseconds, nextBlockTimepoint }`. `stepNanoseconds` is absent when no step is set.
 

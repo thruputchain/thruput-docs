@@ -148,7 +148,7 @@ Each `env.transact` call runs in the current block. Transactions in the same blo
 
 Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. From SDK 0.61.3, each later `advance_block()` continues from the pinned time plus the elapsed wall-clock time, as a [local node](/cli/local-node/#control-blocks-and-time) does. With earlier SDKs, `advance_block()` panics after a future pin until the wall clock catches up, so keep using `advance_block_at`.
 
-From SDK 0.62.0, `env.set_block_time_step(Some(step))` gives each `advance_block()` the previous block's time plus `step` instead of the wall clock, as `thruput node --block-time-step-ms` does. `Some(Duration::ZERO)` freezes the clock until the next `advance_block_at`, and `None` follows the wall clock again, continuing from the last block. With nothing pinned, the first block after you set a step takes the wall clock, and later blocks step from it.
+From SDK 0.62.0, `env.set_block_time_step(Some(step))` gives each `advance_block()` the previous block's time plus `step`, as `thruput node --block-time-step-ms` does. `Some(Duration::ZERO)` freezes the clock until the next `advance_block_at`, and `None` returns to the wall clock.
 
 Use same-block transactions to test merges and exclusion:
 
@@ -280,18 +280,18 @@ Other features:
   second.await_receipt().await?;
   ```
 
-- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, `set_block_time_step` sets a fixed step between blocks (testkit 0.47.0), and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit 0.46.0.
+- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, `set_block_time_step` sets a fixed step between blocks, and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit 0.46.0.
 
   ```rust
   use std::time::Duration;
 
-  // Thirty days pass, and an empty block records the new time on chain.
+  // Move thirty days ahead, then produce an empty block.
   ctx.network().increase_time(Duration::from_hours(30 * 24)).await?;
   let block = ctx.network().produce_block().await?;
   println!("block {} at {} ns", block.height, *block.timepoint);
   ```
 
-- **Reads after a block.** From testkit 0.47.0, a contract read (`Network::view_call`, or a typed proxy's `simulate()` or read-only call) runs on a state at least as new as the highest block the test has seen, from a receipt or a produced block. A read right after `produce_block` or a receipt sees that block's time and state.
+- **Reads after a block.** From testkit 0.47.0, contract reads run on state at least as new as the latest block the test has seen, from a receipt or `produce_block`.
 - **Uncertain submissions.** Testkit never resends a transaction. When a submission's outcome is uncertain, the error keeps the original transaction hash and signed bytes for reconciliation.
 - **Coordination.** Agents exchange XDR-encoded messages with `ctx.send` and `ctx.recv_from`, share a virtual clock (`ctx.clock()`), and draw from a deterministic per-agent random number generator (`ctx.rng()`).
 - **Calls by name.** Without an interface crate, `Contract::new(address, "Counter", "0.1.0")` calls methods by name.
