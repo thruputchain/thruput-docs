@@ -18,8 +18,8 @@ The Rust traits retain the names `ReadXDR` and `WriteXDR` for both encodings. Us
 
 | Source baseline | Value |
 | --- | --- |
-| Rust protocol package | `thruput-xdr` `0.61.0` |
-| Embedded protocol revision | `hogp/6705996afff00a0` |
+| Rust protocol package | `thruput-xdr` `0.67.0` |
+| Embedded protocol revision | `hogp/a28763804e9b136` |
 
 | Definition | Types |
 | --- | --- |

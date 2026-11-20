@@ -5,7 +5,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 
 | API property | Value |
 | --- | --- |
-| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` adds the local [block and time methods](#block-and-time-methods); `14.6.1` (tools `0.46.0`) waits for a committed `minStateBlockHeight` |
+| Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` adds the local [block and time methods](#block-and-time-methods); `14.6.1` (tools `0.46.0`) waits for a committed `minStateBlockHeight`; `14.7.0` (tools `0.47.0`) adds `dev_setBlockTimeStep` |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
 | Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
@@ -261,6 +261,8 @@ A receipt proves commitment. Only `execution.result: "return"` proves successful
 
 No signature is verified. Contract checks still run, and writes never commit. Omission supplies a zero-key, zero-weight source-address claim.
 
+A view runs at a block time the server chooses, the value the contract reads with `get_block_timepoint()`. From thruput CLI 0.47.0, a local node uses the time the next block would get, so the [block clock controls](#block-and-time-methods) apply to views. A hosted gateway uses its wall clock.
+
 | Response field or case | Contract |
 | --- | --- |
 | `stateBlockHeight` | Committed state height H. Execution uses context H+1 |
@@ -446,13 +448,23 @@ Set the exact time of the next block. Later blocks continue from it. Time added 
 
 ### `dev_increaseTime`
 
-Move the block clock forward for every later block. Produces no block, so a contract view sees the new time only after the next block.
+Move the block clock forward for every later block. Produces no block. From thruput CLI 0.47.0, contract views see the new time at once.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `nanoseconds` | decimal string | Time to add |
 
 **Returns:** `{ nextBlockTimepoint }`, the time the next block receives if it is produced now.
+
+### `dev_setBlockTimeStep`
+
+Give each later block without a pinned time its parent's time plus a fixed step, instead of the wall clock. A step of `"0"` freezes the clock: every block carries the same time until the next pin or time increase. Pins, `dev_increaseTime`, and `dev_produceBlocks` with `intervalNanoseconds` work as before. While the chain tip is one of a fresh chain's initial blocks, the next block still takes the wall clock. Requires thruput CLI 0.47.0; `thruput node --block-time-step-ms` sets the same step at startup.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `stepNanoseconds` | decimal string, optional | The step. Omit it (`{}`) to follow the wall clock again, continuing from the tip's time |
+
+**Returns:** `{ stepNanoseconds, nextBlockTimepoint }`. `stepNanoseconds` is absent when no step is set.
 
 ### `dev_setBlockDriver`
 
@@ -469,7 +481,7 @@ A request that runs past its deadline returns `-32051`, and its outcome may be u
 
 - `dev_produceBlock` and `dev_produceBlocks`: check the chain tip before you retry.
 - `dev_increaseTime`: do not repeat it, because the chain tip does not show whether it took effect and a repeat can add the time twice. Call `dev_increaseTime` with `"0"`, which returns `nextBlockTimepoint` without moving the clock, or set an absolute time with `dev_setNextBlockTimepoint`.
-- `dev_setNextBlockTimepoint` and `dev_setBlockDriver` set absolute values, so you can repeat them.
+- `dev_setNextBlockTimepoint`, `dev_setBlockTimeStep`, and `dev_setBlockDriver` set absolute values, so you can repeat them.
 
 ## Method Availability
 

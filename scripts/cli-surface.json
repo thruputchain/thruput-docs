@@ -1,5 +1,5 @@
 {
-  "cli": "thruput 0.42.0 (commit e422d971)",
+  "cli": "thruput 0.46.1 (commit unavailable)",
   "commands": {
     "": {
       "subcommands": {
@@ -20,6 +20,7 @@
         "balance": [],
         "view": [],
         "storage": [],
+        "inspect": [],
         "node": [],
         "chain": [],
         "keys": [],
@@ -509,11 +510,37 @@
         "--runtime-manifest"
       ]
     },
+    "inspect": {
+      "subcommands": {},
+      "flags": [
+        "--help",
+        "--json",
+        "--no-ui",
+        "--non-interactive",
+        "--offline",
+        "--output",
+        "--profile",
+        "--quiet",
+        "--rpc-url",
+        "--runtime-manifest",
+        "--show-cargo-commands",
+        "-h",
+        "-q"
+      ],
+      "values": [
+        "--output",
+        "--profile",
+        "--rpc-url",
+        "--runtime-manifest"
+      ]
+    },
     "node": {
       "subcommands": {},
       "flags": [
+        "--allow-origin",
         "--block-driver",
         "--block-interval-ms",
+        "--block-time-step-ms",
         "--bootstrap-accounts",
         "--contract-artifacts-dir",
         "--data-dir",
@@ -527,6 +554,7 @@
         "--json",
         "--key",
         "--network-config",
+        "--no-cors",
         "--no-ui",
         "--non-interactive",
         "--offline",
@@ -542,8 +570,10 @@
         "-v"
       ],
       "values": [
+        "--allow-origin",
         "--block-driver",
         "--block-interval-ms",
+        "--block-time-step-ms",
         "--bootstrap-accounts",
         "--contract-artifacts-dir",
         "--data-dir",
@@ -899,7 +929,6 @@
       "subcommands": {},
       "flags": [
         "--default-key",
-        "--faucet-url",
         "--global",
         "--help",
         "--json",
@@ -918,7 +947,6 @@
       ],
       "values": [
         "--default-key",
-        "--faucet-url",
         "--network",
         "--network-hash",
         "--rpc-url"
@@ -1323,20 +1351,26 @@
     "codegen ts": {
       "subcommands": {},
       "flags": [
+        "--address",
         "--help",
         "--json",
         "--no-ui",
         "--non-interactive",
         "--offline",
         "--output",
+        "--profile",
         "--quiet",
+        "--rpc-url",
         "--show-cargo-commands",
         "-h",
         "-o",
         "-q"
       ],
       "values": [
+        "--address",
         "--output",
+        "--profile",
+        "--rpc-url",
         "-o"
       ]
     },
