@@ -23,9 +23,9 @@ The Rust traits retain the names `ReadXDR` and `WriteXDR` for both encodings. Us
 
 | Definition | Types |
 | --- | --- |
-| [transaction.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/transaction.x) | `Invocation`, `Transaction`, `SignedTransaction`, invocation outputs |
-| [types.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/types.x) | Addresses, hashes, signatures, protocol scalar types |
-| [storage_item.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/storage_item.x) | Storage items and deltas |
-| [header.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/header.x) | Proposal header |
-| [consensus.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/consensus.x) | Consensus values |
-| [contract_spec.x](https://github.com/thruputchain/thruput-protocol/blob/6705996afff00a07c2eb699233a7a928fd77f715/contract_spec.x) | Contract types, methods, events, and interface metadata |
+| [transaction.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/transaction.x) | `Invocation`, `Transaction`, `SignedTransaction`, invocation outputs |
+| [types.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/types.x) | Addresses, hashes, signatures, protocol scalar types |
+| [storage_item.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/storage_item.x) | Storage items and deltas |
+| [header.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/header.x) | Proposal header |
+| [consensus.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/consensus.x) | Consensus values |
+| [contract_spec.x](https://github.com/thruputchain/thruput-protocol/blob/a28763804e9b136891ce6fcfd022e835d7c0cab2/contract_spec.x) | Contract types, methods, events, and interface metadata |

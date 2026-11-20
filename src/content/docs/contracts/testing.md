@@ -291,7 +291,7 @@ Other features:
   println!("block {} at {} ns", block.height, *block.timepoint);
   ```
 
-- **Reads after a block.** From testkit 0.47.0, contract reads run on state at least as new as the latest block the test has seen, from a receipt or `produce_block`.
+- **Reads after a block.** From testkit 0.47.0, contract and storage reads run on state at least as new as the latest block the test has seen, from a receipt or `produce_block`.
 - **Uncertain submissions.** Testkit never resends a transaction. When a submission's outcome is uncertain, the error keeps the original transaction hash and signed bytes for reconciliation.
 - **Coordination.** Agents exchange XDR-encoded messages with `ctx.send` and `ctx.recv_from`, share a virtual clock (`ctx.clock()`), and draw from a deterministic per-agent random number generator (`ctx.rng()`).
 - **Calls by name.** Without an interface crate, `Contract::new(address, "Counter", "0.1.0")` calls methods by name.
