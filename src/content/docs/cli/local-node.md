@@ -64,6 +64,8 @@ Choose logging before reproducing a problem: restarting an ephemeral node to ena
 
 The public listener binds to loopback by default. `--host` changes that listener for container or VM access; exposing it beyond loopback exposes an unauthenticated development RPC endpoint.
 
+From thruput CLI 0.47.0, the listener allows CORS requests from any origin, so a browser app can call the node without a proxy. Any web page you open can then call it, including its funding and `dev_` methods. `--allow-origin ORIGIN` (repeatable) allows only the listed origins, and `--no-cors` turns CORS off. Both apply to HTTP only, not WebSocket connections.
+
 ## Control blocks and time
 
 Contracts that depend on time, such as vesting, expiry, auctions, and interest, need days of chain time in a test that runs for seconds. A local node can produce blocks on request and move block time forward. These controls need thruput CLI 0.46.0 or later.
@@ -88,6 +90,7 @@ In every mode, these local-only JSON-RPC methods control blocks and block time. 
 | `dev_produceBlocks` | `anvil_mine` | Produce 1 to 1000 blocks, optionally `intervalNanoseconds` apart |
 | `dev_setNextBlockTimepoint` | `evm_setNextBlockTimestamp` | Set the time of the next block |
 | `dev_increaseTime` | `evm_increaseTime` | Move the clock forward for every later block. Produces no block |
+| `dev_setBlockTimeStep` | `anvil_setBlockTimestampInterval` | Step each later block from its parent's time instead of the wall clock. A step of `0` freezes the clock |
 | `dev_setBlockDriver` | `evm_setAutomine` | Change the block driver mode. Switching to `instant` mines pending transactions |
 
 Block time follows these rules:
@@ -95,9 +98,9 @@ Block time follows these rules:
 - Timepoints are Unix nanoseconds as decimal strings, the value contracts read with `get_block_timepoint()`.
 - After a time change, later blocks continue from the new time. They do not fall back to the wall clock.
 - Blocks never move backward. A timepoint earlier than the chain tip's returns `-32602`.
-- A contract view sees a new time only after a block exists at that time, so produce one after `dev_increaseTime`. This needs hog-devnode 0.1.35 or later; see the note below.
+- A contract view runs at the time the next block would get, so it sees a time change at once. This needs thruput CLI 0.47.0 or later; see the note below.
 
-For example, move 30 days ahead and make the new time visible:
+For example, move 30 days ahead and produce a block at the new time:
 
 ```bash
 curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
@@ -106,11 +109,13 @@ curl -s http://127.0.0.1:9545 -H 'content-type: application/json' \
   -d '{"jsonrpc":"2.0","id":2,"method":"dev_produceBlock","params":{}}'
 ```
 
+To make block time deterministic, start the node with `--block-time-step-ms`. Each block without a pinned time then gets its parent's time plus the step, and `0` freezes the clock until the next time change. `dev_setBlockTimeStep` changes the step on a running node.
+
 :::note
-Contract views run at the later of the wall clock and the tip's time from hog-devnode 0.1.35, the default runtime from thruput CLI 0.46.1. With hog-devnode 0.1.34 and earlier, views use the wall clock, so a view does not see a block time ahead of it.
+Before thruput CLI 0.47.0, contract views ran at the later of the wall clock and the tip's time, so a chain dated in the past showed today's date in views.
 :::
 
-From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client. Timepoints and durations are `bigint` nanoseconds:
+From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client (`dev_setBlockTimeStep` from 0.28.0). Timepoints and durations are `bigint` nanoseconds:
 
 ```ts
 import { createRpcClient, HttpTransport } from "@thruputchain/client";
