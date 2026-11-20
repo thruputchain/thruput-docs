@@ -280,7 +280,7 @@ Other features:
   second.await_receipt().await?;
   ```
 
-- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, `set_block_time_step` sets a fixed step between blocks, and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit 0.46.0.
+- **Block production and time.** On a local node, in every block driver mode, `Network` produces blocks and moves block time forward, so a test can cover days in seconds. `produce_block` produces one block, which can be empty. `produce_block_at` produces one at an exact timepoint, `produce_blocks` produces several (optionally an interval apart), `set_next_block_timepoint` pins the next block's time, `increase_time` moves the clock forward without a block, `set_block_time_step` sets a fixed step between blocks (testkit 0.47.0), and `set_block_driver` switches modes. They call the node's [`dev_` block and time methods](/reference/json-rpc-api/#block-and-time-methods), so they work the same on an attached `thruput node`. Requires testkit 0.46.0.
 
   ```rust
   use std::time::Duration;

@@ -115,7 +115,7 @@ To make block time deterministic, start the node with `--block-time-step-ms`. Ea
 Before thruput CLI 0.47.0, contract views ran at the later of the wall clock and the tip's time, so a chain dated in the past showed today's date in views.
 :::
 
-From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client. Timepoints and durations are `bigint` nanoseconds:
+From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client (`dev_setBlockTimeStep` from 0.28.0). Timepoints and durations are `bigint` nanoseconds:
 
 ```ts
 import { createRpcClient, HttpTransport } from "@thruputchain/client";
