@@ -33,6 +33,7 @@ Invalid arguments and configuration throw native `Error`, `TypeError`, or `Range
 | --- | --- |
 | `isThruputError(error, code?)` | Checks `name` and `code`, not `instanceof`; works across realms and package copies; narrows `context` to the code |
 | `error.code === code` | Narrows `context` after `isThruputError(error)` |
+| `transactionErrorCodes` | Codes that always have `transaction` facts |
 | `ThruputErrorContext` | Interface of all codes; other packages add codes through declaration merging |
 
 ```ts
@@ -104,7 +105,7 @@ Structured clone keeps only the name, message, stack, and cause of an error.
 
 ## Transaction Codes
 
-The client supplies `transaction` facts for these codes.
+These codes, and `contractCallFailed`, always have `transaction` facts. After narrowing to one of them, `error.transaction` is required.
 
 ### `transactionFailed`
 
@@ -215,7 +216,7 @@ try {
 
 ### `contractCallFailed`
 
-Root receipt without a typed return. **Context:** `method`, `entrypoint`, `outcome`; read with `decodeError`. Has `transaction` facts.
+Root receipt without a typed return. **Context:** `method`, `entrypoint`, `outcome`; read with `decodeError`. Always has `transaction` facts.
 
 ### `contractDecodeFailed`
 
