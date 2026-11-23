@@ -197,7 +197,8 @@ description: Wallet provider wire methods, data formats, validation rules, and S
 | --- | --- |
 | Inputs | Snapshot configuration and inputs before async work; validate account derivation and client network identity |
 | Session | Check before preparation/signing/submission; every change or failed/mismatched session read invalidates the adapter |
-| Concurrency | One in-flight operation; overlapping work fails with `-32002` |
+| Errors | `ThruputError` with named codes; `context.providerCode` keeps the wire code. See [wallet provider codes](/typescript/reference/errors/#wallet-providers) |
+| Concurrency | One in-flight operation; overlapping work fails with `walletRequestPending` (`-32002`) |
 | New approval | Clears the previous approval after local transaction validation; refusal does not restore it |
 | Execution controls | Required `onSigned` persistence callback; optional `wait` settings and cancellation signal |
 | Cleanup | No automatic reconnect/retry, UI deadline, or provider-request cancellation; late results cannot reactivate or submit |

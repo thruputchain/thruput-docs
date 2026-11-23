@@ -15,7 +15,7 @@ console.log(formatUnits(amount, 2));  // "12.05"
 const oneToken = parseUnits("1", 7);  // 10000000n
 ```
 
-Both helpers support 0–255 decimals and signed amounts. Parsing rejects whitespace, exponents, and excess precision rather than rounding. `ParseUnitsError.code` is `malformed` or `precision`; invalid decimal counts throw `RangeError`.
+Both helpers support 0–255 decimals and signed amounts. Parsing rejects whitespace, exponents, and excess precision rather than rounding. Invalid text throws an [`amountInvalid`](/typescript/reference/errors/#amountinvalid) error with `context.kind` `malformed` or `precision`; invalid decimal counts throw `RangeError`.
 
 The native token has seven decimal places. Other tokens choose their own decimals. Check positivity and the contract's integer bounds separately. Avoid converting amounts to `number`, which can lose precision.
 

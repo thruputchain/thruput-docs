@@ -130,7 +130,7 @@ const block = await rpc.dev_produceBlock();
 console.log(block.blockHeight, block.blockTimepoint);
 ```
 
-`requiredMethods` makes client creation fail with `RpcCompatibilityError` when the endpoint does not serve the methods, for example on a hosted network.
+`requiredMethods` makes client creation fail with an [`rpcIncompatible`](/typescript/reference/errors/#rpcincompatible) error when the endpoint does not serve the methods, for example on a hosted network.
 
 The [JSON-RPC reference](/reference/json-rpc-api/#block-and-time-methods) lists the parameters and results. In Rust, [testkit](/contracts/testing/#testkit) wraps these methods on `Network`.
 

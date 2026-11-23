@@ -56,7 +56,7 @@ for await (const page of client.iterateEventPages(query)) {
 }
 ```
 
-The iterator requests pages on demand and stops at `nextCursor: null`. It fixes the first page's `latestIndexedBlockHeight` as the walk's upper bound. It throws `HistoryWalkError` for regressed coverage, lost retention, duplicate or out-of-order rows, and repeated cursors. `decode` returns `null` for a different signature and throws for malformed matching data.
+The iterator requests pages on demand and stops at `nextCursor: null`. It fixes the first page's `latestIndexedBlockHeight` as the walk's upper bound. It throws a [`historyWalkFailed`](/typescript/reference/errors/#historywalkfailed) error for regressed coverage, lost retention, duplicate or out-of-order rows, and repeated cursors. `decode` returns `null` for a different signature and throws for malformed matching data.
 
 Pass `{ signal }` as the iterator's second argument to cancel an in-flight read. Breaking the loop stops future requests. There is no automatic retry, polling, subscription, or persistence.
 
@@ -88,7 +88,7 @@ for (;;) {
 }
 ```
 
-The next walk starts inclusively at the saved height, so deduplicate that boundary block. A walk that stops early saves no checkpoint; the next run replays from the previous one. A lost-retention `HistoryWalkError` means required blocks are no longer served. `oldestIndexedBlockHeight` and `latestIndexedBlockHeight` are serving bounds, not processed checkpoints.
+The next walk starts inclusively at the saved height, so deduplicate that boundary block. A walk that stops early saves no checkpoint; the next run replays from the previous one. A lost-retention `historyWalkFailed` error means required blocks are no longer served. `oldestIndexedBlockHeight` and `latestIndexedBlockHeight` are serving bounds, not processed checkpoints.
 
 For a latest-first UI, start a new descending walk from `atEnd` rather than continuing an old cursor. Descending completion is not an ingestion checkpoint.
 

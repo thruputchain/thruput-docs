@@ -79,7 +79,7 @@ export const sections: DocumentationSection[] = [
       'typescript/wallet-clients', 'typescript/wallet-integration', 'typescript/accounts', 'typescript/transactions',
       'typescript/transaction-status', 'typescript/deployment',
       { label: 'Reference', directory: 'reference', collapsed: true, items: [
-        'typescript/reference/sdk', 'typescript/reference/wallet-provider',
+        'typescript/reference/sdk', 'typescript/reference/errors', 'typescript/reference/wallet-provider',
       ] },
     ],
   },

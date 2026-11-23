@@ -49,10 +49,10 @@ A timeout or canceled observation does not cancel onchain execution. Query the o
 
 ## Handle scheduler processing errors
 
-`waitForTransactionReceipt()` keeps polling through `retry`, `dropped`, and `recentFailure` statuses, and it never resubmits. It reports each observed status through `onStatus`. When observation stops, it throws `TransactionReceiptObservationError`, or its subclass `TransactionReceiptTimeoutError`:
+`waitForTransactionReceipt()` keeps polling through `retry`, `dropped`, and `recentFailure` statuses, and it never resubmits. It reports each observed status through `onStatus`. When observation stops, it throws a [`transactionOutcomeUnknown`](/typescript/reference/errors/#transactionoutcomeunknown) error. Its `transaction.reason` says why it stopped, for example `timeout` or `cancelled`:
 
 ```ts
-import { TransactionReceiptObservationError } from "@thruputchain/client";
+import { isThruputError } from "@thruputchain/client";
 
 try {
   const receipt = await client.waitForTransactionReceipt(transactionHash, {
@@ -62,8 +62,9 @@ try {
   });
   console.log("Committed at block:", receipt.blockHeight.toString());
 } catch (error) {
-  if (error instanceof TransactionReceiptObservationError) {
-    console.error({ lastStatus: error.lastStatus, knownCommitment: error.knownCommitment });
+  if (isThruputError(error, "transactionOutcomeUnknown")) {
+    const { lastStatus, knownCommitment } = error.context;
+    console.error({ reason: error.transaction?.reason, lastStatus, knownCommitment });
   }
   throw error;
 }
@@ -83,27 +84,35 @@ Stop resubmitting once the transaction expires. Expiration prevents future inclu
 
 ## Handle execution-helper errors
 
-| Error | What happened | What to retain |
+Every error after signing has [transaction facts](/typescript/reference/errors/#transaction-facts): `hash`, `outcome`, `reason`, and, when known, `receipt` and the signed `submission`. Decide what to do from `outcome`:
+
+| Outcome | What happened | What to do |
 | --- | --- | --- |
-| `TransactionExecutionError` | Committed execution failed | `receipt` |
-| `TransactionObservationError` | Submission or observation stopped; `phase` is `beforeSubmission`, `submission`, or `observation` | `transactionHash`, `submission` (signed bytes and network), `cause`, and any `submissionCause` or `knownCommitment` |
-| `ExecutionDecodeError` | Execution succeeded, but child return decoding failed | Successful `receipt` and decoding cause |
-| `ExecutionReturnUnavailableError` | Execution succeeded, but the wallet did not provide child returns | Successful `receipt` |
+| `succeeded` | Execution succeeded, but a later step such as decoding failed | Do not repeat the write; decode `receipt` again |
+| `failed` | Committed execution failed | Fix the cause before signing a new transaction |
+| `notSubmitted` | The client did not dispatch the transaction | The saved signed bytes were never sent |
+| `unknown` | Submission or observation stopped | Observe `hash` on the original network; never resend automatically |
 
 For example, classify errors from a wallet execution helper:
 
 ```ts
-import { TransactionExecutionError, TransactionObservationError, toBase58 } from "@thruputchain/client";
+import { isThruputError, toBase58 } from "@thruputchain/client";
 
 export function describeExecutionError(error: unknown): string {
-  if (error instanceof TransactionObservationError) {
-    return `Check transaction ${toBase58(error.transactionHash)} on its original network`;
+  if (!isThruputError(error) || !error.transaction) {
+    return error instanceof Error ? error.message : "Transaction operation failed";
   }
-  if (error instanceof TransactionExecutionError) {
-    const { execution } = error.receipt;
-    return `Committed execution failed: ${"result" in execution ? execution.result : "unsupported result"}`;
+  const { hash, outcome, reason } = error.transaction;
+  switch (outcome) {
+    case "unknown":
+      return `Check transaction ${toBase58(hash)} on its original network (${reason})`;
+    case "failed":
+      return `Committed execution failed (${reason})`;
+    case "notSubmitted":
+      return `Transaction was not submitted (${reason})`;
+    case "succeeded":
+      return "Transaction succeeded, but its result could not be read";
   }
-  return error instanceof Error ? error.message : "Transaction operation failed";
 }
 ```
 
