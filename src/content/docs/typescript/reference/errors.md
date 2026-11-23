@@ -77,11 +77,11 @@ try {
 | `cancelled` | The caller's signal was aborted |
 | `timeout` | The time budget ended |
 | `persistenceFailed` | `onSigned` rejected; the client did not submit |
-| `notDispatched` | The transport did not send the request |
+| `notDispatched` | This call did not send the request; with outcome `unknown`, an earlier call may have |
 | `requestInvalid` | A local request or compatibility check failed before dispatch |
 | `nodeRejected` | Node answered `invalidParams`, `transactionInvalid`, or `transactionRejected`, or stopped a funding attempt |
 | `submissionFailed` | Submission failed after dispatch; the node may have the transaction |
-| `disconnected` | Time budget ended after the last read failed |
+| `disconnected` | Transient network or node failure during submission, or on the last read before the time budget ended |
 | `statusUnknown` | Time budget ended; last status was `unknown` or unsupported |
 | `recentFailure` | Time budget ended; last status was `recentFailure` |
 | `networkChanged` | Observation endpoint reported a different network |
@@ -117,7 +117,7 @@ Every code in this section except `fundingStopped` always has `transaction` fact
 
 ### `transactionResultUndecodable`
 
-**Outcome:** `succeeded`. Do not repeat the write; decode `transaction.receipt` again.
+**Outcome:** `succeeded`. Thrown by `decodeExecution`, deployment decoding, and `decodeReceipt`. Do not repeat the write; decode `transaction.receipt` again.
 
 ### `transactionResultUnavailable`
 

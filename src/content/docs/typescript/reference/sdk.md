@@ -93,7 +93,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `UnsupportedRpcValue` | A status, result, or source from a newer server; retains `raw` |
 | [`transactionFailed`](/typescript/reference/errors/#transactionfailed) | Failed committed `receipt` |
 | [`transactionNotSubmitted`](/typescript/reference/errors/#transactionnotsubmitted) | Signed transaction was not dispatched; keeps the signed `submission` |
-| [`transactionResultUndecodable`](/typescript/reference/errors/#transactionresultundecodable) | Successful receipt whose child return data failed decoding |
+| [`transactionResultUndecodable`](/typescript/reference/errors/#transactionresultundecodable) | Successful receipt whose return data failed decoding, from `decodeExecution` or `decodeReceipt` |
 | [`transactionResultUnavailable`](/typescript/reference/errors/#transactionresultunavailable) | Successful receipt without child returns |
 | Usage | [Track transaction results](/typescript/transaction-status/) |
 
