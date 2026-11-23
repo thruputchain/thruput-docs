@@ -49,7 +49,7 @@ A timeout or canceled observation does not cancel onchain execution. Query the o
 
 ## Handle scheduler processing errors
 
-`waitForTransactionReceipt()` keeps polling through `retry`, `dropped`, and `recentFailure` statuses, and it never resubmits. It reports each observed status through `onStatus`. When observation stops, it throws a [`transactionOutcomeUnknown`](/typescript/reference/errors/#transactionoutcomeunknown) error. Its `transaction.reason` says why it stopped, for example `timeout` or `cancelled`:
+`waitForTransactionReceipt()` keeps polling through `retry`, `dropped`, and `recentFailure` statuses, and it never resubmits. It reports each observed status through `onStatus`. When observation stops, it throws a [`transactionOutcomeUnknown`](/typescript/reference/errors/#transactionoutcomeunknown) error; `transaction.reason` says why, such as `timeout` or `cancelled`:
 
 ```ts
 import { isThruputError } from "@thruputchain/client";
@@ -84,13 +84,13 @@ Stop resubmitting once the transaction expires. Expiration prevents future inclu
 
 ## Handle execution-helper errors
 
-Every error after signing has [transaction facts](/typescript/reference/errors/#transaction-facts): `hash`, `outcome`, `reason`, and, when known, `receipt` and the signed `submission`. Decide what to do from `outcome`:
+Errors after signing carry [transaction facts](/typescript/reference/errors/#transaction-facts). Decide from `outcome`:
 
 | Outcome | What happened | What to do |
 | --- | --- | --- |
 | `succeeded` | Execution succeeded, but a later step such as decoding failed | Do not repeat the write; decode `receipt` again |
 | `failed` | Committed execution failed | Fix the cause before signing a new transaction |
-| `notSubmitted` | The client did not dispatch the transaction | The saved signed bytes were never sent |
+| `notSubmitted` | The client did not dispatch the transaction | Submit the saved bytes again, or discard them |
 | `unknown` | Submission or observation stopped | Observe `hash` on the original network; never resend automatically |
 
 For example, classify errors from a wallet execution helper:

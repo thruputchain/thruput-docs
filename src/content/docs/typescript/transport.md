@@ -48,21 +48,21 @@ Server [array and byte limits](/reference/json-rpc-api/#json-rpc-arrays) still a
 
 ## Handle transport errors
 
-Every error is a `ThruputError`. Check its code with `isThruputError(error, code)`.
+Errors are `ThruputError`s; check them with `isThruputError(error, code)`.
 
 | Code | Boundary |
 | --- | --- |
 | [`httpRequestFailed`](/typescript/reference/errors/#httprequestfailed) | Network request failed |
 | [`httpResponseError`](/typescript/reference/errors/#httpresponseerror) | Non-success HTTP status |
-| [`nativeRpcError`](/typescript/reference/errors/#nativerpcerror) | RPC error response with `code`, method context, the raw error, and a typed `kind` |
+| [`nativeRpcError`](/typescript/reference/errors/#nativerpcerror) | RPC error response; typed `context.kind` and the raw error |
 | [`rpcResponseInvalid`](/typescript/reference/errors/#rpcresponseinvalid) | Malformed JSON-RPC reply; retains the raw reply |
 | [`rpcIncompatible`](/typescript/reference/errors/#rpcincompatible) | Unsupported wire format, network mismatch, or unadvertised method |
 | [`rpcRequestInvalid`](/typescript/reference/errors/#rpcrequestinvalid) | Invalid local request, rejected before dispatch |
 | [`rpcValueInvalid`](/typescript/reference/errors/#rpcvalueinvalid) | Malformed result; retains the raw value |
 | [`contractViewFailed`](/typescript/reference/errors/#contractviewfailed) / [`contractDecodeFailed`](/typescript/reference/errors/#contractdecodefailed) | Contract outcome or decoding, not transport |
 
-`context.kind` of a `nativeRpcError` is a kind from the [error codes](/reference/json-rpc-api/#error-codes), which narrows `context.data`, or `unrecognized`. Neither grants retry permission. Use `classifyReadError(error, { signal })` when implementing a bounded read-retry policy. See [read cancellation](/typescript/reads/#cancel-stale-reads). Do not apply automatic read retries to transaction submission.
+A `nativeRpcError` has `context.kind` from the [error codes](/reference/json-rpc-api/#error-codes), which narrows `context.data`, or `unrecognized`. Neither grants retry permission. Use `classifyReadError(error, { signal })` when implementing a bounded read-retry policy. See [read cancellation](/typescript/reads/#cancel-stale-reads). Do not apply automatic read retries to transaction submission.
 
 ## Use a custom transport
 
-Implement the exported `Transport` interface when integrating another request layer. Report failures as a `ThruputError` with code `rpcError`, `httpRequestFailed`, `httpResponseError`, or `rpcResponseInvalid`, so the client can classify them. A client created with only a transport has no validated cluster identity. For wallet use, provide a trusted signing network hash and verify the endpoint separately, or supply a cluster descriptor as above.
+Implement the exported `Transport` interface when integrating another request layer. Report failures as a `ThruputError` with code `rpcError`, `httpRequestFailed`, `httpResponseError`, or `rpcResponseInvalid`. A client created with only a transport has no validated cluster identity. For wallet use, provide a trusted signing network hash and verify the endpoint separately, or supply a cluster descriptor as above.

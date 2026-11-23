@@ -86,8 +86,8 @@ description: TypeScript client entry points, common operations, and links to foc
 | `waitForTransactionReceipt(hash, options?)` | Poll until a receipt, including failed execution; reports each status through `onStatus`; never resubmits |
 | `waitForCommitment(hash, options?)` | Poll until commitment is known, without requiring a receipt |
 | `waitForExecution(client, hash, options?)` | Wait and require successful execution |
-| `isThruputError(error, code?)` | Realm-safe check; narrows `context` by code; see the [error reference](/typescript/reference/errors/) |
-| `error.transaction` | `hash`, `outcome` (`succeeded`, `failed`, `notSubmitted`, or `unknown`), `reason`, and optional `receipt` and `submission`; present on every error after signing |
+| `isThruputError(error, code?)` | Realm-safe code check; narrows `context`; see the [error reference](/typescript/reference/errors/) |
+| `error.transaction` | `hash`, `outcome`, `reason`, optional `receipt` and `submission`; present on every error after signing |
 | [`transactionOutcomeUnknown`](/typescript/reference/errors/#transactionoutcomeunknown) | Submission or observation stopped; `context` keeps `knownCommitment`, `lastStatus`, and any `submissionError` |
 | `SchedulerTransactionError` | `source`: `auth`, `scheduler`, `executor`, or `other`; `code`: signed 32-bit number |
 | `UnsupportedRpcValue` | A status, result, or source from a newer server; retains `raw` |
