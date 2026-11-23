@@ -105,7 +105,7 @@ Structured clone keeps only the name, message, stack, and cause of an error.
 
 ## Transaction Codes
 
-These codes, and `contractCallFailed`, always have `transaction` facts. After narrowing to one of them, `error.transaction` is required.
+Every code in this section except `fundingStopped` always has `transaction` facts, as does `contractCallFailed`. After narrowing to one of them, `error.transaction` is required. Check `error.transaction` on `fundingStopped`.
 
 ### `transactionFailed`
 
