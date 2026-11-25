@@ -7,23 +7,22 @@ description: ThruputError codes, typed context, and transaction facts in the Typ
 | --- | --- |
 | Recovery after a failed write | [Track transaction results](/typescript/transaction-status/) |
 | Complete signatures | [Generated client API](https://client-ts.thruput.network/) |
-| Import | `ThruputError`, `isThruputError`, `parseThruputError` from `@thruputchain/client` |
+| Import | `ThruputError` and `isThruputError` from `@thruputchain/client` |
 
 ## Error Shape
 
-The client throws one class, `ThruputError`. Each error message links to its code on this page.
+The client throws one class, `ThruputError`.
 
 | Field | Contract |
 | --- | --- |
 | `name` | `"ThruputError"` |
 | `code` | Stable camelCase code; never renamed or reused |
-| `shortMessage` | One line, without details or the docs link |
-| `details` | From a `ThruputError` cause only; never from your callbacks or signers |
-| `message` | `shortMessage`, `details`, and the docs link |
+| `message` | The client's own text; never the message of a cause from your callbacks, signers, or wallet |
 | `context` | Frozen data typed by `code`; fields are never removed |
 | `transaction` | [Transaction facts](#transaction-facts); present on every error after signing |
 | `cause` | Underlying error, when present |
-| `walk(predicate?)` | First matching error in the `cause` chain, or the last cause |
+
+Custom transports and tests can construct the class: `new ThruputError(code, message, { context, cause, transaction })`. A transaction code without `transaction` facts throws a `TypeError`.
 
 Invalid arguments and configuration throw native `Error`, `TypeError`, or `RangeError` before any network call.
 
@@ -57,12 +56,12 @@ try {
 | --- | --- |
 | `succeeded` | Receipt shows success; a later step, such as decoding, failed |
 | `failed` | Receipt shows failed execution |
-| `notSubmitted` | The client did not dispatch the transaction |
+| `notSubmitted` | This call did not dispatch the transaction; an earlier call with the same bytes may have |
 | `unknown` | Outcome not known; never resend; observe `hash` on the original network |
 
 | Field | Contract |
 | --- | --- |
-| `hash` | Transaction hash; each read returns a copy |
+| `hash` | Transaction hash, copied when the error is created |
 | `receipt` | Committed receipt, when known |
 | `submission` | Signed bytes, transaction hash, and signing network, when known |
 
@@ -92,16 +91,7 @@ try {
 
 A node rejection stays `unknown`: another node or path can still have the transaction. Cancellation before signing throws the signal's reason; after signing, it throws a `ThruputError` with the reason as `cause`.
 
-## Serialization
-
-Structured clone keeps only the name, message, stack, and cause of an error.
-
-| API | Contract |
-| --- | --- |
-| `error.toJSON()` | `code`, `shortMessage`, `details`, `context`, and `transaction`; bytes as hex, bigints as decimal strings; no `cause` |
-| `parseThruputError(value)` | Rebuilds a `ThruputError`; checks shape and transaction facts; throws `TypeError` |
-| Other errors in `context` | Keep only `name` |
-| Parsed `context` | Not checked against the code's type; treat as untrusted |
+Structured clone and `postMessage` keep only the name, message, stack, and cause of an error. To send transaction facts across a boundary, copy the fields you need, for example the hash in base58, `outcome`, and `reason`.
 
 ## Transaction Codes
 
@@ -177,7 +167,7 @@ Network request failed. **Context:** `endpoint` (URL origin only), `method`.
 
 ### `rpcResponseInvalid`
 
-Malformed JSON-RPC reply; the write outcome is unknown. **Context:** `raw`.
+Malformed JSON-RPC reply, including a response body that is not JSON; the write outcome is unknown. **Context:** `raw`.
 
 ### `rpcValueInvalid`
 
@@ -189,7 +179,7 @@ Invalid local request; not dispatched. **Context:** `path`.
 
 ### `rpcIncompatible`
 
-Unsupported wire format, network mismatch, or unadvertised method.
+The endpoint does not match what the client requires. **Context:** `kind`: `network` (another network than expected), `method` (an unadvertised method), `wireVersion` (an unsupported RPC wire format), `limits` (missing server limits), or `commitment` (conflicting commitment heights for one transaction).
 
 ### `rpcValueUnsupported`
 
