@@ -84,13 +84,13 @@ Stop resubmitting once the transaction expires. Expiration prevents future inclu
 
 ## Handle execution-helper errors
 
-Errors after signing carry [transaction facts](/typescript/reference/errors/#transaction-facts). Decide from `outcome`:
+Errors that a transaction workflow raises after signing carry [transaction facts](/typescript/reference/errors/#transaction-facts). Decide from `outcome`:
 
 | Outcome | What happened | What to do |
 | --- | --- | --- |
 | `succeeded` | Execution succeeded, but a later step such as decoding failed | Do not repeat the write; decode `receipt` again |
 | `failed` | Committed execution failed | Fix the cause before signing a new transaction |
-| `notSubmitted` | The client did not dispatch the transaction | Submit the saved bytes again, or discard them |
+| `notSubmitted` | This call did not dispatch the transaction | Submit the saved bytes again, or discard them. If an earlier call sent the same bytes, observe that hash first |
 | `unknown` | Submission or observation stopped | Observe `hash` on the original network; never resend automatically |
 
 For example, classify errors from a wallet execution helper:

@@ -17,9 +17,9 @@ The client throws one class, `ThruputError`.
 | --- | --- |
 | `name` | `"ThruputError"` |
 | `code` | Stable camelCase code; never renamed or reused |
-| `message` | The client's own text; never the message of a cause from your callbacks, signers, or wallet |
+| `message` | The client's own text; never the message of a cause from your callbacks or signers. A provider wallet's error message is forwarded as the message of its named code |
 | `context` | Frozen data typed by `code`; fields are never removed |
-| `transaction` | [Transaction facts](#transaction-facts); present on every error after signing |
+| `transaction` | [Transaction facts](#transaction-facts); present on every error that a transaction workflow raises after signing |
 | `cause` | Underlying error, when present |
 
 Custom transports and tests can construct the class: `new ThruputError(code, message, { context, cause, transaction })`. A transaction code without `transaction` facts throws a `TypeError`.
@@ -49,6 +49,8 @@ try {
 ```
 
 ## Transaction Facts
+
+The transaction workflows attach facts: the wallets' `executeAndWait`, `executeCallsAndWait`, `deployContractAndWait`, and `sendInvocation`; a provider wallet's `submitTransaction`; the `sendTransaction`, `sendInvocation`, and `requestAirdrop` actions; `waitForTransactionReceipt`; and receipt decoding. The raw RPC method `client.sendTransaction`, which a wallet also exposes, throws RPC and transport errors without facts; keep the hash of the bytes you sent.
 
 `transaction: { hash, outcome, reason, receipt?, submission? }`. Decide what to do from `outcome`.
 
