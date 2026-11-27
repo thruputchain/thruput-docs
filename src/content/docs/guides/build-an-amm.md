@@ -9,15 +9,17 @@ Read [Build a token](/guides/build-a-token/) first. Complete [CLI and Cargo setu
 
 ## Assemble the components
 
+The suite is in [`contracts/swap/`](https://github.com/thruputchain/thruput-examples/tree/main/contracts/swap). Its README lists the crates in reading order.
+
 | Source | Responsibility |
 | --- | --- |
-| `interfaces/swap-if` | Shared methods, request types, errors, and clients |
-| `engines/swap-pair` | Constant-product math and reserve operations |
-| `contracts/swap-handler` | Apply a request, move tokens, and update pair state |
-| `contracts/swap-driver` | Queue and process requests |
-| `contracts/swap-factory` | Create and connect a pool's contracts |
-| `contracts/swap-router` | User-facing liquidity and swap requests |
-| `helpers/batch-driver` | Shared queue capacity and processing logic |
+| `contracts/swap/interface` | Shared methods, request types, errors, and clients |
+| `contracts/swap/pair` | Constant-product math and reserve operations |
+| `contracts/swap/handler` | Apply a request, move tokens, and update pair state |
+| `contracts/swap/driver` | Queue and process requests |
+| `contracts/swap/factory` | Create and connect a pool's contracts |
+| `contracts/swap/router` | User-facing liquidity and swap requests |
+| `contracts/swap/batch-driver` | Shared queue capacity and processing logic |
 
 The pair is an internal engine used by the handler, not another public contract entry point. The suite adapts [Uniswap V2 pair operations](https://github.com/Uniswap/v2-core/blob/master/contracts/UniswapV2Pair.sol) to Project Thruput's execution model.
 
@@ -29,7 +31,7 @@ Run the factory's deployment scenario:
 cargo test -p swap-factory --test factory create_pair_brings_up_pool --locked
 ```
 
-Open `contracts/swap-factory/src/factory.rs` and `tests/factory.rs`. Creation derives and funds three addresses, deploys the LP token, handler, and driver, initializes their relationships, and records the pair. The tests verify the resulting pool and funding rules.
+Open `contracts/swap/factory/src/factory.rs` and `tests/factory.rs`. Creation derives and funds three addresses, deploys the LP token, handler, and driver, initializes their relationships, and records the pair. The tests verify the resulting pool and funding rules.
 
 The factory takes funding from the caller through an allowance. It does not let arbitrary pool creators spend the factory's own native tokens. Pool addresses are deterministic for the token pair and configured code hashes.
 
@@ -41,7 +43,7 @@ The factory takes funding from the caller through an allowance. It does not let 
 cargo test -p swap-router --test add_liquidity --locked -- --nocapture
 ```
 
-In `contracts/swap-router/tests/add_liquidity.rs`, the fixture establishes token balances, authorizes the handler, submits a liquidity request, and processes it. The test helper named `etx` is example test code, not an SDK API:
+In `contracts/swap/router/tests/add_liquidity.rs`, the fixture establishes token balances, authorizes the handler, submits a liquidity request, and processes it. The test helper named `etx` is example test code, not an SDK API:
 
 ```rust
 etx.user_allow_for_pair(user, amounts_desired)?;
@@ -58,7 +60,7 @@ The tests also separate the purchaser from the recipient: Alice can supply token
 cargo test -p swap-router --test swap carol_swap_exact_tokens_for_tokens --locked -- --nocapture
 ```
 
-Open `contracts/swap-router/tests/swap.rs`. The exact-input scenario:
+Open `contracts/swap/router/tests/swap.rs`. The exact-input scenario:
 
 1. Establishes pool reserves.
 2. Calculates expected output independently of the router.
@@ -125,7 +127,7 @@ The tests verify redemption and the distinction between the LP-token owner and t
 cargo test -p swap-factory -p swap-router -p swap-driver -p swap-pair --locked
 ```
 
-The suite reports four `sim_*` tests as ignored. They need simulator fixtures and are not part of this guide.
+Simulations and gas calibration on a live local node are in `contracts/swap/bench`, and are not part of this guide. The Swap README's Benchmarks section explains them.
 
 ## Verify compiled contracts
 
