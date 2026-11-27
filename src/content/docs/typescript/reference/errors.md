@@ -93,7 +93,7 @@ The transaction workflows attach facts: the wallets' `executeAndWait`, `executeC
 
 A node rejection stays `unknown`: another node or path can still have the transaction. Cancellation before signing throws the signal's reason; after signing, it throws a `ThruputError` with the reason as `cause`.
 
-Structured clone and `postMessage` keep only the name, message, stack, and cause of an error. To send transaction facts across a boundary, copy the fields you need, for example the hash in base58, `outcome`, and `reason`.
+To send a `ThruputError` through `postMessage` or another structured-clone boundary, copy the fields you need into a plain object first. For example, copy the code, the hash in base58, `outcome`, and `reason`. Structured clone can drop the error's custom fields and type.
 
 ## Transaction Codes
 

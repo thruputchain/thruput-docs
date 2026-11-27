@@ -688,6 +688,20 @@ Errors:
 
 Returns a transaction statistic. Statistics may be disabled in release builds or production execution, and may be nondeterministic in test configurations. Nondeterministic stats are disabled in production settings.
 
+## Integer arithmetic
+
+These experimental, read-only syscalls were introduced in syscall API 1.2. Availability can vary by chain. Rust SDK 0.64.0 exposes this arithmetic through `U256::integer_sqrt`, `U256::mul_div`, `mul_div_u128`, and `mul_div_i128` and their related helpers.
+
+| Syscall | Number | Inputs | Outputs |
+|---|---|---|---|
+| `U256Sqrt` | 40 | `value: U256Le` | `root: u128` |
+| `U256MulDivRem` | 41 | `a`, `b`, `divisor` as `U256Le` | `quotient_lo`, `quotient_hi`, `remainder` as `U256Le` |
+| `U128MulDivRem` | 42 | `a`, `b`, `divisor` as `u128` | `quotient_lo`, `quotient_hi`, `remainder` as `u128` |
+
+`U256Le` is a 32-byte unsigned integer in little-endian order. `U256Sqrt` returns the integer square root rounded down.
+
+The multiply-divide calls divide the exact double-width product `a * b` by `divisor`. A nonzero `quotient_hi` means the quotient does not fit in one operand-width integer. The remainder is less than the divisor. A zero divisor returns `InvalidSyscallInput` and leaves the outputs untouched.
+
 ## Error Codes
 
 The full `SyscallErrorCode` enum, from `protocol/syscall_error.x`:

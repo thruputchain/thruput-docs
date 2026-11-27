@@ -146,9 +146,9 @@ The `try_decrement` method (generated alongside `decrement` by the `#[contract]`
 
 Each `env.transact` call runs in the current block. Transactions in the same block read the previous block's committed state and do not see each other's writes. Call `env.advance_block()` to commit the block and make its effects visible.
 
-Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. The first block and each `advance_block()` use the wall clock. Block time cannot move backward, so pin relative to the current block time (`thruput_sdk::block::get_block_timepoint`) rather than a fixed date. From SDK 0.61.3, each later `advance_block()` continues from the pinned time plus the elapsed wall-clock time, as a [local node](/cli/local-node/#control-blocks-and-time) does. With earlier SDKs, `advance_block()` panics after a future pin until the wall clock catches up, so keep using `advance_block_at`.
+Use `env.advance_block_at(timepoint)` to pin the next block's time for deadline and expiry tests. Block time cannot move backward. In SDK 0.64.0, `get_block_timepoint()` returns a `TimePoint`. Add a `TimeSpan` to it to pin a future time. By default the clock follows wall time. After a pin, `advance_block()` continues from that time plus elapsed wall time, as a [local node](/cli/local-node/#control-blocks-and-time) does.
 
-From SDK 0.62.0, `env.set_block_time_step(Some(step))` gives each `advance_block()` the previous block's time plus `step`, as `thruput node --block-time-step-ms` does. `Some(Duration::ZERO)` freezes the clock until the next `advance_block_at`, and `None` returns to the wall clock.
+`env.set_block_time_step(Some(step))` takes a `TimeSpan` and gives each `advance_block()` the previous block's time plus that step, as `thruput node --block-time-step-ms` does. `Some(TimeSpan::ZERO)` freezes the clock until the next `advance_block_at`. Set `None` to resume following elapsed wall time from the last block.
 
 Use same-block transactions to test merges and exclusion:
 

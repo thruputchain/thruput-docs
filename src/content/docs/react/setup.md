@@ -14,10 +14,10 @@ npm install
 Install the integration and its client together from the public npm registry. If you used GitHub Packages before, [remove the old registry setting](/typescript/setup/#give-npm-package-access) first:
 
 ```bash
-npm install @thruputchain/react @thruputchain/client @thruputchain/protocol @tanstack/react-query
+npm install --save-exact @thruputchain/react@0.12.0 @thruputchain/client@0.29.0 @thruputchain/protocol@0.20.0 @tanstack/react-query@5
 ```
 
-The package manager resolves the React library's compatible client dependency. Keep the lockfile. In an existing application, satisfy the library's peer dependencies rather than forcing an incompatible client version. The integration uses React 19 and TanStack Query 5.
+These examples use React integration 0.12.0 with client 0.29.0. Upgrade them together and keep the lockfile. The integration uses React 19 and TanStack Query 5.
 
 ## Connect the application
 

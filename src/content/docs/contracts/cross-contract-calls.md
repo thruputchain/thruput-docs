@@ -51,6 +51,10 @@ token.transfer(&recipient, 100);
 
 Client methods take `&self` (not `&mut self`). Clients are lightweight value types holding an address and configuration.
 
+### Typed addresses
+
+Rust SDK 0.64.0 adds `Address<C>` for an address with an expected client interface. For example, `Address<ERC20Client>` gives you an ERC-20 client through `address.client()`. Rust checks which client you use at compile time. Use interface discovery if you need to check what a deployed contract claims to support. `Address<C>` and `ContractAddress` use the same encoding.
+
 ## Gas Limits
 
 Use `with_gas_limit` to cap how much computation the callee can perform. It returns a new client instance (non-mutating).

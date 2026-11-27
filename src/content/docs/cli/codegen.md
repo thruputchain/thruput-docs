@@ -5,7 +5,7 @@ description: Generate typed application bindings from a built contract's canonic
 
 Generate bindings from the same contract build you deploy. Bindings provide method descriptors, argument types, result decoders, and declared event and error types.
 
-Use Thruput CLI 0.29.0 or newer for applications that import the private `@thruputchain` npm packages. Older generators emit the previous package namespace.
+Use the [current Thruput CLI](/cli/install/) and the [public `@thruputchain` packages](/typescript/setup/) together. The generator emits imports from those packages.
 
 ## Generate during a build
 

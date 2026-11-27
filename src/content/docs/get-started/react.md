@@ -18,7 +18,7 @@ Install the application dependencies from the public npm registry. If you used G
 
 ```bash
 npm install
-npm install @thruputchain/react @thruputchain/client @thruputchain/protocol @tanstack/react-query
+npm install --save-exact @thruputchain/react@0.12.0 @thruputchain/client@0.29.0 @thruputchain/protocol@0.20.0 @tanstack/react-query@5
 ```
 
 ## 2. Connect the providers

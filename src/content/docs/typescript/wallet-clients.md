@@ -33,6 +33,8 @@ The same public key and account nonce produce the same address. The key hash inc
 
 An undeployed pubkey account uses the network's DefaultWallet behavior for its root invocation. No separate wallet deployment is needed. See [Use a signer in scripts](/typescript/accounts/) for key loading and funding.
 
+Futurenet uses the default wallet that takes `execute(mints, calls)`. Each call has a `tokens` list for the auth tokens it forwards. Use client 0.29.0 for this format. Its high-level wallet helpers supply empty token lists for ordinary calls. If you build calldata directly for a signer-backed transaction, supply both `mints` and each call's `tokens`, even when they are empty.
+
 ## Describe a source-address account
 
 For an existing account whose stored policy authorizes your signer at key slot zero with sufficient weight:

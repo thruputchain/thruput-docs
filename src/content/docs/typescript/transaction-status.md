@@ -90,7 +90,7 @@ Errors that a transaction workflow raises after signing carry [transaction facts
 | --- | --- | --- |
 | `succeeded` | Execution succeeded, but a later step such as decoding failed | Do not repeat the write; decode `receipt` again |
 | `failed` | Committed execution failed | Fix the cause before signing a new transaction |
-| `notSubmitted` | This call did not dispatch the transaction | Submit the saved bytes again, or discard them. If an earlier call sent the same bytes, observe that hash first |
+| `notSubmitted` | This call did not dispatch the transaction | Check `reason` and fix the cause before trying again. Submit the same bytes only while valid and after any required persistence succeeds. If an earlier call sent those bytes, observe their hash first |
 | `unknown` | Submission or observation stopped | Observe `hash` on the original network; never resend automatically |
 
 For example, classify errors from a wallet execution helper:
