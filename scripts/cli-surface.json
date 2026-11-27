@@ -1,5 +1,5 @@
 {
-  "cli": "thruput 0.46.1 (commit unavailable)",
+  "cli": "thruput 0.48.0 (commit 78e09ba6)",
   "commands": {
     "": {
       "subcommands": {

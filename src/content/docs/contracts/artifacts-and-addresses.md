@@ -47,6 +47,12 @@ Most developers should let the [Thruput CLI](/cli/build-and-test/) produce RV32 
 
 The node executes the lowered artifact through the RV32 runtime. Contract state does not live in guest memory. Durable state must be written through Project Thruput storage APIs.
 
+#### Artifact Format and Compatibility
+
+CLI 0.48.0 builds RV32 format v7. The artifact header declares the syscall API version from the guest ELF. Gas metering uses the chain's schedule.
+
+To admit a v7 artifact, the chain must accept format 7. The artifact's syscall API major version must match the runtime, and the minor version must fall within the chain's configured range. Check the artifact format range in [`getChainConfig`](/reference/json-rpc-api/#getchainconfig). Futurenet platform 0.1.38 accepts formats 5 through 7. Rebuild with the current CLI and SDK when you want to use the new syscalls.
+
 ### Native Precompiled Contracts
 
 Native precompiled contracts are implemented directly inside the Project Thruput runtime. They are used for trusted system behavior, such as the native token contract, and can have permissions that user-deployed guest contracts do not have.
@@ -90,6 +96,8 @@ The system then:
 The address to which a contract is deployed is computed from the deployer address, nonce, and contract hash. Anyone can predict the address before deployment.
 
 A single contract artifact can be deployed at many addresses. Each deployment has separate metadata and separate storage.
+
+In Rust SDK 0.64.0, a factory can use a typed `CodeHash<C>` and a `DeployNonce`. `CodeHash::deploy` returns an [`Address<C>`](/contracts/cross-contract-calls/#typed-addresses), which keeps the expected client interface with the new address.
 
 ### Deployment Preimage
 

@@ -7,6 +7,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | --- | --- |
 | [Generated client API](https://client-ts.thruput.network/) | Complete types, overloads, and exports |
 | [Generated protocol API](https://protocol-ts.thruput.network/) | Protocol types and codecs |
+| [Error reference](/typescript/reference/errors/) | `ThruputError` codes, context, and transaction facts |
 | [JSON-RPC API](/reference/json-rpc-api/) | Wire methods and responses |
 | [TypeScript overview](/typescript/) | Application model and task guides |
 
@@ -32,7 +33,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `getChainTip()` / `getVersionInfo()` | Tip `blockHeight` and `blockHash`; `wireFormat`, `implementation`, and optional release identity |
 | `client.network` | Validated network identity of a cluster client |
 | `client.discovery` | Connection-time snapshot of version, network, and optional server limits |
-| `RpcCompatibilityError` | Unsupported wire format, network mismatch, or unadvertised method |
+| [`rpcIncompatible`](/typescript/reference/errors/#rpcincompatible) | Unsupported wire format, network mismatch, or unadvertised method |
 | `getChainConfig()` | Stated limits plus optional `execution` with `observedTip`, `configHash`, runtime-resolved limits, and exact `bigint` storage prices; absent execution context is not zero cost |
 | Usage | [Connect to a network](/typescript/connect/) |
 
@@ -49,7 +50,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `fromHex0x(text)` / `toHex0x(bytes)` | `0x` hex for signed transaction bytes and calldata |
 | `addressFromHex(text)` / `hashFromHex(text)` | Explicit hex conversion; use base58 for RPC and provider identifiers |
 | `gasAmount(bigint)` | Typed computation budget |
-| `ParseUnitsError` | `code: "malformed" \| "precision"`; invalid decimals throw `RangeError` |
+| [`amountInvalid`](/typescript/reference/errors/#amountinvalid) | `context.kind`: `malformed` or `precision`; invalid decimals throw `RangeError` |
 | Usage | [Addresses and amounts](/typescript/values/) |
 
 ## Choose an Account Model
@@ -85,13 +86,15 @@ description: TypeScript client entry points, common operations, and links to foc
 | `waitForTransactionReceipt(hash, options?)` | Poll until a receipt, including failed execution; reports each status through `onStatus`; never resubmits |
 | `waitForCommitment(hash, options?)` | Poll until commitment is known, without requiring a receipt |
 | `waitForExecution(client, hash, options?)` | Wait and require successful execution |
-| `TransactionReceiptObservationError` / `TransactionReceiptTimeoutError` | Observation stopped; retains `transactionHash`, `knownCommitment`, and `lastStatus` |
+| `isThruputError(error, code?)` | Realm-safe code check; narrows `context`; see the [error reference](/typescript/reference/errors/) |
+| `error.transaction` | `hash`, `outcome`, `reason`, optional `receipt` and `submission`. See which [transaction workflows attach these facts](/typescript/reference/errors/#transaction-facts) |
+| [`transactionOutcomeUnknown`](/typescript/reference/errors/#transactionoutcomeunknown) | Submission or observation stopped; `context` keeps `knownCommitment`, `lastStatus`, and any `submissionError` |
 | `SchedulerTransactionError` | `source`: `auth`, `scheduler`, `executor`, or `other`; `code`: signed 32-bit number |
 | `UnsupportedRpcValue` | A status, result, or source from a newer server; retains `raw` |
-| `TransactionExecutionError` | Failed committed `receipt` |
-| `TransactionObservationError` | Known `transactionHash`, signed `submission`, `phase`, and causes |
-| `ExecutionDecodeError` | Successful receipt whose child return data failed decoding |
-| `ExecutionReturnUnavailableError` | Successful receipt without child returns |
+| [`transactionFailed`](/typescript/reference/errors/#transactionfailed) | Failed committed `receipt` |
+| [`transactionNotSubmitted`](/typescript/reference/errors/#transactionnotsubmitted) | Signed transaction was not dispatched; keeps the signed `submission` |
+| [`transactionResultUndecodable`](/typescript/reference/errors/#transactionresultundecodable) | Successful receipt whose return data failed decoding, from `decodeExecution` or `decodeReceipt` |
+| [`transactionResultUnavailable`](/typescript/reference/errors/#transactionresultunavailable) | Successful receipt without child returns |
 | Usage | [Track transaction results](/typescript/transaction-status/) |
 
 ## Use a Local Account
@@ -131,8 +134,8 @@ description: TypeScript client entry points, common operations, and links to foc
 | `assumedAuth` | Protocol `AuthClaim`, such as `account.authClaim`; simulation does not verify signatures |
 | `(await client.getServerLimits()).simulationBatch` | Optional advertised batch limits; required for grouped reads |
 | `NativeRpcErrorCode.StateHeightUnavailable` (`-32012`) | RPC freshness error with `requestedStateBlockHeight` and `observedStateBlockHeight`; not a contract outcome |
-| `ContractViewError` | Contract abort, fault, or unsupported result |
-| `ContractDecodeError` | Malformed contract data |
+| [`contractViewFailed`](/typescript/reference/errors/#contractviewfailed) | Contract abort, fault, or unsupported result; `method.decodeError(error)` reads the typed failure |
+| [`contractDecodeFailed`](/typescript/reference/errors/#contractdecodefailed) | Malformed contract data |
 | Usage | [Read contract data](/typescript/reads/), [bindings](/typescript/bindings/) |
 
 ## Cancellation and Read Errors
@@ -163,7 +166,7 @@ description: TypeScript client entry points, common operations, and links to foc
 | `nextCursor` | Opaque string for the next page; `null` ends the walk |
 | `iterateEventPages({ filters, start, limit? }, options?)` | Raw pages on demand from an explicit `start`; returns `HistoryCompletion` after the last page |
 | `iterateTransactionsByRootAddress({ address, start, limit? }, options?)` | Transactions sent by a root address, as a checked walk |
-| `HistoryWalkError` | Regressed coverage, lost retention, duplicate or out-of-order rows, or a repeated cursor |
+| [`historyWalkFailed`](/typescript/reference/errors/#historywalkfailed) | Regressed coverage, lost retention, duplicate or out-of-order rows, or a repeated cursor |
 | `Event.filter({ addresses, topics? })` / `Event.decode(raw)` | Generated topic filter and payload decoder |
 | `Event.allFromReceipt(receipt, { address })` / `singleFromReceipt(...)` | Matching receipt events, filtered by emitter |
 | Usage | [Read events](/typescript/events/) |
@@ -191,10 +194,10 @@ description: TypeScript client entry points, common operations, and links to foc
 
 | Import | Use for |
 | --- | --- |
-| `@thruputchain/client` | Clients, clusters, accounts, actions, amounts, common primitives |
+| `@thruputchain/client` | Clients, clusters, accounts, actions, amounts, common primitives, `ThruputError` |
 | `@thruputchain/client/contracts` | Standard contract and event descriptors |
 | `@thruputchain/client/contract` | Descriptor runtime, codecs, fixed-length helpers |
-| `@thruputchain/client/transport` | HTTP/mock transports and errors |
+| `@thruputchain/client/transport` | HTTP/mock transports and read-error classification |
 | `@thruputchain/client/actions` | Standalone actions |
 | `@thruputchain/client/wallet` | Execution and provider adapters |
 | `@thruputchain/client/provider` | Provider wire types, validation, discovery |

@@ -50,7 +50,7 @@ const client = await createThruputClient({ cluster: localnet() });
 
 Start the node with [the CLI](/cli/local-node/) first. The SDK does not read CLI runtime manifests. `localnet()` expects the all-zero network hash unless you provide a custom `networkHash`.
 
-Use `defineCluster()` for a reusable custom descriptor. `mainnet()` requires an explicit endpoint. Cluster capabilities, such as `airdrop`, declare expected services. Client creation throws `RpcCompatibilityError` when the endpoint does not advertise the matching method.
+Use `defineCluster()` for a reusable custom descriptor. `mainnet()` requires an explicit endpoint. Cluster capabilities, such as `airdrop`, declare expected services. Client creation throws an [`rpcIncompatible`](/typescript/reference/errors/#rpcincompatible) error when the endpoint does not advertise the matching method.
 
 ## Pin a network identity
 
@@ -66,7 +66,7 @@ const client = await createThruputClient({
 });
 ```
 
-An identity mismatch throws `RpcCompatibilityError`. Use the base58 `networkHash` from [`getNetworkInfo`](/reference/json-rpc-api/#getnetworkinfo). A Futurenet reset can change the network hash. Update the trusted configuration deliberately rather than accepting a wallet-supplied hash as your application's network.
+An identity mismatch throws an `rpcIncompatible` error. Use the base58 `networkHash` from [`getNetworkInfo`](/reference/json-rpc-api/#getnetworkinfo). A Futurenet reset can change the network hash. Update the trusted configuration deliberately rather than accepting a wallet-supplied hash as your application's network.
 
 ## Configure transport behavior
 

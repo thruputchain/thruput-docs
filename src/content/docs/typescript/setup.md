@@ -19,7 +19,11 @@ New projects use the public npm registry without additional configuration. If yo
 
 Keep unrelated registry settings and credentials. If an existing lockfile still resolves `@thruputchain` packages through GitHub Packages, update those resolutions before using it for a clean install.
 
-These pages use `@thruputchain/client` 0.27.0 with `@thruputchain/protocol` 0.20.0. Install those versions and keep the generated lockfile.
+These pages use `@thruputchain/client` 0.29.0 with `@thruputchain/protocol` 0.20.0. Install those versions and keep the generated lockfile.
+
+For Futurenet wallet transactions, use client 0.29.0. Its default-wallet encoding requires hog-devnode 0.1.37 or later when you run a local node. When upgrading a React app, update `@thruputchain/react` to 0.12.0 alongside the client.
+
+Client 0.29.0 replaces the previous client error classes with `ThruputError`. See the [error reference](/typescript/reference/errors/) and [migration guide](https://github.com/thruputchain/thruput-sdk-ts/releases/tag/npm-v0.29.0#migrate-from-028) for changes to existing code.
 
 ## Install the TypeScript client
 
@@ -28,7 +32,7 @@ In a new application directory:
 ```bash
 npm init -y
 npm pkg set type=module
-npm install --save-exact @thruputchain/client@0.27.0 @thruputchain/protocol@0.20.0
+npm install --save-exact @thruputchain/client@0.29.0 @thruputchain/protocol@0.20.0
 npm install --save-dev typescript tsx @types/node
 mkdir -p src
 ```

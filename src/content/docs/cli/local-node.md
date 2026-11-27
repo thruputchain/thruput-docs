@@ -115,7 +115,7 @@ To make block time deterministic, start the node with `--block-time-step-ms`. Ea
 Before thruput CLI 0.47.0, contract views ran at the later of the wall clock and the tip's time, so a chain dated in the past showed today's date in views.
 :::
 
-From TypeScript, `@thruputchain/client` 0.27.0 and later has typed methods with the same names on its RPC client (`dev_setBlockTimeStep` from 0.28.0). Timepoints and durations are `bigint` nanoseconds:
+The TypeScript RPC client has typed methods with the same names. Timepoints and durations are `bigint` nanoseconds:
 
 ```ts
 import { createRpcClient, HttpTransport } from "@thruputchain/client";
@@ -130,7 +130,7 @@ const block = await rpc.dev_produceBlock();
 console.log(block.blockHeight, block.blockTimepoint);
 ```
 
-`requiredMethods` makes client creation fail with `RpcCompatibilityError` when the endpoint does not serve the methods, for example on a hosted network.
+`requiredMethods` makes client creation fail with an [`rpcIncompatible`](/typescript/reference/errors/#rpcincompatible) error when the endpoint does not serve the methods, for example on a hosted network.
 
 The [JSON-RPC reference](/reference/json-rpc-api/#block-and-time-methods) lists the parameters and results. In Rust, [testkit](/contracts/testing/#testkit) wraps these methods on `Network`.
 

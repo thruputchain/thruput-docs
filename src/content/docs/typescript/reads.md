@@ -99,7 +99,7 @@ Shared reads require an endpoint that advertises batch simulation limits. Inspec
 
 ## Handle contract outcomes
 
-`view()` throws `ContractViewError` for an abort, fault, or unsupported result. Use `viewOutcome()` when those outcomes belong in your application's normal control flow:
+`view()` throws a [`contractViewFailed`](/typescript/reference/errors/#contractviewfailed) error for an abort, fault, or unsupported result; read the typed failure with `method.decodeError(error)`. Use `viewOutcome()` when those outcomes belong in your application's normal control flow:
 
 ```ts
 const outcome = await nativeToken.totalSupply.viewOutcome({ args: undefined });
@@ -110,7 +110,7 @@ if (outcome.kind === "return") {
 }
 ```
 
-Malformed contract bytes throw `ContractDecodeError`. Transport and RPC failures remain separate from contract outcomes.
+Malformed contract bytes throw a [`contractDecodeFailed`](/typescript/reference/errors/#contractdecodefailed) error. Transport and RPC failures remain separate from contract outcomes.
 
 ## Cancel stale reads
 

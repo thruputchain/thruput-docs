@@ -21,7 +21,7 @@ npm pkg set type=module
 Install the TypeScript dependencies from the public npm registry. If you used GitHub Packages before, [remove the old registry setting](/typescript/setup/#give-npm-package-access) first:
 
 ```bash
-npm install @thruputchain/client @thruputchain/protocol
+npm install --save-exact @thruputchain/client@0.29.0 @thruputchain/protocol@0.20.0
 npm install --save-dev typescript tsx @types/node
 mkdir -p src/contracts
 ```
@@ -36,7 +36,7 @@ dist/
 
 ## Generate the TypeScript binding
 
-Use Thruput CLI 0.29.0 or newer. Its TypeScript generator imports the `@thruputchain` packages used by this app. Generate the binding from the contract spec built in part 1. Run this from `app`:
+Use [CLI 0.48.0](/cli/install/) for this tutorial. Generate the binding from the contract spec built in part 1. Run this from `app`:
 
 ```bash
 thruput codegen ts ../target/thruput/counter.spec.xdr \

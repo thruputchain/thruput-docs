@@ -26,6 +26,8 @@ thruput --version
 
 The first command installs the latest CLI with its release's dependency lockfile. The second should print the installed CLI version.
 
+For Futurenet platform 0.1.38, use CLI 0.48.0. Its wallet commands use the network's current default-wallet transaction format.
+
 Cargo installs executables in `~/.cargo/bin`. If `thruput` is not found, add that directory to your shell's `PATH` and open a new terminal.
 
 ## Set up the local runtime
@@ -40,7 +42,9 @@ thruput toolchain which
 
 `list` shows the runtime catalog and installed versions. `install` downloads and verifies the selected runtime bundle. `which` shows the selected binary's path.
 
-On Linux, a local node requires the system jemalloc and Snappy libraries. If an error names `libjemalloc.so.2` or `libsnappy.so.1`, install your distribution's corresponding packages (`libjemalloc2` and `libsnappy1v5` on Ubuntu).
+CLI 0.48.0 uses hog-devnode 0.1.37. The managed Linux builds support x86-64 and ARM64, require glibc 2.38 or later, and include jemalloc and Snappy through static linking. The managed Mac build requires Apple silicon and macOS 26 or later.
+
+If you previously pinned an older runtime, select the matching one with `thruput toolchain use 0.1.37`.
 
 These commands manage the local-node runtime. Rust is managed through `rustup`, and the CLI is installed separately as shown above. You do not need a local node to use Futurenet.
 

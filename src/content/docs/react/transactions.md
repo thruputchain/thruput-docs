@@ -10,7 +10,7 @@ description: Use an explicit mutation to request approval, save signed transacti
 This component sends a small native-token transfer to an already funded recipient. The application supplies `savePending`, which must durably save the approved transaction before resolving:
 
 ```tsx
-import { gasAmount, parseUnits, toBase58, TransactionObservationError, type ContractAddress } from "@thruputchain/client";
+import { gasAmount, isThruputError, parseUnits, toBase58, type ContractAddress } from "@thruputchain/client";
 import { ERC20 } from "@thruputchain/client/contracts";
 import { NATIVE_TOKEN_ADDRESS } from "@thruputchain/protocol";
 import { useExecute, useWallet, type ExecuteVariables } from "@thruputchain/react";
@@ -23,7 +23,8 @@ export function SendNativeTokens({ receiver, savePending }: {
 }) {
   const wallet = useWallet();
   const execution = useExecute();
-  const unresolved = execution.error instanceof TransactionObservationError;
+  const unresolved =
+    isThruputError(execution.error) && execution.error.transaction?.outcome === "unknown";
 
   function send() {
     execution.mutate({

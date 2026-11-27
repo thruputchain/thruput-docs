@@ -101,6 +101,6 @@ The adapter allows one in-flight operation. A session change invalidates pending
 
 Once submission begins, an error may arrive after broadcast. Use the saved hash and original network to [track the transaction](/typescript/transaction-status/), including after disconnect or reload. Do not create a replacement merely because observation timed out.
 
-Use `parseWalletProviderError` for provider errors across browser contexts rather than relying on `instanceof`. The [error table](/typescript/reference/wallet-provider/#errors) distinguishes rejection, authorization, network, and transport errors.
+`createProviderWalletClient` throws `ThruputError` with named [wallet provider codes](/typescript/reference/errors/#wallet-provider-codes), such as `userRejected` for `4001`. When calling `provider.request` directly, use `parseWalletProviderError` across browser contexts rather than `instanceof`. The [error table](/typescript/reference/wallet-provider/#errors) distinguishes rejection, authorization, network, and transport errors.
 
 For a complete counter interface with wallet-approved updates, follow [Counter, part 4: Connect a wallet](/tutorials/connect-a-wallet-to-your-app/).

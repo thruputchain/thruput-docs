@@ -7,7 +7,7 @@ description: Project Thruput native JSON-RPC methods, wire types, and error code
 | --- | --- |
 | Wire format | `14.x`. Tools `0.33.0` serves `14.0.0`; `14.1.0` adds `stated.maxTxGas` and the `gasLimitTooHigh` transaction detail; `14.6.0` adds the local [block and time methods](#block-and-time-methods); `14.6.1` (tools `0.46.0`) waits for a committed `minStateBlockHeight`; `14.7.0` (tools `0.47.0`) adds `dev_setBlockTimeStep` |
 | Compatibility | Breaking wire changes increase the major version of `getVersionInfo.wireFormat`. Clients accept one major version and do not fall back |
-| Schema | [Generated OpenRPC specification](https://github.com/thruputchain/thruput-tools/blob/main/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
+| Schema | [OpenRPC specification in tools 0.48.0](https://github.com/thruputchain/thruput-tools/blob/v0.48.0/crates/json-rpc/open-rpc-spec/snapshots/thruput-spec.json) for exact method signatures and field types |
 | Transport | JSON-RPC 2.0 over HTTP. For the node topology, see [Networking](/architecture/networking/) |
 
 ## Request Format
@@ -107,6 +107,8 @@ These are operator settings, not consensus parameters. Values can differ between
 | --- | --- |
 | `stated` | Explicit configuration values. A missing field is unspecified, not zero |
 | `stated.max*` | `maxSha256Buffers`, `maxCrossInvokeDepth`, `maxNewContractsPerTx`, `maxBytestringLen`, `maxContractSizeBytes`, `maxSavepointDepth`, `maxAuthTokenDepth`, `maxRv32CodeBytes`, `maxRv32MemoryBytes`: JSON numbers. `maxTxGas` (wire `14.1.0`): decimal string |
+| `stated.maxAuthTokens`, `stated.maxCalldataLen`, `stated.maxReturnBufferLen` | Auth token count and calldata and return buffer limits in bytes. JSON numbers from wire `14.5.0` |
+| `stated.minRv32ArtifactVersion`, `stated.maxRv32ArtifactVersion` | Inclusive [RV32 artifact format range](/contracts/artifacts-and-addresses/#artifact-format-and-compatibility). JSON numbers from wire `14.5.0` |
 | `execution` | Optional authoritative reading. A missing `execution` means the backend cannot supply it; do not infer zero prices |
 | `execution.observedTip` | `blockHeight` and `blockHash` that the rules were read with |
 | `execution.configHash` | Base58 configuration and storage-model commitment |
@@ -522,7 +524,7 @@ Standard JSON-RPC 2.0 errors also apply, including `-32601` for unregistered met
 
 | Language | Package | Wire selection |
 | --- | --- | --- |
-| TypeScript | `@thruputchain/client` `0.27` | Calls `getVersionInfo` once at connect and requires major `14`. See [TypeScript SDK](/typescript/reference/sdk/) |
+| TypeScript | `@thruputchain/client` `0.29.0` | Calls `getVersionInfo` once at connect and requires major `14`. See [TypeScript SDK](/typescript/reference/sdk/) |
 | Rust | `thruput-json-rpc-client` (`NativeClient`) | `thruput-client`'s `check_endpoint` requires major `14` and the methods you name |
 
 ## Related Documentation
